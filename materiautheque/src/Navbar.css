@@ -1,0 +1,41 @@
+/* Navbar.css */
+
+.navbar {
+    background-color: #2C3E50;
+    color: #fff;
+    padding: 7px 0;
+  }
+  
+  .navbar-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .navbar-logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .navbar-menu {
+    list-style: none;
+    display: flex;
+  }
+  
+  .navbar-item {
+    padding: 7px;
+    margin-right: 15px;
+    cursor: pointer;
+  }
+  
+  .navbar-item:last-child {
+    margin-right: 0;
+  }
+  
+  .navbar-img{
+    margin-right: 15px;
+    cursor: pointer;
+
+  }
