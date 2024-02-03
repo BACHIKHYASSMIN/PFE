@@ -17,17 +17,20 @@ const Material = () => {
           <img className="home" src={homeIcon}  />
           <p className='Path' >Acceuil &gt; Matériaux</p>
           </div>
-          <Categorie />
+          <Categorie  categorieName="Matériaux à base de terre"/>
+          <Categorie  categorieName="Minéraux et Roches"/>
+          <Categorie  categorieName="Bois"/>
     </na>
   );
 }
 
 
-const Categorie =() =>{
+const Categorie =(props) =>{
+  const CatName = props.categorieName;
 return (
 <div className='Categorie'>
   <div className='catTitle'>
-  <h3>Materiaux A base de Terre</h3>
+  <h3>{CatName}</h3>
   </div>   
   <div className='CardDetails'>
   <a> <h3>Voir Tout</h3></a> 
@@ -44,10 +47,6 @@ return (
               <div className='CardItem'>
               <p >Agrégat</p>
               <img  src={agrImg}/>
-              </div>
-              <div className='CardItem'>
-              <p >Pierre</p>
-              <img  src={pierImg}/>
               </div>
             </div>
                        </div>

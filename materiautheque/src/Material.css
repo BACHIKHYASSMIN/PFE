@@ -47,14 +47,13 @@
     margin-left: 10%;
      width:80% ;
      height: 80%;
+     margin-bottom: 5%;
   }
   .catTitle{
-    width:18%;
+    width:max-content;
     height:5%;
     background-color: white;
-    position:absolute;
-    top:38%;
-    padding-bottom: 3%;
+    margin-top: -4%;
     padding-left: 1%;
   }
   .catTitle h3{
@@ -62,15 +61,17 @@
 
   }
   .CategorieList {
-    padding-top: 5%;
     width:80%;
     margin-left:5%;
     height: max-content;
     padding-bottom: 5%;
     display: flex;
-
+    align-items: stretch;
   }
 
+  .CardItem {
+    flex: 1;
+  }
 
 .CardItem img {
   width: 60%;
@@ -80,11 +81,10 @@
   width:80px;
   height:3px;
   background-color: white;
-  position:absolute;
   top:38%;
-  padding-left: 1%;
+  margin-top: -4%;
   padding-bottom: 3%;
-  margin-left: 73.3%;
+  margin-left: 93%;
 
 }
 .CardDetails h3 {
