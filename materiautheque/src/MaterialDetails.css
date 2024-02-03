@@ -1,0 +1,62 @@
+.material{
+    margin-left: 5%;
+    display: flex;
+    align-items: center;
+}
+.mat-img{
+    width: 10%;
+    margin-right: 10%;
+}
+.mat-name{
+    font-weight: bold;
+    font-size: xx-large;
+}
+
+.Description{
+     width: 30%;
+background-color:#ECF0F1;
+
+}
+
+.Description h3{
+    padding-top: 5%;
+    text-align: center;
+    
+}
+
+.Description ul  {
+    list-style: none;
+    padding-bottom: 3%;
+}
+
+
+.Description li{
+    margin-bottom: 4%;
+    font-weight: bold;
+}
+
+.Vertical{
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    top:25%;
+    left:50%;
+    margin-right: 20%;
+}
+
+.Source{
+    text-align: center;
+     width: 400%;
+    background-color:#ECF0F1;
+}
+
+.Composition{
+  margin-top: 100%;
+    text-align: center;
+     width: 400%;
+    background-color:#ECF0F1;
+}
+.dwnload{
+    width: 45px;
+  margin-left: 95%;
+}

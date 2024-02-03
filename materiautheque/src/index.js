@@ -4,11 +4,12 @@ import './index.css';
 import App from './Categorie';
 import reportWebVitals from './reportWebVitals';
 import Class from './Class';
+import Details from './MaterialDetails';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <Class />
+    <Details />
   </React.StrictMode>
 );
 
