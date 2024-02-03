@@ -31,7 +31,64 @@
     margin: 0 auto;
     display: flex;
     align-items: center;  
+    padding-bottom: 3%;
   }
   .home{
     width: 20px;
   }
+  .Path{
+    font-family: 'Montserrat';
+    color:#2C3E50;
+    padding-left: 10px;
+  }
+
+  .Categorie{
+    border: 2px solid #000;
+    margin-left: 10%;
+     width:80% ;
+     height: 80%;
+  }
+  .catTitle{
+    width:18%;
+    height:5%;
+    background-color: white;
+    position:absolute;
+    top:38%;
+    padding-bottom: 3%;
+    padding-left: 1%;
+  }
+  .catTitle h3{
+     margin-left:-3% ;
+
+  }
+  .CategorieList {
+    padding-top: 5%;
+    width:80%;
+    margin-left:5%;
+    height: max-content;
+    padding-bottom: 5%;
+    display: flex;
+
+  }
+
+
+.CardItem img {
+  width: 60%;
+  margin-left: 10%;
+}
+.CardDetails{
+  width:80px;
+  height:3px;
+  background-color: white;
+  position:absolute;
+  top:38%;
+  padding-left: 1%;
+  padding-bottom: 3%;
+  margin-left: 73.3%;
+
+}
+.CardDetails h3 {
+  text-decoration: none;
+  margin-left:-3% ;
+  cursor: pointer;
+}
