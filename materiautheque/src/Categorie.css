@@ -1,0 +1,86 @@
+
+.categorie-head{
+  padding: 7px 0;
+}
+.categorie-head {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  margin-bottom: 3%;
+}
+
+.menu {
+  width: 30px;
+  cursor: pointer;
+}
+
+.tit{ 
+  font-family: 'Montserrat', sans-serif;
+  font-size: 36px;
+  font-weight: bold;
+  margin: 0; 
+}
+
+.catlist{
+  display: flex;
+  margin-left: 45%;
+}
+.catIt{
+  padding-left: 2%;
+  padding-bottom: -3%;
+  padding-right: 2%;
+  border: 2px solid #000;
+  border-radius: 15px;
+margin-right: 6%;
+cursor: pointer;
+}
+
+.catIt p{
+  width: max-content;
+ }
+ .searchBar{
+  display: flex;
+
+ }
+ .Filter{
+  padding-left: 1%;
+  padding-right: 1%;
+  width: max-content;
+  background-color: #ECF0F1;
+  margin-left: 16%;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+ }
+ .fit{
+  margin-right: 6%;
+ }
+
+ .Search{
+
+ }
+.bar{
+  margin-left: 10%;
+  background-color:#ECF0F1 ;
+  width:400% ;
+  height: 53px;
+  
+  color: #2C3E50;
+  border-color: white;
+  box-shadow: white;
+}
+
+.CardItem {
+  margin-bottom: 20px; 
+}
+
+.CardItem img {
+  width: 400%; 
+}
+
+.catElements {
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+}

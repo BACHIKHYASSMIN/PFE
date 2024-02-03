@@ -4,6 +4,8 @@ import  menuIcon from "./Assets/icon.png"
 import homeIcon from "./Assets/Vector.png"
 import agrImg from  "./Assets/agr.png"
 import pierImg from  "./Assets/pier.png"
+import { Link } from 'react-router-dom';
+import categorie from './Categorie'; 
 
 
 const Material = () => {
@@ -17,23 +19,25 @@ const Material = () => {
           <img className="home" src={homeIcon}  />
           <p className='Path' >Acceuil &gt; Matériaux</p>
           </div>
-          <Categorie  categorieName="Matériaux à base de terre"/>
-          <Categorie  categorieName="Minéraux et Roches"/>
-          <Categorie  categorieName="Bois"/>
+          <Categories  categorieName="Matériaux à base de terre"/>
+          <Categories  categorieName="Minéraux et Roches"/>
+          <Categories  categorieName="Bois"/>
     </na>
   );
 }
 
 
-const Categorie =(props) =>{
+const Categories =(props) =>{
   const CatName = props.categorieName;
 return (
-<div className='Categorie'>
+<div className='Categories'>
   <div className='catTitle'>
   <h3>{CatName}</h3>
   </div>   
   <div className='CardDetails'>
-  <a> <h3>Voir Tout</h3></a> 
+  <Link to="/categorie">
+<h3>Voir Tout</h3>
+</Link>
   </div>
             <div className='CategorieList'>
               <div className='CardItem'>

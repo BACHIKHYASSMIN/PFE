@@ -1,14 +1,23 @@
 
 import './Class.css';
-import Navbar from './Navbar';
+import Navbar from './Elements/Navbar';
+import Footer from './Elements/Footer';
+import  Categorie from  './Categorie';
+import { BrowserRouter as Router,  Route, Routes } from 'react-router-dom';
 import Material from './Material';
-import Footer from './Footer';
 function Class() {
   return (
     <div className="Class">
-     <Navbar/>
-     <Material/>
-     <Footer/>
+      <Router>
+      <Navbar/>
+      <Routes>
+        <Route path="/" exact element={<Material />} />
+        <Route path="/categorie"  element={<Categorie />} />
+      </Routes>
+      <Footer/>
+    </Router>
+    
+     
 </div>
   );
 }
