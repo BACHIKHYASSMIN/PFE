@@ -12,7 +12,7 @@ const Details= () => {
     <nav className="details">
        <Navbar />
        <img className="dwnload" src={ dwn}  />
-      <div className="material">
+      <div className="materials">
       <img className="mat-img" src={ matImg}  />
       <p className='mat-name'>Bois</p>
       </div>

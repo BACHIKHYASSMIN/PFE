@@ -16,7 +16,7 @@
   .menu {
     width: 30px;
     margin-right: 20px; 
-    cursor: pointer;
+
   }
   
   .title {
@@ -97,3 +97,93 @@
 
 }
 
+.side-menu{
+  overflow-y: auto;
+  position: absolute;
+  top:0;
+  left:0;
+  width:30%;
+  height: 100%;
+  background-color: #2C3E50; 
+  display: flex;
+  flex-direction: column;
+}
+.popmenu{
+  width:25px;
+  height: 25px;
+  margin-top: 8%;
+  margin-left: 5%;
+}
+.lineBar{
+  width:100%;
+  padding-bottom: 1%;
+  margin-top: 3%;
+  background-color: white;
+}
+.popIcons{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.closemenu{
+  width:40px;
+  height:40px;
+  margin-top: 5%;
+}
+
+.rub{
+  color: white;
+}
+.catgs{
+  list-style: none;
+  color: white;
+  margin-bottom: 3px;
+}
+.rub-name {
+  list-style: none;
+  margin-left: -90%;
+  color: white;
+  font-weight: bold;
+  margin-bottom: 5%;
+}
+.rub-name :last-child {
+  list-style: none;
+  margin-left: -90%;
+  color: white;
+  font-weight: bold;
+  margin-bottom: 2%;
+}
+.pageLink{
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+  margin-left: -60%;
+  margin-bottom: 5%;
+}
+
+.Decon{
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  padding-bottom: 5%;
+
+}
+.lineDecBar{
+  width:100%;
+  padding-bottom: 1%;
+  margin-top: 30%;
+background-color: white;
+}
+
+.dec{
+margin-left: 25%;
+  margin-top: 5%;
+  width:25px;
+  margin-right: 4%;
+
+}
+.decLink{
+  text-decoration: none;
+  font-weight: bold;
+  color: white;
+}

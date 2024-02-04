@@ -5,11 +5,13 @@ import App from './Categorie';
 import reportWebVitals from './reportWebVitals';
 import Class from './Class';
 import Details from './MaterialDetails';
+import Graph from './Graph';
+import Carte from './carte';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <Details />
+    <Carte/>
   </React.StrictMode>
 );
 
