@@ -7,13 +7,15 @@ import Class from './Class';
 import Details from './MaterialDetails';
 import Graph from './Graph';
 import Carte from './carte';
+import { BrowserRouter } from 'react-router-dom'
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
-    <Carte/>
-  </React.StrictMode>
+  <BrowserRouter>
+    <Class />
+  </BrowserRouter>
 );
+
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))

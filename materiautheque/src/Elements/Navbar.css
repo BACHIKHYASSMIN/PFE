@@ -23,11 +23,16 @@
     list-style: none;
     display: flex;
   }
-  
+
   .navbar-item {
     padding: 7px;
     margin-right: 15px;
     cursor: pointer;
+  }
+  
+  .navbar-item a{
+   color: white;
+   text-decoration: none;
   }
   
   .navbar-item:last-child {

@@ -13,6 +13,7 @@ import closeBIcon from "./Assets/closeb.png"
 import Navbar from './Elements/Navbar';
 import Footer from './Elements/Footer';
 import  Map from './Map';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 function Carte() {
   const monuments = [
     { name: 'Monument 1', lat: 40.7128, lng: -74.0060 },
@@ -40,17 +41,27 @@ function Carte() {
     };
   return (
       <div className='graph'>
-        <Navbar />
-          <h3 className="titre">Graphe de connaissance </h3>
+       
+          <h3 className="titre">Carte Geographique </h3>
           <div className='SearchF'>
           <button className='valide'  onClick={handleMenuToggle}>Filtrer</button>
           <input  type="text" placeholder="Rechercher un matériau" className='bar' />
           <button className='valide'>Valider</button>
           </div>
          
-          <div>
-      <h2>Offline Map with Monuments</h2>
-      <Map monuments={monuments} />
+          <div className='carteGeo'>
+          <MapContainer center={[28.0339, 1.6596]} zoom={5} style={{ height: '400px', width: '100%' }} >
+          <TileLayer
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          />
+
+          {monuments.map((monument, index) => (
+            <Marker key={index} position={[monument.lat, monument.lng]}>
+              <Popup>{monument.name}</Popup>
+            </Marker>
+          ))}
+        </MapContainer>
     </div>
               
       

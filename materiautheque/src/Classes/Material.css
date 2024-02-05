@@ -69,11 +69,11 @@
     align-items: stretch;
   }
 
-  .CardItem {
+  .CardMatItem {
     flex: 1;
   }
 
-.CardItem img {
+.CardMatItem img {
   width: 60%;
   margin-left: 10%;
 }
@@ -93,6 +93,10 @@
   cursor: pointer;
 }
 .CardDetails a:visited{
+  text-decoration: none;
+
+}
+.CardDetails a{
   text-decoration: none;
 
 }
@@ -137,27 +141,30 @@
 .catgs{
   list-style: none;
   color: white;
-  margin-bottom: 3px;
+  margin-bottom: 5px;
 }
-.rub-name {
+.rubMat-name  {
   list-style: none;
-  margin-left: -90%;
   color: white;
   font-weight: bold;
   margin-bottom: 5%;
 }
-.rub-name :last-child {
+
+.rubMat-name a {
+text-decoration: none;
+}
+
+.rubMat-name :last-child {
   list-style: none;
-  margin-left: -90%;
   color: white;
   font-weight: bold;
   margin-bottom: 2%;
 }
-.pageLink{
+.pageLink {
   text-decoration: none;
   color: white;
   font-weight: bold;
-  margin-left: -60%;
+  margin-left: 15%;
   margin-bottom: 5%;
 }
 
@@ -186,4 +193,12 @@ margin-left: 25%;
   text-decoration: none;
   font-weight: bold;
   color: white;
+}
+
+.Links{
+  text-align: center;
+}
+.Links a{
+  font-size: 100%;
+
 }

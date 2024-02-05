@@ -33,7 +33,7 @@ function Graph() {
     };
   return (
       <div className='graph'>
-        <Navbar />
+  
           <h3 className="titre">Graphe de connaissance </h3>
           <div className='SearchF'>
           <button className='valide'  onClick={handleMenuToggle}>Filtrer</button>

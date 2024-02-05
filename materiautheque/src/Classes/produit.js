@@ -1,18 +1,26 @@
-
-import './Categorie.css';
-import React, { useState }  from 'react';
-import  menuIcon from "./Assets/icon.png"
-import homeIcon from "./Assets/Vector.png"
-import FilterIcon from "./Assets/filter.png"
-import agrImg from  "./Assets/agr.png"
-import pierImg from  "./Assets/pier.png"
-import ArrowIcon from "./Assets/arrow.png"
-import deconIcon from "./Assets/decon.png"
-import whitemenuIcon from "./Assets/wmenu.png"
-import closeBIcon from "./Assets/closeb.png"
-import closeIcon from "./Assets/close.png"
+import React, { useState } from 'react';
+import './Material.css';  
+import '../Categorie.css'
+import  menuIcon from "../Assets/icon.png"
+import homeIcon from "../Assets/Vector.png"
+import agrImg from  "../Assets/agr.png"
+import pierImg from  "../Assets/pier.png"
+import deconIcon from "../Assets/decon.png"
+import whitemenuIcon from "../Assets/wmenu.png"
+import closeIcon from "../Assets/close.png"
 import { Link } from 'react-router-dom';
-function Categorie() {
+import categorie from '../Categorie'; 
+import Details from '../MaterialDetails';
+import Graph from '../Graph';
+import FilterIcon from "../Assets/filter.png"
+import closeBIcon from "../Assets/closeb.png"
+import ArrowIcon from "../Assets/arrow.png"
+
+
+
+const Produit = () => {
+ 
+
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isFilterMenuOpen, setFilterMenuOpen] = useState(false);
   const [isChecked1, setChecked1] = useState(false);
@@ -37,20 +45,16 @@ function Categorie() {
     const handleCheckbox3Change = () => {
       setChecked3(!isChecked3);
     };
-  return (
-      <div className='cat'>
-        <div className="categorie-head">
-          <img className="menu" src={menuIcon} onClick={handleMenuToggle} />
-          <p className="tit">Matériaux</p>
-          <div className='catlist'>
-          <div className='catIt'><p>Matériaux à base de terre</p> </div>
-          <div className='catIt'> <p>Minéraux et Roches</p> </div>
-          <div className='catIt'> <p>Bois</p> </div>
-          </div>
+    return(
+    <na className="material">
+      <div className="material-head">
+          <img className="menu" src={menuIcon} alt="Menu Icon"
+          onClick={handleMenuToggle}  />
+          <p className="title">Produits</p>
           </div>
           <div className='MaterialCat'>
           <img className="home" src={homeIcon}  />
-          <p className='Path' >Acceuil &gt; Matériaux &gt; Matériaux à base de terre</p>
+          <p className='Path' >Acceuil &gt; Produit</p>
           </div>
           <div className='searchBar'>
           <div className='Filter'>
@@ -95,8 +99,8 @@ function Categorie() {
               <a >3</a>
               <a >&gt;</a>
               </div>  
-              
-         {/* Afficher le menu latéral s'il est ouvert */}
+
+        {/* Afficher le menu latéral s'il est ouvert */}
       {isFilterMenuOpen && (
         
         <div className="side-filter-menu">
@@ -210,9 +214,13 @@ function Categorie() {
           </div>
         </div>
       )}
-      </div>
-      
+
+    </na>
   );
 }
 
-export default Categorie;
+
+
+
+
+export default Produit;
