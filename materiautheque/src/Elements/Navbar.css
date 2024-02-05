@@ -22,6 +22,7 @@
   .navbar-menu {
     list-style: none;
     display: flex;
+  align-items: center;
   }
 
   .navbar-item {
@@ -43,4 +44,32 @@
     margin-right: 15px;
     cursor: pointer;
 
+  }
+
+  .Class-menu{
+background-color: #ECF0F1;
+width: 15%;
+height: max-content;
+position: absolute;
+top: 10%;
+left:50%;
+  }
+  .arrowd{
+    width: 16px;
+  }
+
+  .navbar-ite{
+ margin-left: -2%;
+ margin-right: 2%;
+ margin-top: 1%;
+  }
+
+  .rubClass-name {
+    margin-left: 4%;
+    list-style-image: url('../Assets/chevron.png');
+  }
+  .rubClass-name a{
+    text-decoration: none;
+    color: #2C3E50;
+    font-weight: 700;
   }

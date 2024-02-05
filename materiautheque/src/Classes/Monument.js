@@ -3,22 +3,18 @@ import './Material.css';
 import '../Categorie.css'
 import  menuIcon from "../Assets/icon.png"
 import homeIcon from "../Assets/Vector.png"
-import agrImg from  "../Assets/ceramic.png"
-import pierImg from  "../Assets/brik.png"
 import deconIcon from "../Assets/decon.png"
 import whitemenuIcon from "../Assets/wmenu.png"
 import closeIcon from "../Assets/close.png"
 import { Link } from 'react-router-dom';
-import categorie from '../Categorie'; 
-import Details from '../MaterialDetails';
-import Graph from '../Graph';
 import FilterIcon from "../Assets/filter.png"
 import closeBIcon from "../Assets/closeb.png"
 import ArrowIcon from "../Assets/arrow.png"
+import MonumentImg from "../Assets/arc.png"
 
 
 
-const Produit = () => {
+const Monument = () => {
  
 
   const [isMenuOpen, setMenuOpen] = useState(false);
@@ -50,11 +46,11 @@ const Produit = () => {
       <div className="material-head">
           <img className="menu" src={menuIcon} alt="Menu Icon"
           onClick={handleMenuToggle}  />
-          <p className="title">Produits</p>
+          <p className="title">Monuments</p>
           </div>
           <div className='MaterialCat'>
           <img className="home" src={homeIcon}  />
-          <p className='Path' >Acceuil &gt; Produit</p>
+          <p className='Path' >Acceuil &gt; Monument</p>
           </div>
           <div className='searchBar'>
           <div className='Filter'>
@@ -68,28 +64,28 @@ const Produit = () => {
           </div>
           <div className='catElements'>
           <div className='CatItem'>
-              <p >Ceramic</p>
-              <img  src={agrImg}/>
+              <p >Monument 1</p>
+              <img  src={MonumentImg}/>
               </div>
               <div className='catItem'>
-              <p >Brique</p>
-              <img  src={pierImg}/>
+              <p >Monument 2</p>
+              <img  src={MonumentImg}/>
               </div>
               <div className='catItem'>
-              <p >Ceramix</p>
-              <img  src={pierImg}/>
+              <p >Monument 3</p>
+              <img  src={MonumentImg}/>
               </div>
               <div className='catItem'>
-              <p >Brique</p>
-              <img  src={agrImg}/>
+              <p >Monument 4</p>
+              <img  src={MonumentImg}/>
               </div>
               <div className='catItem'>
-              <p >Ceramic</p>
-              <img  src={pierImg}/>
+              <p >Monument 5</p>
+              <img  src={MonumentImg}/>
               </div>
                <div className='catItem'>
-              <p >Brique</p>
-              <img  src={agrImg}/>
+              <p >Monument 6 </p>
+              <img  src={MonumentImg}/>
               </div>
               
               </div>
@@ -200,6 +196,7 @@ const Produit = () => {
           <h3 className='rub'>Pages</h3>
           {/* Ajoutez vos liens du menu ici */}
          <Link className="pageLink" to="/">Accueil</Link>
+          
           <Link className="pageLink" to="/Graph">Graph</Link>
          <Link className="pageLink" to="/carte-geographique">Carte Geographique</Link>
           <Link className="pageLink"  to="/recherche-avancee">Recherche Avancée</Link>
@@ -222,4 +219,4 @@ const Produit = () => {
 
 
 
-export default Produit;
+export default Monument;

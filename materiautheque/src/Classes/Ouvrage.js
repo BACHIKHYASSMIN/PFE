@@ -3,8 +3,8 @@ import './Material.css';
 import '../Categorie.css'
 import  menuIcon from "../Assets/icon.png"
 import homeIcon from "../Assets/Vector.png"
-import agrImg from  "../Assets/ceramic.png"
-import pierImg from  "../Assets/brik.png"
+import agrImg from  "../Assets/agr.png"
+import pierImg from  "../Assets/pier.png"
 import deconIcon from "../Assets/decon.png"
 import whitemenuIcon from "../Assets/wmenu.png"
 import closeIcon from "../Assets/close.png"
@@ -15,10 +15,11 @@ import Graph from '../Graph';
 import FilterIcon from "../Assets/filter.png"
 import closeBIcon from "../Assets/closeb.png"
 import ArrowIcon from "../Assets/arrow.png"
+import { useNavigate } from 'react-router-dom';
+import OuvrageImg from "../Assets/building.png"
 
 
-
-const Produit = () => {
+const Ouvrage = () => {
  
 
   const [isMenuOpen, setMenuOpen] = useState(false);
@@ -26,9 +27,14 @@ const Produit = () => {
   const [isChecked1, setChecked1] = useState(false);
   const [isChecked2, setChecked2] = useState(false);
   const [isChecked3, setChecked3] = useState(false);
-
+  const navigate = useNavigate();
+  const handleImageClick = () => {
+    // Naviguer vers la page "Details" lors du clic sur l'image
+    navigate('/details');
+  };
  
   const  handleFilterMenuToggle = () => {
+  
     setFilterMenuOpen(!isFilterMenuOpen);
   };
   const handleMenuToggle = () => {
@@ -50,11 +56,11 @@ const Produit = () => {
       <div className="material-head">
           <img className="menu" src={menuIcon} alt="Menu Icon"
           onClick={handleMenuToggle}  />
-          <p className="title">Produits</p>
+          <p className="title">Ouvrages</p>
           </div>
           <div className='MaterialCat'>
           <img className="home" src={homeIcon}  />
-          <p className='Path' >Acceuil &gt; Produit</p>
+          <p className='Path' >Acceuil &gt; Ouvrage</p>
           </div>
           <div className='searchBar'>
           <div className='Filter'>
@@ -68,28 +74,28 @@ const Produit = () => {
           </div>
           <div className='catElements'>
           <div className='CatItem'>
-              <p >Ceramic</p>
-              <img  src={agrImg}/>
+              <p >Ouvrage 1</p>
+              <img  src={OuvrageImg}  onClick={handleImageClick}/>
               </div>
               <div className='catItem'>
-              <p >Brique</p>
-              <img  src={pierImg}/>
+              <p >Ouvrage 2</p>
+              <img  src={OuvrageImg}  onClick={handleImageClick}/>
               </div>
               <div className='catItem'>
-              <p >Ceramix</p>
-              <img  src={pierImg}/>
+              <p >Ouvrage 3</p>
+              <img  src={OuvrageImg}  onClick={handleImageClick}/>
               </div>
               <div className='catItem'>
-              <p >Brique</p>
-              <img  src={agrImg}/>
+              <p >Ouvrage 4</p>
+              <img  src={OuvrageImg}  onClick={handleImageClick}/>
               </div>
               <div className='catItem'>
-              <p >Ceramic</p>
-              <img  src={pierImg}/>
+              <p >Ouvrage 5</p>
+              <img  src={OuvrageImg}  onClick={handleImageClick}/>
               </div>
                <div className='catItem'>
-              <p >Brique</p>
-              <img  src={agrImg}/>
+              <p >Ouvrage 6</p>
+              <img  src={OuvrageImg}  onClick={handleImageClick}/>
               </div>
               
               </div>
@@ -222,4 +228,4 @@ const Produit = () => {
 
 
 
-export default Produit;
+export default Ouvrage;

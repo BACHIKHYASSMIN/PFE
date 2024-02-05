@@ -9,6 +9,9 @@ import Graph from './Graph';
 import CarteGeographique from './carte';
 import Produit from './Classes/produit';
 import Details from './MaterialDetails';
+import Monument from './Classes/Monument';
+import Pathologie from './Classes/Pathologie';
+import Ouvrage from './Classes/Ouvrage';
 
 function Class() {
   return (
@@ -17,12 +20,16 @@ function Class() {
       
         <Navbar />
         <Routes>
-          <Route path="/" element={<Material />} />
+          <Route path="/material" element={<Material />} />
           <Route path="/categorie" element={<Categorie />} />
           <Route path="/Graph" element={<Graph />} />
           <Route path="/carte-geographique" element={<CarteGeographique />} />
           <Route path="/produit" element={<Produit />} />
           <Route path="/details" element={<Details />} />
+          <Route path="/monument" element={<Monument />} />
+          <Route path="/pathologie" element={<Pathologie />} />
+          <Route path="/ouvrage" element={<Ouvrage />} />
+     
          
         </Routes>
         <Footer />

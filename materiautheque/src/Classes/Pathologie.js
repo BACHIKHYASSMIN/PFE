@@ -14,7 +14,7 @@ import Graph from '../Graph';
 import { useNavigate } from 'react-router-dom';
 
 
-const Material = () => {
+const Pathologie = () => {
   const [isMenuOpen, setMenuOpen ,setGraph ,isGraph] = useState(false);
  
 
@@ -27,15 +27,15 @@ const Material = () => {
       <div className="material-head">
           <img className="menu" src={menuIcon} alt="Menu Icon"
           onClick={handleMenuToggle}  />
-          <p className="title">Matériaux</p>
+          <p className="title">Pathologies</p>
           </div>
           <div className='MaterialCat'>
           <img className="home" src={homeIcon}  />
-          <p className='Path' >Acceuil &gt; Matériaux</p>
+          <p className='Path' >Acceuil &gt; Pathologie</p>
           </div>
-          <Categories  categorieName="Matériaux à base de terre"/>
-          <Categories  categorieName="Minéraux et Roches"/>
-          <Categories  categorieName="Bois"/>
+          <Categories  categorieName="Catgégorie 1"/>
+          <Categories  categorieName="Catgégorie 2"/>
+          <Categories  categorieName="Catgégorie 3"/>
 
           {/* Afficher le menu latéral s'il est ouvert */}
       {isMenuOpen && (
@@ -65,7 +65,6 @@ const Material = () => {
           <h3 className='rub'>Pages</h3>
           {/* Ajoutez vos liens du menu ici */}
          <Link className="pageLink" to="/">Accueil</Link>
-          <Link className="pageLink" to="/">Classes</Link>
           <Link className="pageLink" to="/Graph">Graph</Link>
          <Link className="pageLink" to="/carte-geographique">Carte Geographique</Link>
           <Link className="pageLink"  to="/recherche-avancee">Recherche Avancée</Link>
@@ -95,29 +94,29 @@ const Categories = (props) => {
 
   let categoryContent;
 
-  if (CatName === "Matériaux à base de terre") {
+  if (CatName === "Catégorie 1") {
     categoryContent = (
       <div className='CategorieList'>
         <div className='CardMatItem'>
-        <p >Terre Cuite</p>
+        <p >Pathologie 1</p>
           <img src={agrImg} onClick={handleImageClick} />
         </div>
         <div className='CardMatItem'>
-        <p >Terre non Cuite</p>
-          <img src={pierImg} onClick={<Details />} />
+        <p >Pathologie 2</p>
+          <img src={pierImg} onClick={handleImageClick} />
         </div>
         {/* Ajoutez d'autres éléments spécifiques à cette catégorie si nécessaire */}
       </div>
     );
-  } else if (CatName === "Minéraux et Roches") {
+  } else if (CatName === "Catégorie 2") {
     categoryContent = (
       <div className='CategorieList'>
         <div className='CardMatItem'>
-          <p >Congiomérat et liant</p>
+          <p >Pathologie 1</p>
           <img src={agrImg} onClick={handleImageClick} />
         </div>
         <div className='CardMatItem'>
-          <p >Pierre</p>
+          <p >Pathologie 2</p>
           <img src={pierImg} onClick={handleImageClick} />
         </div>
         {/* Ajoutez d'autres éléments spécifiques à cette catégorie si nécessaire */}
@@ -127,15 +126,15 @@ const Categories = (props) => {
     categoryContent = (
       <div className='CategorieList'>
         <div className='CardMatItem'>
-          <p >Cédre</p>
+          <p >Pathologie 1</p>
           <img src={agrImg} onClick={handleImageClick} />
         </div>
         <div className='CardMatItem'>
-          <p >Thuya</p>
+          <p >Pathologie 2</p>
           <img src={pierImg} onClick={handleImageClick} />
         </div>
         <div className='CardMatItem'>
-          <p >Essence non Identifiée</p>
+          <p >Pathologie 3</p>
           <img src={agrImg} onClick={handleImageClick} />
         </div>
         {/* Ajoutez d'autres éléments génériques si nécessaire */}
@@ -158,4 +157,4 @@ const Categories = (props) => {
 }
 
 
-export default Material;
+export default Pathologie;
