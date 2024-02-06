@@ -12,7 +12,9 @@ import categorie from '../Categorie';
 import Details from '../MaterialDetails';
 import Graph from '../Graph';
 import { useNavigate } from 'react-router-dom';
-
+import Navbar from '../Elements/Navbar';
+import Footer from '../Elements/Footer';
+import { Form, Select, Button, Input, Card, Row, Col , Typography } from 'antd';
 
 const Material = () => {
   const [isMenuOpen, setMenuOpen ,setGraph ,isGraph] = useState(false);
@@ -24,10 +26,13 @@ const Material = () => {
   
   return (
     <na className="material">
+      <Navbar />
       <div className="material-head">
           <img className="menu" src={menuIcon} alt="Menu Icon"
           onClick={handleMenuToggle}  />
-          <p className="title">Matériaux</p>
+          <Typography.Title level={1} style={{ fontWeight: 'bold', marginBottom: '40px',textAlign: 'center', marginLeft:'30%' }}>
+        Matériaux
+      </Typography.Title>
           </div>
           <div className='MaterialCat'>
           <img className="home" src={homeIcon}  />
@@ -65,7 +70,6 @@ const Material = () => {
           <h3 className='rub'>Pages</h3>
           {/* Ajoutez vos liens du menu ici */}
          <Link className="pageLink" to="/">Accueil</Link>
-          <Link className="pageLink" to="/">Classes</Link>
           <Link className="pageLink" to="/Graph">Graph</Link>
          <Link className="pageLink" to="/carte-geographique">Carte Geographique</Link>
           <Link className="pageLink"  to="/recherche-avancee">Recherche Avancée</Link>
@@ -79,7 +83,7 @@ const Material = () => {
           </div>
         </div>
       )}
-
+<Footer/>
     </na>
   );
 }
@@ -104,7 +108,7 @@ const Categories = (props) => {
         </div>
         <div className='CardMatItem'>
         <p >Terre non Cuite</p>
-          <img src={pierImg} onClick={<Details />} />
+          <img src={pierImg} onClick={handleImageClick}  />
         </div>
         {/* Ajoutez d'autres éléments spécifiques à cette catégorie si nécessaire */}
       </div>

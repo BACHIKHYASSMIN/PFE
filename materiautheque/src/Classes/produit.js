@@ -15,8 +15,9 @@ import Graph from '../Graph';
 import FilterIcon from "../Assets/filter.png"
 import closeBIcon from "../Assets/closeb.png"
 import ArrowIcon from "../Assets/arrow.png"
-
-
+import Navbar from '../Elements/Navbar';
+import { Form, Select, Button, Input, Card, Row, Col , Typography } from 'antd';
+import Footer from '../Elements/Footer';
 
 const Produit = () => {
  
@@ -47,27 +48,44 @@ const Produit = () => {
     };
     return(
     <na className="material">
+       <Navbar/>
       <div className="material-head">
-          <img className="menu" src={menuIcon} alt="Menu Icon"
-          onClick={handleMenuToggle}  />
-          <p className="title">Produits</p>
+          <img className="menu" src={menuIcon} alt="Menu Icon"onClick={handleMenuToggle}  />
+        <Typography.Title level={1} style={{ fontWeight: 'bold', marginBottom: '40px',textAlign: 'center', marginLeft:'30%' }}>
+        Produits
+      </Typography.Title>
           </div>
           <div className='MaterialCat'>
           <img className="home" src={homeIcon}  />
           <p className='Path' >Acceuil &gt; Produit</p>
           </div>
-          <div className='searchBar'>
-          <div className='Filter'>
-          <img className="fit" src={FilterIcon}  onClick={handleFilterMenuToggle}  />
-          <p >Filtres</p>
-          </div>
-          <div className='Search'>
-          <input  type="text" placeholder="Rechercher un matériau" className='bar' />
-          <button className='valide'>Valider</button>
-          </div>
-          </div>
+          <Row justify="space-between" align="middle" style={{ marginBottom: '20px', paddingLeft: '10px', paddingRight: '10px' }}>
+        <Col>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+    <div style={{  display: 'flex',  alignItems: 'center' , width: '400px', height: '60px', background: '#ECF0F1', marginRight: '20px' , justifyContent:"center"}}>
+    <img  src={FilterIcon}  onClick={handleFilterMenuToggle}   />
+    <Link   onClick={handleFilterMenuToggle} ><h2 style={{ textAlign: 'center', color: '#2C3E50', textDecoration:'none'}}>Filtres</h2></Link>
+    </div>
+    </div>
+        </Col>
+        <Col flex="auto" style={{ textAlign: 'right' }}>
+          <Row gutter={16}>
+            <Col flex="auto">
+              <Input
+                placeholder="Rechercher un matériau"
+                style={{ flex:1, marginRight: '10px', background: '#ECF0F1', color:'#2C3E50' }}
+              />
+            </Col>
+            <Col>
+              <Button type="primary" htmlType="submit"  style={{backgroundColor :'#2C3E50'}}>
+                Valider
+              </Button>
+            </Col>
+          </Row>
+        </Col>
+      </Row>
           <div className='catElements'>
-          <div className='CatItem'>
+          <div className='catItem'>
               <p >Ceramic</p>
               <img  src={agrImg}/>
               </div>
@@ -213,7 +231,7 @@ const Produit = () => {
           </div>
         </div>
       )}
-
+<Footer />
     </na>
   );
 }

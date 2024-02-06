@@ -10,6 +10,7 @@ import { Link } from 'react-router-dom';
 const Details= () => {
   return (
     <nav className="details">
+       <Navbar/>
        <img className="dwnload" src={ dwn}  />
       <div className="materials">
       <img className="mat-img" src={ matImg}  />

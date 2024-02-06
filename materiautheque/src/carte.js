@@ -13,6 +13,9 @@ import closeBIcon from "./Assets/closeb.png"
 import Navbar from './Elements/Navbar';
 import Footer from './Elements/Footer';
 import  Map from './Map';
+import { Link } from 'react-router-dom';
+import { Form, Select, Button, Input, Card, Row, Col , Typography } from 'antd';
+
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 function Carte() {
   const monuments = [
@@ -41,13 +44,35 @@ function Carte() {
     };
   return (
       <div className='graph'>
-       
-          <h3 className="titre">Carte Geographique </h3>
-          <div className='SearchF'>
-          <button className='valide'  onClick={handleMenuToggle}>Filtrer</button>
-          <input  type="text" placeholder="Rechercher un matériau" className='bar' />
-          <button className='valide'>Valider</button>
-          </div>
+       <Navbar />
+       <Typography.Title level={1} style={{ fontWeight: 'bold', marginBottom: '40px',textAlign: 'center' }}>
+        Carte Geographiuqe
+      </Typography.Title>
+
+      <Row justify="space-between" align="middle" style={{ marginBottom: '20px', paddingLeft: '10px', paddingRight: '10px' }}>
+        <Col>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+    <div style={{ width: '400px', height: '60px', background: '#2C3E50', marginRight: '20px' }}>
+    <Link   onClick={handleMenuToggle}><h2 style={{ textAlign: 'center', color: 'white', textDecoration:'none'}}>Filtres</h2></Link>
+    </div>
+    </div>
+        </Col>
+        <Col flex="auto" style={{ textAlign: 'right' }}>
+          <Row gutter={16}>
+            <Col flex="auto">
+              <Input
+                placeholder="Entrer une requête de recherche"
+                style={{ flex:1, marginRight: '10px', background: '#ECF0F1' }}
+              />
+            </Col>
+            <Col>
+              <Button type="primary" htmlType="submit"  style={{backgroundColor :'#2C3E50'}}>
+                Rechercher
+              </Button>
+            </Col>
+          </Row>
+        </Col>
+      </Row>
          
           <div className='carteGeo'>
           <MapContainer center={[28.0339, 1.6596]} zoom={5} style={{ height: '400px', width: '100%' }} >
@@ -85,15 +110,15 @@ function Carte() {
           <div className='catboxList'>
     <div className='catbox'>
       <input  type="checkbox"  checked={isChecked1}  onChange={handleCheckbox1Change} />
-      <label htmlFor="checkbox"></label>
+      <label htmlFor="checkbox">Monument 1</label>
     </div>
     <div className='catbox'>
       <input  type="checkbox"  checked={isChecked2}  onChange={handleCheckbox2Change} />
-      <label htmlFor="checkbox"></label>
+      <label htmlFor="checkbox">Monument 2</label>
     </div>
     <div className='catbox'>
       <input  type="checkbox"  checked={isChecked3}  onChange={handleCheckbox3Change} />
-      <label htmlFor="checkbox"></label>
+      <label htmlFor="checkbox">Monument 3</label>
     </div>   
     </div> 
     

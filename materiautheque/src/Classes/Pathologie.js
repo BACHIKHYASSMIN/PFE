@@ -12,7 +12,9 @@ import categorie from '../Categorie';
 import Details from '../MaterialDetails';
 import Graph from '../Graph';
 import { useNavigate } from 'react-router-dom';
-
+import Navbar from '../Elements/Navbar';
+import { Form, Select, Button, Input, Card, Row, Col , Typography } from 'antd';
+import Footer from '../Elements/Footer';
 
 const Pathologie = () => {
   const [isMenuOpen, setMenuOpen ,setGraph ,isGraph] = useState(false);
@@ -24,10 +26,13 @@ const Pathologie = () => {
   
   return (
     <na className="material">
+       <Navbar/>
       <div className="material-head">
           <img className="menu" src={menuIcon} alt="Menu Icon"
           onClick={handleMenuToggle}  />
-          <p className="title">Pathologies</p>
+         <Typography.Title level={1} style={{ fontWeight: 'bold', marginBottom: '40px',textAlign: 'center', marginLeft:'30%' }}>
+        Pathologies
+      </Typography.Title>
           </div>
           <div className='MaterialCat'>
           <img className="home" src={homeIcon}  />
@@ -78,7 +83,7 @@ const Pathologie = () => {
           </div>
         </div>
       )}
-
+<Footer />
     </na>
   );
 }
@@ -147,7 +152,7 @@ const Categories = (props) => {
         <h3>{CatName}</h3>
       </div>
       <div className='CardDetails'>
-        <Link to="/categorie">
+        <Link to="/categoriepath">
           <h3>Voir Tout</h3>
         </Link>
       </div>

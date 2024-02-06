@@ -12,14 +12,19 @@ import Details from './MaterialDetails';
 import Monument from './Classes/Monument';
 import Pathologie from './Classes/Pathologie';
 import Ouvrage from './Classes/Ouvrage';
+import Home from './Home'
+import Connexion from './Connexion';
+import RechercheAvancée from './RechercheAvancée';
+import CategoriePath from './CategoriePath';
 
-function Class() {
+function App() {
   return (
     <div className="Class">
   
       
-        <Navbar />
+    
         <Routes>
+        <Route path="/" exact element={<Home />} />
           <Route path="/material" element={<Material />} />
           <Route path="/categorie" element={<Categorie />} />
           <Route path="/Graph" element={<Graph />} />
@@ -29,14 +34,18 @@ function Class() {
           <Route path="/monument" element={<Monument />} />
           <Route path="/pathologie" element={<Pathologie />} />
           <Route path="/ouvrage" element={<Ouvrage />} />
-     
+          <Route path="/connexion" element={<Connexion />} />
+          <Route path="/recherche-avancee" element={<RechercheAvancée />} />
+          <Route path="/categoriepath" element={<CategoriePath />} />
+         
+          
          
         </Routes>
-        <Footer />
+      
       
   
     </div>
   );
 }
 
-export default Class;
+export default App;

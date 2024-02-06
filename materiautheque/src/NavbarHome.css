@@ -1,0 +1,52 @@
+.navbarHome {
+  
+    padding: 0px;
+   
+    background: url('Assets/background.PNG') center/cover; /* PremiÃ¨re image de fond */
+  
+  }
+  
+  
+  .navbarHome-items {
+    display: flex; /* Utilisation de flexbox pour aligner les Ã©lÃ©ments sur la mÃªme ligne */
+    justify-content: space-between; /* Espace Ã©gal entre les Ã©lÃ©ments */
+    align-items: center; /* Alignement vertical au centre */
+    font-weight: 500;
+  }
+  
+  .navbarHome h1 {
+    color: black; /* Couleur du texte pour "NumeriqueMaterials" */
+  }
+  
+  .navbarHome ul {
+    list-style: none;
+    color: black; /* Supprimez les puces de la liste */
+    margin: 0; /* Supprimez la marge par dÃ©faut de la liste */
+    padding: 0; /* Supprimez le rembourrage par dÃ©faut de la liste */
+  }
+  
+  .navbarHome li {
+    color: black;
+    display: inline-block; /* Affichez les Ã©lÃ©ments de liste en ligne */
+    margin-right: 40px; /* Espacement entre les Ã©lÃ©ments de liste */
+  }
+  
+  .navbarHome a {
+    text-decoration: none; /* Supprimez la dÃ©coration du lien (soulignement par dÃ©faut) */
+    color: black;/* Couleur du texte pour les liens */
+  }
+  
+  .connect-button {
+    background-color: #2C3E50; /* Couleur de fond du bouton */
+    color: white; /* Couleur du texte du bouton */
+    padding: 8px 16px; /* Ajoutez du rembourrage pour rendre le bouton plus grand */
+    border: none; /* Supprimez la bordure par dÃ©faut du bouton */
+    border-radius: 4px; /* Ajoutez un peu de bordure arrondie au bouton */
+    cursor: pointer; /* Changez le curseur pour indiquer qu'il s'agit d'un Ã©lÃ©ment cliquable */
+  }
+
+.navbarHome-items ul {
+    list-style:  none;
+    padding: 0;
+    margin: 0;
+  }

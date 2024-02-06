@@ -1,42 +1,29 @@
-import React, { useState } from 'react';
-import './Material.css';  
-import '../Categorie.css'
-import  menuIcon from "../Assets/icon.png"
-import homeIcon from "../Assets/Vector.png"
-import agrImg from  "../Assets/agr.png"
-import pierImg from  "../Assets/pier.png"
-import deconIcon from "../Assets/decon.png"
-import whitemenuIcon from "../Assets/wmenu.png"
-import closeIcon from "../Assets/close.png"
+
+import './Categorie.css';
+import React, { useState }  from 'react';
+import  menuIcon from "./Assets/icon.png"
+import homeIcon from "./Assets/Vector.png"
+import FilterIcon from "./Assets/filter.png"
+import agrImg from  "./Assets/agr.png"
+import pierImg from  "./Assets/pier.png"
+import ArrowIcon from "./Assets/arrow.png"
+import deconIcon from "./Assets/decon.png"
+import whitemenuIcon from "./Assets/wmenu.png"
+import closeBIcon from "./Assets/closeb.png"
+import closeIcon from "./Assets/close.png"
 import { Link } from 'react-router-dom';
-import categorie from '../Categorie'; 
-import Details from '../MaterialDetails';
-import Graph from '../Graph';
-import FilterIcon from "../Assets/filter.png"
-import closeBIcon from "../Assets/closeb.png"
-import ArrowIcon from "../Assets/arrow.png"
-import { useNavigate } from 'react-router-dom';
-import OuvrageImg from "../Assets/building.png"
-import Navbar from '../Elements/Navbar';
+import Navbar from './Elements/Navbar';
 import { Form, Select, Button, Input, Card, Row, Col , Typography } from 'antd';
-import Footer from '../Elements/Footer';
-
-const Ouvrage = () => {
- 
-
+import Footer from './Elements/Footer';
+function CategoriePath() {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isFilterMenuOpen, setFilterMenuOpen] = useState(false);
   const [isChecked1, setChecked1] = useState(false);
   const [isChecked2, setChecked2] = useState(false);
   const [isChecked3, setChecked3] = useState(false);
-  const navigate = useNavigate();
-  const handleImageClick = () => {
-    // Naviguer vers la page "Details" lors du clic sur l'image
-    navigate('/details');
-  };
+
  
   const  handleFilterMenuToggle = () => {
-  
     setFilterMenuOpen(!isFilterMenuOpen);
   };
   const handleMenuToggle = () => {
@@ -53,20 +40,25 @@ const Ouvrage = () => {
     const handleCheckbox3Change = () => {
       setChecked3(!isChecked3);
     };
-    return(
-    <na className="material">
-       <Navbar/>
-      <div className="material-head">
-          <img className="menu" src={menuIcon} alt="Menu Icon"
-          onClick={handleMenuToggle}  />
-          <Typography.Title level={1} style={{ fontWeight: 'bold', marginBottom: '40px',textAlign: 'center', marginLeft:'30%' }}>
-        Ouvrages
+  return (
+      <div className='cat'>
+         <Navbar/>
+        <div className="categorie-head">
+          <img className="menu" src={menuIcon} onClick={handleMenuToggle} />
+          <Typography.Title level={1} style={{ fontWeight: 'bold', marginBottom: '40px',textAlign: 'center', marginLeft:'5%' , display:'inline'}}>
+       Pathologie
       </Typography.Title>
+          <div className='catlist'>
+          <div className='catIt'><p>Categorie 1</p> </div>
+          <div className='catIt'> <p>Categorie 2</p> </div>
+          <div className='catIt'> <p>Categorie 3</p> </div>
+          </div>
           </div>
           <div className='MaterialCat'>
           <img className="home" src={homeIcon}  />
-          <p className='Path' >Acceuil &gt; Ouvrage</p>
+          <p className='Path' >Acceuil &gt; Pathologie &gt; Categorie 1</p>
           </div>
+
           <Row justify="space-between" align="middle" style={{ marginBottom: '20px', paddingLeft: '10px', paddingRight: '10px' }}>
         <Col>
         <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -92,30 +84,31 @@ const Ouvrage = () => {
           </Row>
         </Col>
       </Row>
+          
           <div className='catElements'>
           <div className='catItem'>
-              <p >Ouvrage 1</p>
-              <img  src={OuvrageImg}  onClick={handleImageClick}/>
+              <p >Pathologie 1</p>
+              <img  />
               </div>
               <div className='catItem'>
-              <p >Ouvrage 2</p>
-              <img  src={OuvrageImg}  onClick={handleImageClick}/>
+              <p >Pathologie 2</p>
+              <img  />
               </div>
               <div className='catItem'>
-              <p >Ouvrage 3</p>
-              <img  src={OuvrageImg}  onClick={handleImageClick}/>
+              <p >Pathologie 3</p>
+              <img  />
               </div>
               <div className='catItem'>
-              <p >Ouvrage 4</p>
-              <img  src={OuvrageImg}  onClick={handleImageClick}/>
+              <p >Pathologie 4</p>
+              <img  />
               </div>
               <div className='catItem'>
-              <p >Ouvrage 5</p>
-              <img  src={OuvrageImg}  onClick={handleImageClick}/>
+              <p >Pathologie 5</p>
+              <img  />
               </div>
                <div className='catItem'>
-              <p >Ouvrage 6</p>
-              <img  src={OuvrageImg}  onClick={handleImageClick}/>
+              <p >Pathologie 6</p>
+              <img  />
               </div>
               
               </div>
@@ -125,8 +118,8 @@ const Ouvrage = () => {
               <a >3</a>
               <a >&gt;</a>
               </div>  
-
-        {/* Afficher le menu latéral s'il est ouvert */}
+              
+         {/* Afficher le menu latéral s'il est ouvert */}
       {isFilterMenuOpen && (
         
         <div className="side-filter-menu">
@@ -211,21 +204,22 @@ const Ouvrage = () => {
           <div className='lineBar'></div>
           <h3 className='rub'>Rubriques</h3>
           <ul className='mats'>
-          <li className='rubMat-name'><Link to="/material">Matériaux</Link> </li>
+          <li className='rubMat-name'><Link to="/">Matériaux</Link> </li>
           <ul>
           <li className='catgs' >Matériaux à base de terre</li>
           <li className='catgs' >Minéraux et Roches</li>
           <li className='catgs' >Bois</li>
           </ul>
           <li className='rubMat-name'><Link to="/produit">Produits</Link></li>
-          <li className='rubMat-name' ><Link to="/ouvrage">Ouvrages</Link></li>
-          <li className='rubMat-name' ><Link to="/pathologie">Pathologies</Link></li>
-          <li className='rubMat-name' ><Link to="/monument">Monuments</Link></li>
+          <li className='rubMat-name' ><Link to="/">Ouvrages</Link></li>
+          <li className='rubMat-name' ><Link to="/">Pathologies</Link></li>
+          <li className='rubMat-name' ><Link to="/">Monuments</Link></li>
           </ul>
           <div className='lineBar'></div>
           <h3 className='rub'>Pages</h3>
           {/* Ajoutez vos liens du menu ici */}
          <Link className="pageLink" to="/">Accueil</Link>
+          <Link className="pageLink" to="/">Classes</Link>
           <Link className="pageLink" to="/Graph">Graph</Link>
          <Link className="pageLink" to="/carte-geographique">Carte Geographique</Link>
           <Link className="pageLink"  to="/recherche-avancee">Recherche Avancée</Link>
@@ -239,13 +233,10 @@ const Ouvrage = () => {
           </div>
         </div>
       )}
-<Footer />
-    </na>
+      <Footer />
+      </div>
+      
   );
 }
 
-
-
-
-
-export default Ouvrage;
+export default CategoriePath;

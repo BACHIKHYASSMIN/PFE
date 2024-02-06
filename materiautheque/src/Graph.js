@@ -12,6 +12,9 @@ import whitemenuIcon from "./Assets/wmenu.png"
 import closeBIcon from "./Assets/closeb.png"
 import Navbar from './Elements/Navbar';
 import Footer from './Elements/Footer';
+import { Link } from 'react-router-dom';
+import { Form, Select, Button, Input, Card, Row, Col , Typography } from 'antd';
+
 function Graph() {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isChecked1, setChecked1] = useState(false);
@@ -33,13 +36,35 @@ function Graph() {
     };
   return (
       <div className='graph'>
-  
-          <h3 className="titre">Graphe de connaissance </h3>
-          <div className='SearchF'>
-          <button className='valide'  onClick={handleMenuToggle}>Filtrer</button>
-          <input  type="text" placeholder="Rechercher un matériau" className='bar' />
-          <button className='valide'>Valider</button>
-          </div>
+    <Navbar />
+    <Typography.Title level={1} style={{ fontWeight: 'bold', marginBottom: '40px',textAlign: 'center' }}>
+        Carte Geographiuqe
+      </Typography.Title>
+
+      <Row justify="space-between" align="middle" style={{ marginBottom: '20px', paddingLeft: '10px', paddingRight: '10px' }}>
+        <Col>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+    <div style={{ width: '400px', height: '60px', background: '#2C3E50', marginRight: '20px' }}>
+    <Link   onClick={handleMenuToggle}><h2 style={{ textAlign: 'center', color: 'white', textDecoration:'none'}}>Filtres</h2></Link>
+    </div>
+    </div>
+        </Col>
+        <Col flex="auto" style={{ textAlign: 'right' }}>
+          <Row gutter={16}>
+            <Col flex="auto">
+              <Input
+                placeholder="Entrer une requête de recherche"
+                style={{ flex:1, marginRight: '10px', background: '#ECF0F1' }}
+              />
+            </Col>
+            <Col>
+              <Button type="primary" htmlType="submit"  style={{backgroundColor :'#2C3E50'}}>
+                Rechercher
+              </Button>
+            </Col>
+          </Row>
+        </Col>
+      </Row>
           <div className='catElements'>
           
               

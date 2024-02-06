@@ -74,18 +74,22 @@ cursor: pointer;
   box-shadow: white;
 }
 
-.CardItem {
-  margin-bottom: 20px; 
+.catItem {
+  padding-right: 5%;
+  width: 300px;
 }
 
-.CardItem img {
-  width: 400%; 
+.catItem img {
+  width: 220px;
+  height: 198px;
 }
 
 .catElements {
+  margin-left: 10%;
   display: flex;
   justify-content: space-around;
   flex-wrap: wrap;
+  width: 1200px;
 }
 
 .popIcon{

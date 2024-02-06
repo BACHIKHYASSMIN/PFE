@@ -12,6 +12,9 @@ import whitemenuIcon from "./Assets/wmenu.png"
 import closeBIcon from "./Assets/closeb.png"
 import closeIcon from "./Assets/close.png"
 import { Link } from 'react-router-dom';
+import Navbar from './Elements/Navbar';
+import { Form, Select, Button, Input, Card, Row, Col , Typography } from 'antd';
+import Footer from './Elements/Footer';
 function Categorie() {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isFilterMenuOpen, setFilterMenuOpen] = useState(false);
@@ -39,9 +42,12 @@ function Categorie() {
     };
   return (
       <div className='cat'>
+         <Navbar/>
         <div className="categorie-head">
           <img className="menu" src={menuIcon} onClick={handleMenuToggle} />
-          <p className="tit">Matériaux</p>
+          <Typography.Title level={1} style={{ fontWeight: 'bold', marginBottom: '40px',textAlign: 'center', marginLeft:'5%' , display:'inline'}}>
+       Matériaux
+      </Typography.Title>
           <div className='catlist'>
           <div className='catIt'><p>Matériaux à base de terre</p> </div>
           <div className='catIt'> <p>Minéraux et Roches</p> </div>
@@ -52,18 +58,35 @@ function Categorie() {
           <img className="home" src={homeIcon}  />
           <p className='Path' >Acceuil &gt; Matériaux &gt; Matériaux à base de terre</p>
           </div>
-          <div className='searchBar'>
-          <div className='Filter'>
-          <img className="fit" src={FilterIcon}  onClick={handleFilterMenuToggle}  />
-          <p >Filtres</p>
-          </div>
-          <div className='Search'>
-          <input  type="text" placeholder="Rechercher un matériau" className='bar' />
-          <button className='valide'>Valider</button>
-          </div>
-          </div>
+
+          <Row justify="space-between" align="middle" style={{ marginBottom: '20px', paddingLeft: '10px', paddingRight: '10px' }}>
+        <Col>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+    <div style={{  display: 'flex',  alignItems: 'center' , width: '400px', height: '60px', background: '#ECF0F1', marginRight: '20px' , justifyContent:"center"}}>
+    <img  src={FilterIcon}  onClick={handleFilterMenuToggle}   />
+    <Link   onClick={handleFilterMenuToggle} ><h2 style={{ textAlign: 'center', color: '#2C3E50', textDecoration:'none'}}>Filtres</h2></Link>
+    </div>
+    </div>
+        </Col>
+        <Col flex="auto" style={{ textAlign: 'right' }}>
+          <Row gutter={16}>
+            <Col flex="auto">
+              <Input
+                placeholder="Rechercher un matériau"
+                style={{ flex:1, marginRight: '10px', background: '#ECF0F1', color:'#2C3E50' }}
+              />
+            </Col>
+            <Col>
+              <Button type="primary" htmlType="submit"  style={{backgroundColor :'#2C3E50'}}>
+                Valider
+              </Button>
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+          
           <div className='catElements'>
-          <div className='CatItem'>
+          <div className='catItem'>
               <p >Agrégat</p>
               <img  src={agrImg}/>
               </div>
@@ -210,6 +233,7 @@ function Categorie() {
           </div>
         </div>
       )}
+      <Footer />
       </div>
       
   );

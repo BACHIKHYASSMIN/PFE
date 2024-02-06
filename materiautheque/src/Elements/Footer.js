@@ -2,7 +2,7 @@ import React from "react";
 import location from "../Assets/location.png"
 import mail from "../Assets/mail.png"
 import "./Footer.css"
-import Class from '../Class';
+import Class from '../App';
 function Footer() {
   return (
     <div className="Footer">
