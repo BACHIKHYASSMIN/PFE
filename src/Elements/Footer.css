@@ -1,0 +1,62 @@
+.Footer{
+    text-align: center;
+    background-color: #2C3E50;
+}
+.LogoName h3{
+    color: white;
+    padding-top: 2%;
+}
+.Pages ul{
+    margin-left: 3%;
+ display: flex;
+ justify-content: space-between;
+ margin-right: 3%;
+}
+.Pages li{
+list-style:none;
+color: white;
+}
+.Pages a {
+    cursor: pointer;
+}
+
+.Contact{
+    display: flex;
+    justify-content: space-evenly;
+    
+}
+.Location{
+   
+   display: flex;
+   align-items: center;
+}
+
+.Location img{
+    width:30px;
+    height:30px;
+   margin-right: 5%;
+}
+
+.locName{ 
+    width: 200px;
+    color:white;
+    
+}
+.Email{
+    display: flex;
+    align-items: center;  
+}
+.Email img{
+    width:30px;
+    height:30px;
+   margin-right: 5%;
+}
+.mailAdr{
+    width: 200px;
+    color:white;
+
+}
+.Right{
+    color:white;
+
+}

@@ -1,0 +1,204 @@
+.material{
+    display: block;
+}
+
+.material-head{
+    padding: 7px 0;
+}
+  .material-head {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+  }
+  
+  .menu {
+    width: 30px;
+    margin-right: 20px; 
+
+  }
+  
+  .title {
+    flex-grow: 1; 
+    font-family: 'Montserrat', sans-serif;
+    font-size: 40px;
+    font-weight: bold;
+    margin: 0; 
+  }
+  .MaterialCat{
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;  
+    padding-bottom: 3%;
+  }
+  .home{
+    width: 20px;
+  }
+  .Path{
+    font-family: 'Montserrat';
+    color:#2C3E50;
+    padding-left: 10px;
+  }
+
+  .Categories{
+    border: 2px solid #000;
+    margin-left: 10%;
+     width:80% ;
+     height: 80%;
+     margin-bottom: 5%;
+  }
+  .catTitle{
+    width:max-content;
+    height:5%;
+    background-color: white;
+    margin-top: -4%;
+    padding-left: 1%;
+  }
+  .catTitle h3{
+     margin-left:-3% ;
+
+  }
+  .CategorieList {
+    width:80%;
+    margin-left:5%;
+    height: max-content;
+    padding-bottom: 5%;
+    display: flex;
+    align-items: stretch;
+  }
+
+  .CardMatItem {
+    flex: 1;
+  }
+
+.CardMatItem img {
+  width: 60%;
+  margin-left: 10%;
+}
+.CardDetails{
+  width:80px;
+  height:3px;
+  background-color: white;
+  top:38%;
+  margin-top: -4%;
+  padding-bottom: 3%;
+  margin-left: 93%;
+
+}
+.CardDetails h3 {
+ 
+  margin-left:-3% ;
+  cursor: pointer;
+}
+.CardDetails a:visited{
+  text-decoration: none;
+
+}
+.CardDetails a{
+  text-decoration: none;
+
+}
+
+.side-menu{
+  overflow-y: auto;
+  position: absolute;
+  top:0;
+  left:0;
+  width:30%;
+  height: 100%;
+  background-color: #2C3E50; 
+  display: flex;
+  flex-direction: column;
+  margin-left: '40px';
+}
+.popmenu{
+  width:25px;
+  height: 25px;
+  margin-top: 8%;
+  margin-left: 5%;
+}
+.lineBar{
+  width:100%;
+  padding-bottom: 1%;
+  margin-top: 3%;
+  background-color: white;
+}
+.popIcons{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.closemenu{
+  width:40px;
+  height:40px;
+  margin-top: 5%;
+}
+
+.rub{
+  color: white;
+}
+.catgs{
+  list-style: none;
+  color: white;
+  margin-bottom: 5px;
+}
+.rubMat-name  {
+  list-style: none;
+  color: white;
+  font-weight: bold;
+  margin-bottom: 5%;
+}
+
+.rubMat-name a {
+text-decoration: none;
+}
+
+.rubMat-name :last-child {
+  list-style: none;
+  color: white;
+  font-weight: bold;
+  margin-bottom: 2%;
+}
+.pageLink {
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+  margin-left: 15%;
+  margin-bottom: 5%;
+}
+
+.Decon{
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  padding-bottom: 5%;
+
+}
+.lineDecBar{
+  width:100%;
+  padding-bottom: 1%;
+  margin-top: 30%;
+background-color: white;
+}
+
+.dec{
+margin-left: 25%;
+  margin-top: 5%;
+  width:25px;
+  margin-right: 4%;
+
+}
+.decLink{
+  text-decoration: none;
+  font-weight: bold;
+  color: white;
+}
+
+.Links{
+  text-align: center;
+}
+.Links a{
+  font-size: 100%;
+
+}

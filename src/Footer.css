@@ -1,0 +1,38 @@
+footer {
+    display: flex;
+    justify-content: space-around;
+    background-color: #2C3E50; /* Couleur de fond du footer */
+    color: white;
+    padding: 20px;
+  }
+  
+  .footer-section {
+    text-align: left;
+  }
+  .footer-section1 {
+    padding: 30px;
+    text-align: left;
+  }
+  .footer-section ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .footer-section ul li {
+    margin-bottom: 8px;
+  }
+  .footer-section.centered {
+    display: flex;
+    padding: 40px;
+    align-items: center;
+  }
+  .footer-section ul li a {
+    text-decoration: none; /* Supprime le soulignement */
+    color: white; /* Couleur du texte */
+  }
+  
+  ul {
+    list-style:  none;
+    padding: 0;
+    margin: 0;
+  }

@@ -1,0 +1,75 @@
+/* Navbar.css */
+
+.navbar {
+    background-color: #2C3E50;
+    color: #fff;
+    padding: 7px 0 ;
+  }
+  
+  .navbar-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .navbar-logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .navbar-menu {
+    list-style: none;
+    display: flex;
+  align-items: center;
+  }
+
+  .navbar-item {
+    padding: 7px;
+    margin-right: 15px;
+    cursor: pointer;
+  }
+  
+  .navbar-item a{
+   color: white;
+   text-decoration: none;
+  }
+  
+  .navbar-item:last-child {
+    margin-right: 0;
+  }
+  
+  .navbar-img{
+    margin-right: 15px;
+    cursor: pointer;
+
+  }
+
+  .Class-menu{
+background-color: #ECF0F1;
+width: 15%;
+height: max-content;
+position: absolute;
+top: 10%;
+left:50%;
+  }
+  .arrowd{
+    width: 16px;
+  }
+
+  .navbar-ite{
+ margin-left: -2%;
+ margin-right: 2%;
+ margin-top: 1%;
+  }
+
+  .rubClass-name {
+    margin-left: 4%;
+    list-style-image: url('../Assets/chevron.png');
+  }
+  .rubClass-name a{
+    text-decoration: none;
+    color: #2C3E50;
+    font-weight: 700;
+  }
