@@ -3,7 +3,7 @@ import './Footer.css';
 
 const Footer = () => {
     return (
-      <footer style={{ marginTop: '40px' }}> 
+      <footer style={{ marginTop: '40px'  }}> 
         <div className="footer-section1">
           <h4>NumeriqueMaterials</h4>
         </div>
@@ -32,7 +32,7 @@ const Footer = () => {
         <div className="footer-section centered">
           <ul>
             <li><i className="fas fa-map-marker-alt"></i> El-Harrach, Alger, Algérie</li>
-            <li style={{ marginTop: '8px' }}><i className="far fa-envelope"></i> materialslibrary85@gmail.com</li>
+            <li style={{ marginTop: '8px' , }}><i className="far fa-envelope"></i> materialslibrary85@gmail.com</li>
           </ul>
         </div>
       </footer>

@@ -39,7 +39,7 @@
   .connect-button {
     background-color: #2C3E50; /* Couleur de fond du bouton */
     color: white; /* Couleur du texte du bouton */
-    padding: 8px 16px; /* Ajoutez du rembourrage pour rendre le bouton plus grand */
+    padding: 8px 16px; 
     border: none; /* Supprimez la bordure par dÃ©faut du bouton */
     border-radius: 4px; /* Ajoutez un peu de bordure arrondie au bouton */
     cursor: pointer; /* Changez le curseur pour indiquer qu'il s'agit d'un Ã©lÃ©ment cliquable */

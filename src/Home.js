@@ -9,12 +9,13 @@ import visualisation from './Assets/visualisation.png';
 import './Home.css';
 import React from 'react';
 import Navbar from './NavbarHome';
+import Footer from './Elements/Footer';
 
 const Home = () => {
     const containerStyle = {
       position: 'relative',
-      width: '100vw',   // 100% de la largeur de la vue
-      height: '600vh',   // 50% de la hauteur de la vue
+      width: '100%',   // 100% de la largeur de la vue
+      height: '60%',   // 50% de la hauteur de la vue
       overflow: 'hidden',
       marginBottom: '20px', 
     
@@ -36,7 +37,7 @@ const Home = () => {
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: '150px',
+        marginBottom: '130px',
        
       
       };
@@ -46,7 +47,7 @@ const Home = () => {
       textAlign: 'center',
       color: 'black',
       maxWidth: '600px',
-      marginLeft: '100px',
+      marginLeft: '10px',
       marginRight: '100px',
       fontSize: '24px',
     
@@ -61,9 +62,9 @@ const Home = () => {
     const cardContainerStyle = {
       display: 'flex',
       justifyContent: 'space-around',
-      marginTop: '20px', // Ajustez la marge supérieure selon vos préférences
+     
       marginBottom: '50px', // Ajustez la marge inférieure selon vos préférences
-      height: '400px', // Ajustez la hauteur selon vos préférences
+      height: '340px', // Ajustez la hauteur selon vos préférences
    
     };
   
@@ -157,30 +158,36 @@ const Home = () => {
   
     </li>
   </ul>
+  
+ 
   <div style={cardContainerStyle}>
         <div style={cardStyle}>
           <h2>Visualiser le Graphe</h2>
           <p>Découvrez une représentation graphique des connaissances disponibles sur Numerique Materials.</p>
-          <img src={visualisation}  style={{height: '100p%' , width: '60%'}} />
+          <img src={visualisation}  style={{height: '100p%' , width: '35%'}} />
         </div>
   
         <div style={cardStyle}>
           <h2>Localiser les Monuments</h2>
           <p>Explorez la carte géographique pour repérer l'emplacement des monuments historiques de la Casbah d'Alger.</p>
-          <img src={localisation}/>
+          <img src={localisation}  style={{height: '100p%' , width: '35%'}} />
         </div>
   
         <div style={cardStyle}>
           <h2>Recherche Avancée</h2>
           <p>Effectuez des recherches ciblées en utilisant des mots-clés pour trouver des informations spécifiques sur le patrimoine bâti.</p>
-          <img src={RechAvancée}  style={{height: '100p%' , width: '60%'}} /> 
-        </div> 
-      </div>
-   
+          <img src={RechAvancée}  style={{height: '100p%' , width: '35%'}} /> 
+        </div>
+        </div>
+
+
+
+   <Footer/>
   
       </div>
   
       
     );
+  
   }
   export default Home;

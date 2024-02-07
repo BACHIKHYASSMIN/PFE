@@ -110,6 +110,7 @@
   background-color: #2C3E50; 
   display: flex;
   flex-direction: column;
+  margin-left: '40px';
 }
 .popmenu{
   width:25px;

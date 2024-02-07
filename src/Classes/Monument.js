@@ -3,25 +3,21 @@ import './Material.css';
 import '../Categorie.css'
 import  menuIcon from "../Assets/icon.png"
 import homeIcon from "../Assets/Vector.png"
-import agrImg from  "../Assets/agr.png"
-import pierImg from  "../Assets/pier.png"
 import deconIcon from "../Assets/decon.png"
 import whitemenuIcon from "../Assets/wmenu.png"
 import closeIcon from "../Assets/close.png"
 import { Link } from 'react-router-dom';
-import categorie from '../Categorie'; 
-import Details from '../MaterialDetails';
-import Graph from '../Graph';
 import FilterIcon from "../Assets/filter.png"
 import closeBIcon from "../Assets/closeb.png"
 import ArrowIcon from "../Assets/arrow.png"
-import { useNavigate } from 'react-router-dom';
-import OuvrageImg from "../Assets/building.png"
+import MonumentImg from "../Assets/arc.png"
 import Navbar from '../Elements/Navbar';
 import { Form, Select, Button, Input, Card, Row, Col , Typography } from 'antd';
+import { useNavigate } from 'react-router-dom';
 import Footer from '../Elements/Footer';
 
-const Ouvrage = () => {
+
+const Monument = () => {
  
 
   const [isMenuOpen, setMenuOpen] = useState(false);
@@ -36,7 +32,6 @@ const Ouvrage = () => {
   };
  
   const  handleFilterMenuToggle = () => {
-  
     setFilterMenuOpen(!isFilterMenuOpen);
   };
   const handleMenuToggle = () => {
@@ -59,14 +54,18 @@ const Ouvrage = () => {
       <div className="material-head">
           <img className="menu" src={menuIcon} alt="Menu Icon"
           onClick={handleMenuToggle}  />
-          <Typography.Title level={1} style={{ fontWeight: 'bold', marginBottom: '40px',textAlign: 'center', marginLeft:'30%' }}>
-        Ouvrages
+         <Typography.Title level={1} style={{ fontWeight: 'bold', marginBottom: '10px',textAlign: 'center', marginLeft:'30%' }}>
+        Monuments
       </Typography.Title>
           </div>
           <div className='MaterialCat'>
-          <img className="home" src={homeIcon}  />
-          <p className='Path' >Acceuil &gt; Ouvrage</p>
-          </div>
+  <img className="home" src={homeIcon}  />
+  <Link to="/" style={{ color: 'blue', textDecoration: 'none' }}>Accueil</Link> {/* Lien vers la page d'accueil */}
+  <span className='Path' style={{ color: 'blue' }}>&gt;</span> {/* Utilisation de span pour le symbole ">" */}
+  <Link to="/monument" style={{ color: 'blue', textDecoration: 'none' }}>Monument</Link> {/* Lien vers la page Monument */}
+</div>
+
+
           <Row justify="space-between" align="middle" style={{ marginBottom: '20px', paddingLeft: '10px', paddingRight: '10px' }}>
         <Col>
         <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -94,28 +93,28 @@ const Ouvrage = () => {
       </Row>
           <div className='catElements'>
           <div className='catItem'>
-              <p >Ouvrage 1</p>
-              <img  src={OuvrageImg}  onClick={handleImageClick}/>
+              <p >Monument 1</p>
+              <img  src={MonumentImg} onClick={handleImageClick}/>
               </div>
               <div className='catItem'>
-              <p >Ouvrage 2</p>
-              <img  src={OuvrageImg}  onClick={handleImageClick}/>
+              <p >Monument 2</p>
+              <img  src={MonumentImg} onClick={handleImageClick}/>
               </div>
               <div className='catItem'>
-              <p >Ouvrage 3</p>
-              <img  src={OuvrageImg}  onClick={handleImageClick}/>
+              <p >Monument 3</p>
+              <img  src={MonumentImg} onClick={handleImageClick}/>
               </div>
               <div className='catItem'>
-              <p >Ouvrage 4</p>
-              <img  src={OuvrageImg}  onClick={handleImageClick}/>
+              <p >Monument 4</p>
+              <img  src={MonumentImg} onClick={handleImageClick}/>
               </div>
               <div className='catItem'>
-              <p >Ouvrage 5</p>
-              <img  src={OuvrageImg}  onClick={handleImageClick}/>
+              <p >Monument 5</p>
+              <img  src={MonumentImg} onClick={handleImageClick}/>
               </div>
                <div className='catItem'>
-              <p >Ouvrage 6</p>
-              <img  src={OuvrageImg}  onClick={handleImageClick}/>
+              <p >Monument 6 </p>
+              <img  src={MonumentImg} onClick={handleImageClick}/>
               </div>
               
               </div>
@@ -139,7 +138,7 @@ const Ouvrage = () => {
           <div className='FilterCat'>
           <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
           onClick={handleFilterMenuToggle}  />
-          <h3 className='catt'>Famille des matériaux</h3>
+          <h3 className='catt'>Matériaux</h3>
           </div>
           <div className='catboxList'>
     <div className='catbox'>
@@ -177,18 +176,57 @@ const Ouvrage = () => {
     <div className='FilterCat'>
     <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
           onClick={handleFilterMenuToggle}  />
-          <h3 className='filt-name' >Ouvrages</h3>
+                 <h3 className='filt-name' >Ouvrages</h3>
           </div>
+          <div className='catboxList'>
+    <div className='catbox'>
+      <input  type="checkbox"  checked={isChecked1}  onChange={handleCheckbox1Change} />
+      <label htmlFor="checkbox">Ouvrage1</label>
+    </div>
+    <div className='catbox'>
+      <input  type="checkbox"  checked={isChecked2}  onChange={handleCheckbox2Change} />
+      <label htmlFor="checkbox">Ouvrage2</label>
+    </div>
+    <div className='catbox'>
+      <input  type="checkbox"  checked={isChecked3}  onChange={handleCheckbox3Change} />
+      <label htmlFor="checkbox">Ouvrage3</label>
+    </div>   
+    </div> 
+
           <div className='FilterCat'>
     <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
           onClick={handleFilterMenuToggle}  />
-          <h3 className='filter-name' >Pathologies</h3>
+          <h3 className='filter-name' >Périodes</h3>
           </div>
+          <div className='catboxList'>
+    <div className='catbox'>
+      <input  type="checkbox"  checked={isChecked1}  onChange={handleCheckbox1Change} />
+      <label htmlFor="checkbox">Période1</label>
+    </div>
+    <div className='catbox'>
+      <input  type="checkbox"  checked={isChecked2}  onChange={handleCheckbox2Change} />
+      <label htmlFor="checkbox">Période2</label>
+    </div>
+    <div className='catbox'>
+      <input  type="checkbox"  checked={isChecked3}  onChange={handleCheckbox3Change} />
+      <label htmlFor="checkbox">Période3</label>
+    </div>   
+    </div> 
           <div className='FilterCat'>
     <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
           onClick={handleFilterMenuToggle}  />
-          <h3 className='filter-name' >Monuments</h3>
+          <h3 className='filter-name' >Places</h3>
           </div>
+          <div className='catboxList'>
+    <div className='catbox'>
+      <input  type="checkbox"  checked={isChecked1}  onChange={handleCheckbox1Change} />
+      <label htmlFor="checkbox">Place1</label>
+    </div>
+    <div className='catbox'>
+      <input  type="checkbox"  checked={isChecked2}  onChange={handleCheckbox2Change} />
+      <label htmlFor="checkbox">Place2</label>
+    </div>
+    </div> 
           <div className='lineFBar'></div>
           <div className='ValBtn'>
           <button className='annuler'>Annuler</button>
@@ -202,44 +240,65 @@ const Ouvrage = () => {
        {isMenuOpen && (
         
         <div className="side-menu">
-          <div className="popIcons">
-          <img className="popmenu" src={whitemenuIcon} alt="Menu Icon"
-          onClick={handleMenuToggle}  />
-          <img className="closemenu" src={closeIcon} alt="Close Icon"
-          onClick={handleMenuToggle}  />
-          </div>
-          <div className='lineBar'></div>
-          <h3 className='rub'>Rubriques</h3>
-          <ul className='mats'>
-          <li className='rubMat-name'><Link to="/material">Matériaux</Link> </li>
-          <ul>
-          <li className='catgs' >Matériaux à base de terre</li>
-          <li className='catgs' >Minéraux et Roches</li>
-          <li className='catgs' >Bois</li>
-          </ul>
-          <li className='rubMat-name'><Link to="/produit">Produits</Link></li>
-          <li className='rubMat-name' ><Link to="/ouvrage">Ouvrages</Link></li>
-          <li className='rubMat-name' ><Link to="/pathologie">Pathologies</Link></li>
-          <li className='rubMat-name' ><Link to="/monument">Monuments</Link></li>
-          </ul>
-          <div className='lineBar'></div>
-          <h3 className='rub'>Pages</h3>
-          {/* Ajoutez vos liens du menu ici */}
-         <Link className="pageLink" to="/">Accueil</Link>
-          <Link className="pageLink" to="/Graph">Graph</Link>
-         <Link className="pageLink" to="/carte-geographique">Carte Geographique</Link>
-          <Link className="pageLink"  to="/recherche-avancee">Recherche Avancée</Link>
-         <Link className="pageLink" to="/a-propos">À propos</Link>
-      
-          <div className='lineDecBar'></div>
-          <div className='Decon'>
-          <img className="dec" src={deconIcon} alt="Decon Icon"
-          onClick={handleMenuToggle}  />
-          <a  className='decLink' href="/lien2">Deconnexion</a>
-          </div>
+        <div className="popIcons">
+          <img className="popmenu" src={whitemenuIcon} alt="Menu Icon" onClick={handleMenuToggle} />
+          <img className="closemenu" src={closeIcon} alt="Close Icon" onClick={handleMenuToggle} />
         </div>
+        <div className='lineBar'></div>
+        <h3 className='rub' style={{textAlign: 'center' }}>Rubriques</h3>
+        <ul className='mats' style={{ paddingLeft: '20px' }}>
+          <li className='rubMat-name' ><Link to="/material">Matériaux</Link></li>
+          <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
+  <Link to="/categorie1" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Matériaux à base de terre</Link>
+</li>
+<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
+  <Link to="/categorie2" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Minéraux et Roches</Link>
+</li>
+<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
+  <Link to="/categorie3" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Bois</Link>
+</li>
+          <li className='rubMat-name'><Link to="/produit">Produits</Link></li>
+          <li className='rubMat-name'><Link to="/ouvrage">Ouvrages</Link></li>
+          <li className='rubMat-name'><Link to="/pathologie">Pathologies</Link></li>
+          <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
+  <Link to="/biologique" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Biologique</Link>
+</li>
+<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
+  <Link to="/chromatique-dépot" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Chromatique-dépot</Link>
+</li>
+<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
+  <Link to="/déformation" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Déformation</Link>
+</li>
+<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
+  <Link to="/détachement" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Détachement</Link>
+</li>
+<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
+  <Link to="/fissure" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Fissure</Link>
+</li>
+<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
+  <Link to="/perte de matière" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Pertes de matière</Link>
+</li>
+<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
+  <Link to="/autres" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Autres</Link>
+</li>
+          <li className='rubMat-name'><Link to="/monument">Monuments</Link></li>
+          </ul>
+        <div className='lineBar'></div>
+        <h3 className='rub'  style={{textAlign: 'center' }} >Pages</h3>
+        {/* Ajoutez vos liens du menu ici */}
+        <Link className="pageLink" to="/">Accueil</Link>
+        <Link className="pageLink" to="/Graph">Graph</Link>
+        <Link className="pageLink" to="/carte-geographique">Carte Geographique</Link>
+        <Link className="pageLink" to="/recherche-avancee">Recherche Avancée</Link>
+        <Link className="pageLink" to="/a-propos">À propos</Link>
+        <div className='lineDecBar'></div>
+        <div className='Decon'>
+          <img className="dec" src={deconIcon} alt="Decon Icon" onClick={handleMenuToggle} />
+          <a className='decLink' href="/lien2">Deconnexion</a>
+        </div>
+      </div>
       )}
-<Footer />
+<Footer/>
     </na>
   );
 }
@@ -248,4 +307,4 @@ const Ouvrage = () => {
 
 
 
-export default Ouvrage;
+export default Monument;

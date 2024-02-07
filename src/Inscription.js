@@ -3,21 +3,26 @@
 import React, { useState } from 'react';
 import { Button, Form, Input } from 'antd';
 import Connexion from './Connexion';
-
+import { useNavigate } from 'react-router-dom';
 const Inscription = ({ onClose }) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [showConnexion, setShowConnexion] = useState(false);
+  const navigate = useNavigate();
 
   const onFinish = (values) => {
     console.log('Form values:', values);
     setLoading(true);
     // Simuler un appel API
     setTimeout(() => {
+    
       setLoading(false);
       onClose(); // Fermer la fenêtre modale après le chargement
       setShowConnexion(true); // Afficher la carte de connexion
     }, 2000);
+  };
+  const Inscrire = () => {
+    navigate('/material');
   };
 
   return (
@@ -53,7 +58,7 @@ const Inscription = ({ onClose }) => {
         </Form.Item>
 
         <Form.Item style={{ marginBottom: '40px' }}>
-          <Button type="primary" htmlType="submit" loading={loading} style={{ backgroundColor: '#2C3E50' }}>
+          <Button type="primary" htmlType="submit" loading={loading} style={{ backgroundColor: '#2C3E50' }} onClick={Inscrire}>
             S'inscrire
           </Button>
         </Form.Item>

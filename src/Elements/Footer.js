@@ -5,7 +5,8 @@ import "./Footer.css"
 import Class from '../App';
 function Footer() {
   return (
-    <div className="Footer">
+  
+  <div className="Footer">
     <div className="LogoName"> <h3>NUMERIQUEMATERIALS</h3></div> 
     <div className="Pages">
         <ul>
