@@ -116,8 +116,8 @@ function Profil() {
           </div>
         </div>
         <Button className='Edit' onClick={toggleEditing}>
-          {isEditing ? 'Annuler' : 'Modifier'}
-        </Button>
+  {isEditing ? 'Annuler' : isSendingMessage ? 'Annuler' : 'Modifier'}
+</Button>
       </div>
       {isEditing && (
         <div className='EditForm'>
@@ -239,7 +239,7 @@ function Profil() {
         />
       </Form.Item>
       <Form.Item>
-          <Button  className="Edit" type="primary" onClick={() => setIsSendingMessage(false)}>Fermer</Button>
+          <Button  className="Edit" type="primary" onClick={() => setIsSendingMessage(false)}>Envoyer</Button>
           </Form.Item>
     </Form>
         </div>
