@@ -13,11 +13,11 @@ const NavbarHome = ({ }) => {
         <div className="navbarHome-items">
           <h1>NumeriqueMaterials</h1>
           <ul>
-            <li><Link to="/">Accueil</Link></li>
-            <li><Link to="/">Graph</Link></li>
-            <li><Link to="/">Carte Geographique</Link></li>
-            <li><Link to="/">Recherche Avancée</Link></li>
-            <li><Link to="/">A propos</Link></li>
+            <li><Link to="/acueil">Accueil</Link></li>
+            <li><Link to="/graph">Graph</Link></li>
+            <li><Link to="/carte-geographique">Carte Geographique</Link></li>
+            <li><Link to="/recherche-avancee">Recherche Avancée</Link></li>
+            <li><Link to="/a-propos">A propos</Link></li>
             {/* Appelle la fonction onConnexionClick lorsque le bouton est cliqué */}
             <li><button className="connect-button" onClick={onConnexionClick}>Se Connecter</button></li>
           </ul>

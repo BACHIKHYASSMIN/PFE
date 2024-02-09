@@ -14,6 +14,7 @@ import Pathologie from './Classes/Pathologie';
 import Ouvrage from './Classes/Ouvrage';
 import Home from './Home'
 import Connexion from './Connexion';
+import Inscription from './Inscription';
 import RechercheAvancée from './RechercheAvancée';
 import Biologique from './PathologiesCatégories/Biologique';
 import ChromatiqueDépot from './PathologiesCatégories/ChromatiqueDépot';
@@ -25,6 +26,7 @@ import Autres from './PathologiesCatégories/Autres';
 import Categorie1 from './MatérialsCatégories/Categorie1';
 import Categorie2 from './MatérialsCatégories/Categorie2';
 import Categorie3 from './MatérialsCatégories/Categorie3';
+import Apropos from './Apropos';
 
 function App() {
   return (
@@ -46,6 +48,7 @@ function App() {
           <Route path="/pathologie" element={<Pathologie />} />
           <Route path="/ouvrage" element={<Ouvrage />} />
           <Route path="/connexion" element={<Connexion />} />
+          <Route path="/inscription" element={<Inscription/>} />
           <Route path="/recherche-avancee" element={<RechercheAvancée />} />
           <Route path="/biologique" element={<Biologique/>} />
           <Route path="/chromatique-dépot" element={<ChromatiqueDépot />} />
@@ -54,6 +57,8 @@ function App() {
           <Route path="/fissure" element={<Fissure />} />
           <Route path="/perte de matière" element={<PertesDeMatière/>} />
           <Route path="/autres" element={<Autres />} />
+          <Route path= "/a-propos"element={<Apropos/>}/>
+          
          
         </Routes>
    

@@ -1,5 +1,5 @@
 
- .connexion-modal {
+.inscription-modal {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -13,8 +13,7 @@
     z-index: 1000;
     width: 300px; /* Ajustez la largeur selon vos préférences */
   }
-  /* Ajoutez cette classe pour le filtre sombre */
-  .connexion-overlay {
+.inscription-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -24,7 +23,7 @@
     z-index: 999; /* Valeur supérieure à celle de la fenêtre modale pour la superposition */
   }
   
-  .connexion-background {
+  .inscription-background {
     background-image: url('Assets/Materiautheque.png'); /* Chemin vers votre image de fond */
     background-size: cover; /* Ajuster la taille de l'image pour couvrir toute la div */
     background-position: center; /* Centrer l'image */

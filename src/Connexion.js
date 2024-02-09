@@ -1,14 +1,15 @@
-import './Connexion.css'
+import './Connexion.css';
 import React, { useState } from 'react';
 import { Button, Form, Input } from 'antd';
 import Inscription from './Inscription';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
-const Connexion = ({ onClose }) => {
+const Connexion = ({ onClose, history }) => { // Ajoutez history en tant que prop
+
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [showInscription, setShowInscription] = useState(false);
-  const navigate = useNavigate();
+  const navigate= useNavigate();
 
   const onFinish = (values) => {
     console.log('Form values:', values);
@@ -17,10 +18,10 @@ const Connexion = ({ onClose }) => {
     setTimeout(() => {
       setLoading(false);
       onClose(); // Fermer la fenêtre modale après le chargement
+      history.push('/material'); // Rediriger vers la page "material"
     }, 2000);
   };
-
-  const Connect = () => {
+  const Connecter = () => {
     navigate('/material');
   };
   const toggleInscription = () => {
@@ -28,7 +29,10 @@ const Connexion = ({ onClose }) => {
   };
 
   return (
-    <div className="connexion-modal" style={{ textAlign: 'center', padding: '40px', margin: '10px' }}>
+    <>
+    {<div className="connexion-overlay"></div>}
+      {<div className="connexion-background"></div>}
+    <div className="connexion-modal " style={{ textAlign: 'center', padding: '40px', margin: '10px' }} >
       {/* Fermez la fenêtre modale lorsque showInscription est true */}
       {!showInscription && (
         <>
@@ -53,7 +57,7 @@ const Connexion = ({ onClose }) => {
             </Form.Item>
 
             <Form.Item style={{ marginBottom: '40px' }}>
-              <Button type="primary" htmlType="submit" loading={loading} style={{ backgroundColor: '#2C3E50' }} onClick={Connect}>
+              <Button type="primary" htmlType="submit" loading={loading} style={{ backgroundColor: '#2C3E50' }}  onClick={Connecter}>
                 Connexion
               </Button>
             </Form.Item>
@@ -66,7 +70,7 @@ const Connexion = ({ onClose }) => {
 
             <p style={{ color: '#2C3E50', marginBottom: '10px' }}>
               Vous n'avez pas de compte?{' '}
-              <a href="#" onClick={toggleInscription}>S'inscrire</a>
+              <Link to="/inscription">S'inscrire</Link>
             </p>
           </Form>
         </>
@@ -75,6 +79,7 @@ const Connexion = ({ onClose }) => {
       {/* Affiche la carte d'inscription si showInscription est true */}
       {showInscription && <Inscription onClose={onClose} />}
     </div>
+    </>
   );
 };
 

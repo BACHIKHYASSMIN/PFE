@@ -1,9 +1,10 @@
-
+import './Inscription.css';
 
 import React, { useState } from 'react';
 import { Button, Form, Input } from 'antd';
 import Connexion from './Connexion';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate , Link} from 'react-router-dom';
+
 const Inscription = ({ onClose }) => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
@@ -26,7 +27,10 @@ const Inscription = ({ onClose }) => {
   };
 
   return (
-    <div className="connexion-modal" style={{ textAlign: 'center', padding: '40px', margin: '10px' }}>
+    <>
+    {<div className="inscription-overlay"></div>}
+      {<div className="inscription-background"></div>}
+    <div className="inscription-modal" style={{ textAlign: 'center', padding: '40px', margin: '10px' }}>
       <h2 style={{ color: '#3498db', marginBottom: '30px' }}>S'inscrire</h2>
 
       <h5 style={{ color: '#2C3E50', marginBottom: '10px', textAlign: 'left' }}>Nom Complet</h5>
@@ -73,13 +77,13 @@ const Inscription = ({ onClose }) => {
         {/* Texte et lien "Vous avez déjà un compte?" */}
         <p style={{ color: '#2C3E50', marginBottom: '10px' }}>
           Vous avez déjà un compte?{' '}
-          <a href="#" onClick={() => setShowConnexion(true)}>Se connecter</a>
+          <Link to="/connexion">Se connecter</Link>
         </p>
 
       </Form>
       {showConnexion && <Connexion onClose={onClose} />}
     </div>
-
+</>
   );
 };
 
