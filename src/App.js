@@ -25,6 +25,7 @@ import Autres from './PathologiesCatégories/Autres';
 import Categorie1 from './MatérialsCatégories/Categorie1';
 import Categorie2 from './MatérialsCatégories/Categorie2';
 import Categorie3 from './MatérialsCatégories/Categorie3';
+import Profil from './Profil';
 
 function App() {
   return (
@@ -53,6 +54,7 @@ function App() {
           <Route path="/détachement" element={<Détachement />} />
           <Route path="/fissure" element={<Fissure />} />
           <Route path="/perte de matière" element={<PertesDeMatière/>} />
+          <Route path="/profil" element={<Profil/>} />
           <Route path="/autres" element={<Autres />} />
          
         </Routes>
