@@ -26,7 +26,11 @@ import Autres from './PathologiesCatégories/Autres';
 import Categorie1 from './MatérialsCatégories/Categorie1';
 import Categorie2 from './MatérialsCatégories/Categorie2';
 import Categorie3 from './MatérialsCatégories/Categorie3';
+<<<<<<< HEAD
 import Apropos from './Apropos';
+=======
+import Profil from './Profil';
+>>>>>>> 4e96a6074486e9d56022db382bbb80d207d17bdf
 
 function App() {
   return (
@@ -56,6 +60,7 @@ function App() {
           <Route path="/détachement" element={<Détachement />} />
           <Route path="/fissure" element={<Fissure />} />
           <Route path="/perte de matière" element={<PertesDeMatière/>} />
+          <Route path="/profil" element={<Profil/>} />
           <Route path="/autres" element={<Autres />} />
           <Route path= "/a-propos"element={<Apropos/>}/>
           
