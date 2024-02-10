@@ -83,36 +83,43 @@ function Carte() {
      {/* Carte avec formulaire de recherche avancée */}
      <Card style={{ backgroundColor: '#ECF0F1', padding: '20px', width: '400px' }}>
 <Form form={form} layout="vertical" name="advanced_search" onFinish={onFinish}>
+<div style={{ display: 'flex', flexDirection: 'column' }}>
 {/* Vos champs de formulaire ici */}
+<div style={{ marginBottom: '10px' }}>
 <Form.Item name="Matériaux" label="Matériaux">
- 
+<div style={{ display: 'flex', flexDirection: 'column' }}>
  <Checkbox value="Matériau1">Matériau 1</Checkbox>
- </Form.Item>
-<Form.Item>
+ 
  <Checkbox value="Matériau2">Matériau 2</Checkbox>
- </Form.Item>
-<Form.Item>
+ 
  <Checkbox value="Matériau3">Matériau 3</Checkbox>
+ </div>
 </Form.Item>
+</div>
+<div style={{ marginBottom: '10px' }}>
 <Form.Item name="produit" label="Produit">
+<div style={{ display: 'flex', flexDirection: 'column' }}>
  <Checkbox value="produit1">Produit 1</Checkbox>
-</Form.Item>
-<Form.Item>
+
  <Checkbox value="produit2">Produit 2</Checkbox>
-</Form.Item>
-<Form.Item>
+
  <Checkbox value="produit3">Produit 3</Checkbox>
+ </div>
 </Form.Item>
+</div>
+<div style={{ marginBottom: '10px' }}>
 <Form.Item name="ouvrage" label="Ouvrage">
+<div style={{ display: 'flex', flexDirection: 'column' }}>
  <Checkbox value="ouvrage1">Ouvrage 1</Checkbox>
-</Form.Item>
-<Form.Item>
+
  <Checkbox value="ouvrage2">Ouvrage 2</Checkbox>
-</Form.Item>
-<Form.Item>
+
  <Checkbox value="ouvrage3">Ouvrage 3</Checkbox>
+ </div>
 </Form.Item>
+</div>
 {/* Répétez ce schéma pour les autres Form.Item */}
+
 <Form.Item>
  <Button type="primary" htmlType="submit" style={{ marginRight: '10px', backgroundColor: '#27AE60', marginTop: '20px' }}>
    Valider
@@ -121,6 +128,7 @@ function Carte() {
    Annuler
  </Button>
 </Form.Item>
+</div>
 </Form>
 </Card>
 

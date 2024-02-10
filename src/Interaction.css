@@ -1,0 +1,130 @@
+.interaction {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  justify-content: space-between; 
+  
+}
+.Interactionhead {
+  width: 100%;
+  height: 50px;
+  background-color: #2C3E50;
+}
+.interaction h1 {
+  text-align: center; /* Centre le texte horizontalement */
+}
+
+
+.form {
+  display: flex;
+  width: 100%;
+}
+
+textarea {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  resize: none;
+}
+
+.background {
+  background-color: white;
+  padding: 20px;
+}
+
+
+.messages {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 700px;
+  margin-bottom: 20px;
+}
+
+.message {
+  background-color: #ECF0F1;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.message input {
+  margin-right: 10px;
+}
+
+.message button {
+  background-color: #007bff;
+  color: #ffffff;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.message button:hover {
+  background-color: #0056b3;
+}
+
+
+
+.flex-container {
+  display: flex;
+}
+
+.messages {
+  flex: 1;
+  margin-right: 20px; /* Ajoute une marge entre les deux côtés */
+}
+
+
+.message-input {
+  flex-grow: 1; /* Permettre à l'espace pour envoyer un message de prendre autant de place que possible */
+}
+
+.send-button {
+  background-color: #007bff;
+  color: #ffffff;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;/* Curseur pointer au survol */
+}
+
+.send-button:hover {
+  background-color: #0056b3;/* Changement de couleur au survol */
+}
+
+.send-message-form {
+  width: 50%; /* Largeur à 100% */
+  height: 50px; /* Hauteur de 300 pixels */
+  display: flex; /* Utiliser un modèle de boîte flexible */
+  align-items: center; /* Aligner les éléments verticalement au centre */
+  margin-top: 80px;
+  margin-right: 20px;
+  margin-left: 20px;
+}
+
+.send-message-form input[type="text"] {
+  width: calc(100% - 100px); /* Largeur de l'input moins la largeur du bouton */
+  height: 100%; /* Hauteur de 100% pour remplir le formulaire */
+}
+
+.send-message-form button {
+  width: 100px; /* Largeur du bouton */
+  height: 100%; /* Hauteur de 100% pour remplir le formulaire */
+ 
+  margin-left: 10px;
+ 
+}
+
+.vertical-divider {
+  border-left: 1px solid black;
+  height: 600px; /* Définir une hauteur fixe */
+  margin-left: 10px;
+  margin-right: 10px;
+}
+

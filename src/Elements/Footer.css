@@ -2,6 +2,11 @@
     text-align: center;
     background-color: #2C3E50;
 }
+.footer-links li a {
+    color: white; /* Couleur du texte */
+    text-decoration: none; /* Supprime le soulignement */
+}
+
 .LogoName h3{
     color: white;
     padding-top: 2%;
@@ -60,3 +65,4 @@ color: white;
     color:white;
 
 }
+
