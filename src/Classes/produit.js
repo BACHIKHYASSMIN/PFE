@@ -19,7 +19,7 @@ import Navbar from '../Elements/Navbar';
 import { Form, Select, Button, Input, Card, Row, Col , Typography } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import Footer from '../Elements/Footer';
-
+import ChatBox from '../Elements/ChatBox';
 const Produit = () => {
  
 
@@ -283,6 +283,8 @@ const Produit = () => {
         </div>
       </div>
       )}
+   <ChatBox/>   
+
 <Footer/>
     </na>
   );

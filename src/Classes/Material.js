@@ -14,6 +14,7 @@ import Navbar from '../Elements/Navbar';
 import Footer from '../Elements/Footer';
 
 import { Form, Select, Button, Input, Card, Row, Col , Typography } from 'antd';
+import ChatBox from '../Elements/ChatBox';
 
 const Material = () => {
   const [isMenuOpen, setMenuOpen ] = useState(false);
@@ -106,6 +107,7 @@ const Material = () => {
 </div>
 
       )}
+   <ChatBox/>   
 <Footer/>
     </na>
   );

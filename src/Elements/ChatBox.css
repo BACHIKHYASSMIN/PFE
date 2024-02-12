@@ -1,0 +1,77 @@
+.chat-box {
+    position: fixed;
+    bottom: 20px; /* Ajustez la position verticale selon vos besoins */
+    right: 20px; /* Ajustez la position horizontale selon vos besoins */
+    background-color: #2C3E50; /* Couleur de fond de la ChatBox */
+    border-radius: 50%; /* Pour créer une forme ovale */
+    width: 60px; /* Largeur de la ChatBox */
+    height: 60px; /* Hauteur de la ChatBox */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s ease; /* Animation pour une transition douce */
+  }
+  
+  .chat-icon {
+    width: 30px; /* Ajustez la taille de l'icône selon vos besoins */
+    height: 30px; /* Ajustez la taille de l'icône selon vos besoins */
+  }
+  
+  .interaction-space {
+    position: absolute;
+    top: -150px; /* Ajustez la position verticale selon vos besoins */
+    right: -200px; /* Ajustez la position horizontale selon vos besoins */
+    background-color: #fff; /* Couleur de fond de l'espace d'interaction */
+    width: 300px; /* Largeur de l'espace d'interaction */
+    height: 200px; /* Hauteur de l'espace d'interaction */
+    border-radius: 5px; /* Pour les coins arrondis */
+    padding: 20px; /* Espace à l'intérieur de l'espace d'interaction */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Ombre pour l'effet de profondeur */
+    transition: all 0.3s ease; /* Animation pour une transition douce */
+  }
+
+  
+  .chat-box.open .interaction-space {
+    top: -290%; 
+    right: 10px; 
+  }
+  
+
+
+  
+  .mode-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  
+  
+
+  .contacts-list {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .contact {
+    margin-bottom: 10px;
+  }
+  
+  .contact span {
+    margin-right: 10px;
+  }
+  
+  .contact button {
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .contact button:hover {
+    background-color: #0056b3;
+  }
+  

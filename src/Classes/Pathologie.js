@@ -15,7 +15,7 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '../Elements/Navbar';
 import { Form, Select, Button, Input, Card, Row, Col , Typography } from 'antd';
 import Footer from '../Elements/Footer';
-
+import ChatBox from '../Elements/ChatBox';
 const Pathologie = () => {
   const [isMenuOpen, setMenuOpen ,setGraph ,isGraph] = useState(false);
  
@@ -111,6 +111,8 @@ const Pathologie = () => {
   </div>
 </div>
       )}
+   <ChatBox/>   
+
       <Footer/>
     </na>
   );

@@ -5,11 +5,12 @@ import { Button, Input , Form } from 'antd';
 import MenuIcon from "./Assets/menu.png";
 import './Profil.css';
 import { Link } from 'react-router-dom';
+import ImgEdit from "./Assets/photo.png"
+import MessageIcon from "./Assets/email.png"
+import ChatBox from './Elements/ChatBox';
 import deconIcon from "./Assets/decon.png"
 import whitemenuIcon from "./Assets/wmenu.png"
 import closeIcon from "./Assets/close.png"
-import ImgEdit from "./Assets/photo.png"
-import MessageIcon from "./Assets/email.png"
 
 function Profil() {
   const [isEditing, setIsEditing] = useState(false);
@@ -244,6 +245,7 @@ function Profil() {
     </Form>
         </div>
       )}
+      <ChatBox/>   
       <Footer />
     </div>
   );

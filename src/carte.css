@@ -4,6 +4,17 @@
  text-align: center;
 }
 
+.menu {
+  width: 30px;
+  margin-right: 20px; 
+
+}
+
+.material-head {
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+}
 
 
 .titre{ 
@@ -181,6 +192,10 @@ padding-right: 40%;
 }
 
 .carteGeo{
-  margin-left:30% ;
+  margin-left: 15%;
   margin-top: 1%;
+  height: 400px; 
+  width: 70%; 
+  overflow: hidden;
 }
+

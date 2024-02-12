@@ -2,20 +2,17 @@
 import './carte.css';
 import React, { useState }  from 'react';
 import  menuIcon from "./Assets/icon.png"
-import homeIcon from "./Assets/Vector.png"
-import FilterIcon from "./Assets/filter.png"
-import agrImg from  "./Assets/agr.png"
-import pierImg from  "./Assets/pier.png"
-import ArrowIcon from "./Assets/arrow.png"
+
 import deconIcon from "./Assets/decon.png"
 import whitemenuIcon from "./Assets/wmenu.png"
-import closeBIcon from "./Assets/closeb.png"
+import closeIcon from "./Assets/close.png"
+
 import Navbar from './Elements/Navbar';
 import Footer from './Elements/Footer';
-import  Map from './Map';
+
 import { Link } from 'react-router-dom';
 import { Form, Select, Button, Input, Card, Row, Col ,Checkbox, Typography } from 'antd';
-
+import ChatBox from './Elements/ChatBox';
 
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 const { Option } = Select;
@@ -31,8 +28,14 @@ function Carte() {
   const [isChecked2, setChecked2] = useState(false);
   const [isChecked3, setChecked3] = useState(false);
   
+  const [isFilterOpen, setFilterOpen ] = useState(false);
+ 
+
   const handleMenuToggle = () => {
     setMenuOpen(!isMenuOpen);
+  };
+  const handleFilterToggle = () => {
+    setFilterOpen(!isFilterOpen);
   };
   
   const [form] = Form.useForm();
@@ -45,15 +48,18 @@ function Carte() {
   return (
     <div className='graph'>
       <Navbar />
+      <div className="material-head">
+      <img className="menu" src={menuIcon} alt="Menu Icon"
+          onClick={handleMenuToggle}  />
       <Typography.Title level={1} style={{ fontWeight: 'bold', marginBottom: '40px',textAlign: 'center' }}>
         Carte Géographique
       </Typography.Title>
-  
+      </div>
       <Row justify="space-between" align="middle" style={{ marginBottom: '20px', paddingLeft: '10px', paddingRight: '10px' }}>
         <Col>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <div style={{ width: '400px', height: '60px', background: '#2C3E50', marginRight: '20px' }}>
-              <Link onClick={handleMenuToggle}><h2 style={{ textAlign: 'center', color: 'white', textDecoration:'none'}}>Filtres</h2></Link>
+              <Link onClick={handleFilterToggle}><h2 style={{ textAlign: 'center', color: 'white', textDecoration:'none'}}>Filtres</h2></Link>
             </div>
           </div>
         </Col>
@@ -74,7 +80,7 @@ function Carte() {
         </Col>
       </Row>
       
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+      <div style={{ display: 'flex' }}>
       <div style={{ width: '400px', paddingLeft: '10px', paddingRight: '10px' }}>
           {/* Carte avec formulaire de recherche avancée */}
          
@@ -152,9 +158,77 @@ function Carte() {
           </div>
         </div>
       </div>
-    
+   
+
+
+      {isMenuOpen && (
+        
+        <div className="side-menu">
+  <div className="popIcons">
+    <img className="popmenu" src={whitemenuIcon} alt="Menu Icon" onClick={handleMenuToggle} />
+    <img className="closemenu" src={closeIcon} alt="Close Icon" onClick={handleMenuToggle} />
+  </div>
+  <div className='lineBar'></div>
+  <h3 className='rub' style={{textAlign: 'center' }}>Rubriques</h3>
+  <ul className='mats' style={{ paddingLeft: '20px' }}>
+    <li className='rubMat-name' ><Link to="/material">Matériaux</Link></li>
+    <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
+  <Link to="/categorie1" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Matériaux à base de terre</Link>
+</li>
+<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
+  <Link to="/categorie2" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Minéraux et Roches</Link>
+</li>
+<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
+  <Link to="/categorie3" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Bois</Link>
+</li>
+    <li className='rubMat-name'><Link to="/produit">Produits</Link></li>
+    <li className='rubMat-name'><Link to="/ouvrage">Ouvrages</Link></li>
+    <li className='rubMat-name'><Link to="/pathologie">Pathologies</Link></li>
+    <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
+  <Link to="/biologique" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Biologique</Link>
+</li>
+<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
+  <Link to="/chromatique-dépot" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Chromatique-dépot</Link>
+</li>
+<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
+  <Link to="/déformation" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Déformation</Link>
+</li>
+<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
+  <Link to="/détachement" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Détachement</Link>
+</li>
+<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
+  <Link to="/fissure" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Fissure</Link>
+</li>
+<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
+  <Link to="/perte de matière" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Pertes de matière</Link>
+</li>
+<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
+  <Link to="/autres" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Autres</Link>
+</li>
+    <li className='rubMat-name'><Link to="/monument">Monuments</Link></li>
+    </ul>
+  <div className='lineBar'></div>
+  <h3 className='rub'  style={{textAlign: 'center' }} >Pages</h3>
+  {/* Ajoutez vos liens du menu ici */}
+  <Link className="pageLink" to="/">Accueil</Link>
+  <Link className="pageLink" to="/Graph">Graph</Link>
+  <Link className="pageLink" to="/carte-geographique">Carte Geographique</Link>
+  <Link className="pageLink" to="/recherche-avancee">Recherche Avancée</Link>
+  <Link className="pageLink" to="/a-propos">À propos</Link>
+  <div className='lineDecBar'></div>
+  <div className='Decon'>
+    <img className="dec" src={deconIcon} alt="Decon Icon" onClick={handleMenuToggle} />
+    <a className='decLink' href="/lien2">Deconnexion</a>
+  </div>
+</div>
+
+      )}
+
+      
+<ChatBox/>   
       <Footer/>
     </div>  
+
   );
   
 }

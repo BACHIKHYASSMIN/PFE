@@ -16,8 +16,7 @@ function Footer() {
             <li><a href="/carte-geographique">Carte Geographique</a></li>
             <li><a href="/recherche-avancee">Recherche Avancé</a></li>
             <li><a href="/a-propos">A propos</a></li>
-            <li><a href="/interaction">Interaction</a></li>
-         
+                 
         </ul>
     </div>
     <div className="Contact">
