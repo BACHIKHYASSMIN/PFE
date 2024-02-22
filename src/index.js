@@ -7,8 +7,7 @@ import Graph from './Graph';
 import Carte from './carte';
 import { BrowserRouter } from 'react-router-dom'
 import App from './App';
-import Test from './Elements/test'
-import MyComponent from './ttest';
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
