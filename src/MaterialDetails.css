@@ -6,6 +6,7 @@
 .mat-img{
     width: 10%;
     margin-right: 10%;
+    height: 98px;
 }
 .mat-name{
     font-weight: bold;
@@ -60,3 +61,10 @@ background-color:#ECF0F1;
     width: 45px;
   margin-left: 95%;
 }
+
+.menuList {
+    position: absolute;
+    width: 30px;
+    left:2%;
+    top:12%;
+  }

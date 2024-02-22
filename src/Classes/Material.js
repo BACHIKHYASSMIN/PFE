@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Material.css';  
 import  menuIcon from "../Assets/icon.png"
 import homeIcon from "../Assets/Vector.png"
@@ -8,17 +8,33 @@ import deconIcon from "../Assets/decon.png"
 import whitemenuIcon from "../Assets/wmenu.png"
 import closeIcon from "../Assets/close.png"
 import { Link } from 'react-router-dom';
-
+import $ from 'jquery';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../Elements/Navbar';
 import Footer from '../Elements/Footer';
-
+import axios from 'axios';
 import { Form, Select, Button, Input, Card, Row, Col , Typography } from 'antd';
 import ChatBox from '../Elements/ChatBox';
 
 const Material = () => {
   const [isMenuOpen, setMenuOpen ] = useState(false);
- 
+  const [data, setData] = useState([]);
+
+  const [produits, setProduits] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://localhost:2000/api/data');
+        setData(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
 
   const handleMenuToggle = () => {
     setMenuOpen(!isMenuOpen);
@@ -65,7 +81,10 @@ const Material = () => {
 <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
   <Link to="/categorie3" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Bois</Link>
 </li>
-    <li className='rubMat-name'><Link to="/produit">Produits</Link></li>
+<li className='rubMat-name'><Link to="/produit">Produits</Link></li>
+
+
+
     <li className='rubMat-name'><Link to="/ouvrage">Ouvrages</Link></li>
     <li className='rubMat-name'><Link to="/pathologie">Pathologies</Link></li>
     <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
@@ -130,11 +149,11 @@ const Categories = (props) => {
       <div className='CategorieList'>
         <div className='CardMatItem'>
           <p >Terre Cuite</p>
-          <img src={agrImg} onClick={handleImageClick} />
+          <img  onClick={handleImageClick} />
         </div>
         <div className='CardMatItem'>
           <p >Terre non Cuite</p>
-          <img src={pierImg} onClick={handleImageClick}  />
+          <img  onClick={handleImageClick}  />
         </div>
         
         {/* Ajoutez d'autres éléments spécifiques à cette catégorie si nécessaire */}
@@ -146,11 +165,11 @@ const Categories = (props) => {
       <div className='CategorieList'>
         <div className='CardMatItem'>
           <p >Conglomérat et liant</p>
-          <img src={agrImg} onClick={handleImageClick} />
+          <img  onClick={handleImageClick} />
         </div>
         <div className='CardMatItem'>
           <p >Pierre</p>
-          <img src={pierImg} onClick={handleImageClick} />
+          <img  onClick={handleImageClick} />
         </div>
        
         {/* Ajoutez d'autres éléments spécifiques à cette catégorie si nécessaire */}
@@ -162,15 +181,15 @@ const Categories = (props) => {
       <div className='CategorieList'>
         <div className='CardMatItem'>
           <p >Cèdre</p>
-          <img src={agrImg} onClick={handleImageClick} />
+          <img  onClick={handleImageClick} />
         </div>
         <div className='CardMatItem'>
           <p >Thuya</p>
-          <img src={pierImg} onClick={handleImageClick} />
+          <img  onClick={handleImageClick} />
         </div>
         <div className='CardMatItem'>
           <p >Essence non Identifiée</p>
-          <img src={agrImg} onClick={handleImageClick} />
+          <img  onClick={handleImageClick} />
         </div>
         {/* Ajoutez d'autres éléments génériques si nécessaire */}
       </div>

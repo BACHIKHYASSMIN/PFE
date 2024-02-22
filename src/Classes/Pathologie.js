@@ -135,15 +135,15 @@ const Categories = (props) => {
       <div className='CategorieList'>
         <div className='CardMatItem'>
           <p >Pathologie 1</p>
-          <img src={agrImg} onClick={handleImageClick} />
+          <img  onClick={handleImageClick} />
         </div>
         <div className='CardMatItem'>
           <p >Pathologie 2</p>
-          <img src={pierImg} onClick={handleImageClick} />
+          <img  onClick={handleImageClick} />
         </div>
         <div className='CardMatItem'>
           <p >Pathologie 3</p>
-          <img src={agrImg} onClick={handleImageClick} />
+          <img  onClick={handleImageClick} />
         </div>
         {/* Ajoutez d'autres éléments spécifiques à cette catégorie si nécessaire */}
       </div>
@@ -154,15 +154,15 @@ const Categories = (props) => {
       <div className='CategorieList'>
         <div className='CardMatItem'>
           <p >Pathologie 1</p>
-          <img src={agrImg} onClick={handleImageClick} />
+          <img  onClick={handleImageClick} />
         </div>
         <div className='CardMatItem'>
           <p >Pathologie 2</p>
-          <img src={pierImg} onClick={handleImageClick} />
+          <img  onClick={handleImageClick} />
         </div>
         <div className='CardMatItem'>
           <p >Pathologie 3</p>
-          <img src={agrImg} onClick={handleImageClick} />
+          <img  onClick={handleImageClick} />
         </div>
         {/* Ajoutez d'autres éléments spécifiques à cette catégorie si nécessaire */}
       </div>
@@ -173,15 +173,15 @@ const Categories = (props) => {
       <div className='CategorieList'>
         <div className='CardMatItem'>
           <p >Pathologie 1</p>
-          <img src={agrImg} onClick={handleImageClick} />
+          <img  onClick={handleImageClick} />
         </div>
         <div className='CardMatItem'>
           <p >Pathologie 2</p>
-          <img src={pierImg} onClick={handleImageClick} />
+          <img  onClick={handleImageClick} />
         </div>
         <div className='CardMatItem'>
           <p >Pathologie 3</p>
-          <img src={agrImg} onClick={handleImageClick} />
+          <img  onClick={handleImageClick} />
         </div>
         {/* Ajoutez d'autres éléments génériques si nécessaire */}
       </div>
@@ -192,15 +192,15 @@ const Categories = (props) => {
       <div className='CategorieList'>
         <div className='CardMatItem'>
           <p >Pathologie 1</p>
-          <img src={agrImg} onClick={handleImageClick} />
+          <img  onClick={handleImageClick} />
         </div>
         <div className='CardMatItem'>
           <p >Pathologie 2</p>
-          <img src={pierImg} onClick={handleImageClick} />
+          <img  onClick={handleImageClick} />
         </div>
         <div className='CardMatItem'>
           <p >Pathologie 3</p>
-          <img src={agrImg} onClick={handleImageClick} />
+          <img  onClick={handleImageClick} />
         </div>
         {/* Ajoutez d'autres éléments spécifiques à cette catégorie si nécessaire */}
       </div>
@@ -211,15 +211,15 @@ const Categories = (props) => {
       <div className='CategorieList'>
         <div className='CardMatItem'>
           <p >Pathologie 1</p>
-          <img src={agrImg} onClick={handleImageClick} />
+          <img  onClick={handleImageClick} />
         </div>
         <div className='CardMatItem'>
           <p >Pathologie 2</p>
-          <img src={pierImg} onClick={handleImageClick} />
+          <img  onClick={handleImageClick} />
         </div>
         <div className='CardMatItem'>
           <p >Pathologie 3</p>
-          <img src={agrImg} onClick={handleImageClick} />
+          <img  onClick={handleImageClick} />
         </div>
         {/* Ajoutez d'autres éléments spécifiques à cette catégorie si nécessaire */}
       </div>
@@ -230,15 +230,15 @@ const Categories = (props) => {
         <div className='CategorieList'>
           <div className='CardMatItem'>
             <p >Pathologie 1</p>
-            <img src={agrImg} onClick={handleImageClick} />
+            <img  onClick={handleImageClick} />
           </div>
           <div className='CardMatItem'>
             <p >Pathologie 2</p>
-            <img src={pierImg} onClick={handleImageClick} />
+            <img  onClick={handleImageClick} />
           </div>
           <div className='CardMatItem'>
             <p >Pathologie 3</p>
-            <img src={agrImg} onClick={handleImageClick} />
+            <img  onClick={handleImageClick} />
           </div>
           {/* Ajoutez d'autres éléments spécifiques à cette catégorie si nécessaire */}
         </div>
@@ -249,15 +249,15 @@ const Categories = (props) => {
       <div className='CategorieList'>
         <div className='CardMatItem'>
           <p >Pathologie 1</p>
-          <img src={agrImg} onClick={handleImageClick} />
+          <img  onClick={handleImageClick} />
         </div>
         <div className='CardMatItem'>
           <p >Pathologie 2</p>
-          <img src={pierImg} onClick={handleImageClick} />
+          <img  onClick={handleImageClick} />
         </div>
         <div className='CardMatItem'>
           <p >Pathologie 3</p>
-          <img src={agrImg} onClick={handleImageClick} />
+          <img  onClick={handleImageClick} />
         </div>
         {/* Ajoutez d'autres éléments spécifiques à cette catégorie si nécessaire */}
       </div>

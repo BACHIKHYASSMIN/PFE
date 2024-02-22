@@ -1,6 +1,6 @@
 
 import './carte.css';
-import React, { useState }  from 'react';
+import React, { useState, useEffect}  from 'react';
 import  menuIcon from "./Assets/icon.png"
 
 import deconIcon from "./Assets/decon.png"
@@ -13,8 +13,9 @@ import Footer from './Elements/Footer';
 import { Link } from 'react-router-dom';
 import { Form, Select, Button, Input, Card, Row, Col ,Checkbox, Typography } from 'antd';
 import ChatBox from './Elements/ChatBox';
-
+import axios from 'axios';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import Monument from './Classes/Monument';
 const { Option } = Select;
 
 function Carte() {
@@ -27,7 +28,7 @@ function Carte() {
   const [isChecked1, setChecked1] = useState(false);
   const [isChecked2, setChecked2] = useState(false);
   const [isChecked3, setChecked3] = useState(false);
-  
+  const [data, setData] = useState([]);
   const [isFilterOpen, setFilterOpen ] = useState(false);
  
 
@@ -38,6 +39,20 @@ function Carte() {
     setFilterOpen(!isFilterOpen);
   };
   
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://localhost:2000/api/data');
+        setData(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+    
   const [form] = Form.useForm();
 
   const onFinish = (values) => {
@@ -92,38 +107,18 @@ function Carte() {
 <div style={{ display: 'flex', flexDirection: 'column' }}>
 {/* Vos champs de formulaire ici */}
 <div style={{ marginBottom: '10px' }}>
-<Form.Item name="Matériaux" label="Matériaux">
+<Form.Item name="Matériaux" label="Monuments">
 <div style={{ display: 'flex', flexDirection: 'column' }}>
- <Checkbox value="Matériau1">Matériau 1</Checkbox>
+          {data.monuments.map(monument => (
+           <Checkbox  key={monument.id}  value="">{monument.title}</Checkbox>
+          ))}  
+    
  
- <Checkbox value="Matériau2">Matériau 2</Checkbox>
- 
- <Checkbox value="Matériau3">Matériau 3</Checkbox>
+
  </div>
 </Form.Item>
 </div>
-<div style={{ marginBottom: '10px' }}>
-<Form.Item name="produit" label="Produit">
-<div style={{ display: 'flex', flexDirection: 'column' }}>
- <Checkbox value="produit1">Produit 1</Checkbox>
 
- <Checkbox value="produit2">Produit 2</Checkbox>
-
- <Checkbox value="produit3">Produit 3</Checkbox>
- </div>
-</Form.Item>
-</div>
-<div style={{ marginBottom: '10px' }}>
-<Form.Item name="ouvrage" label="Ouvrage">
-<div style={{ display: 'flex', flexDirection: 'column' }}>
- <Checkbox value="ouvrage1">Ouvrage 1</Checkbox>
-
- <Checkbox value="ouvrage2">Ouvrage 2</Checkbox>
-
- <Checkbox value="ouvrage3">Ouvrage 3</Checkbox>
- </div>
-</Form.Item>
-</div>
 {/* Répétez ce schéma pour les autres Form.Item */}
 
 <Form.Item>

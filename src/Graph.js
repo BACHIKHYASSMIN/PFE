@@ -1,6 +1,6 @@
 
 import './Graph.css';
-import React, { useState }  from 'react';
+import React, { useState, useEffect  }  from 'react';
 import  menuIcon from "./Assets/icon.png"
 import homeIcon from "./Assets/Vector.png"
 import FilterIcon from "./Assets/filter.png"
@@ -17,7 +17,8 @@ import closeIcon from "./Assets/close.png"
 import { Form, Select, Button, Input, Card, Row, Col ,Checkbox, Typography } from 'antd';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import ChatBox from './Elements/ChatBox';
-
+import axios from 'axios';
+import GraphComponent from './Elements/KnowledgeGraph'
 const { Option } = Select;
 
 
@@ -26,6 +27,7 @@ function Graph() {
   const [isChecked1, setChecked1] = useState(false);
   const [isChecked2, setChecked2] = useState(false);
   const [isChecked3, setChecked3] = useState(false);
+  const [data, setData] = useState([]);
 
   const handleMenuToggle = () => {
     setMenuOpen(!isMenuOpen);
@@ -36,6 +38,32 @@ function Graph() {
     console.log('Received values of form: ', values);
   };
     
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://localhost:2000/api/data');
+        setData(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://localhost:2000/api/data');
+        setData(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  
   const monuments = [
     { name: 'Monument 1', lat: 40.7128, lng: -74.0060 },
     { name: 'Monument 2', lat: 34.0522, lng: -118.2437 },
@@ -116,11 +144,11 @@ function Graph() {
       <div style={{ marginBottom: '10px' }}>
         <Form.Item name="ouvrage" label="Ouvrage">
         <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <Checkbox value="ouvrage1">Ouvrage 1</Checkbox>
-       
-          <Checkbox value="ouvrage2">Ouvrage 2</Checkbox>
-        
-          <Checkbox value="ouvrage3">Ouvrage 3</Checkbox>
+        <ul>
+          {data.ouvrages.map(ouvrage => (
+           <Checkbox   key={ouvrage.id}  value="ouvrage1">{ouvrage.title}</Checkbox>
+          ))}  
+      </ul>
           </div>
         </Form.Item>
       </div>
@@ -145,6 +173,7 @@ function Graph() {
         
         <div style={{ flex: 1, paddingRight: '40px' }}>
           {/*Ajouter le graph*/}
+          <GraphComponent/>
         </div>
       </div>
       {isMenuOpen && (

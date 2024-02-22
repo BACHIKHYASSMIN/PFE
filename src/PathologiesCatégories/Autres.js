@@ -1,5 +1,5 @@
 import '../Categorie.css';
-import React, { useState }  from 'react';
+import React, { useState, useEffect }  from 'react';
 import  menuIcon from "../Assets/icon.png"
 import homeIcon from "../Assets/Vector.png"
 import FilterIcon from "../Assets/filter.png"
@@ -15,7 +15,7 @@ import Navbar from '../Elements/Navbar';
 import { useNavigate } from 'react-router-dom';
 import { Form, Select, Button, Input, Card, Row, Col , Typography } from 'antd';
 import Footer from '../Elements/Footer';
-
+import axios from 'axios';
 
 function Autres() {
   const [isMenuOpen, setMenuOpen] = useState(false);
@@ -23,12 +23,37 @@ function Autres() {
   const [isChecked1, setChecked1] = useState(false);
   const [isChecked2, setChecked2] = useState(false);
   const [isChecked3, setChecked3] = useState(false);
+  const [data, setData] = useState([]);
   const navigate = useNavigate();
   const handleImageClick = () => {
     // Naviguer vers la page "Details" lors du clic sur l'image
     navigate('/details');
   };
  
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://localhost:2000/api/data');
+        setData(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://localhost:2000/api/data');
+        setData(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const  handleFilterMenuToggle = () => {
     setFilterMenuOpen(!isFilterMenuOpen);
   };
@@ -161,18 +186,17 @@ function Autres() {
           <h3 className='filt-name'>Produits</h3>
           </div>
           <div className='catboxList'>
-    <div className='catbox'>
-      <input  type="checkbox"  checked={isChecked1}  onChange={handleCheckbox1Change} />
-      <label htmlFor="checkbox">Mortier</label>
-    </div>
-    <div className='catbox'>
-      <input  type="checkbox"  checked={isChecked2}  onChange={handleCheckbox2Change} />
-      <label htmlFor="checkbox">Dalle</label>
-    </div>
-    <div className='catbox'>
-      <input  type="checkbox"  checked={isChecked3}  onChange={handleCheckbox3Change} />
-      <label htmlFor="checkbox">Couche</label>
-    </div>   
+          <ul>
+          
+    
+          {data.produits.map(produit => (
+            <div className='catbox'>
+            <input  type="checkbox"  checked={isChecked1}  onChange={handleCheckbox1Change} />
+            <label key={produit.id} htmlFor="checkbox">{produit.title}</label>
+            </div>
+          ))}  
+      </ul>
+  
     </div> 
     <div className='FilterCat'>
     <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
@@ -180,18 +204,14 @@ function Autres() {
            <h3 className='filt-name' >Ouvrages</h3>
           </div>
           <div className='catboxList'>
-    <div className='catbox'>
-      <input  type="checkbox"  checked={isChecked1}  onChange={handleCheckbox1Change} />
-      <label htmlFor="checkbox">Ouvrage1</label>
-    </div>
-    <div className='catbox'>
-      <input  type="checkbox"  checked={isChecked2}  onChange={handleCheckbox2Change} />
-      <label htmlFor="checkbox">Ouvrage2</label>
-    </div>
-    <div className='catbox'>
-      <input  type="checkbox"  checked={isChecked3}  onChange={handleCheckbox3Change} />
-      <label htmlFor="checkbox">Ouvrage3</label>
-    </div>   
+          <ul>
+          {data.ouvrages.map(ouvrage => (
+            <div className='catbox'>
+            <input  type="checkbox"  checked={isChecked1}  onChange={handleCheckbox1Change} />
+            <label key={ouvrage.id} htmlFor="checkbox">{ouvrage.title}</label>
+            </div>
+          ))}  
+      </ul>
     </div> 
 
         

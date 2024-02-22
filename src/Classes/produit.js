@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Material.css';  
 import '../Categorie.css'
 import  menuIcon from "../Assets/icon.png"
@@ -20,6 +20,7 @@ import { Form, Select, Button, Input, Card, Row, Col , Typography } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import Footer from '../Elements/Footer';
 import ChatBox from '../Elements/ChatBox';
+import axios from 'axios';
 const Produit = () => {
  
 
@@ -28,6 +29,7 @@ const Produit = () => {
   const [isChecked1, setChecked1] = useState(false);
   const [isChecked2, setChecked2] = useState(false);
   const [isChecked3, setChecked3] = useState(false);
+  const [data, setData] = useState([]);
   const navigate = useNavigate();
   const handleImageClick = () => {
     // Naviguer vers la page "Details" lors du clic sur l'image
@@ -40,7 +42,19 @@ const Produit = () => {
   const handleMenuToggle = () => {
     setMenuOpen(!isMenuOpen);
   };
-  
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://localhost:2000/api/data');
+        setData(response.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
     
     const handleCheckbox1Change = () => {
       setChecked1(!isChecked1);
@@ -163,18 +177,14 @@ const Produit = () => {
           <h3 className='filt-name' >Ouvrages</h3>
           </div>
           <div className='catboxList'>
-    <div className='catbox'>
-      <input  type="checkbox"  checked={isChecked1}  onChange={handleCheckbox1Change} />
-      <label htmlFor="checkbox">Ouvrage1</label>
-    </div>
-    <div className='catbox'>
-      <input  type="checkbox"  checked={isChecked2}  onChange={handleCheckbox2Change} />
-      <label htmlFor="checkbox">Ouvrage2</label>
-    </div>
-    <div className='catbox'>
-      <input  type="checkbox"  checked={isChecked3}  onChange={handleCheckbox3Change} />
-      <label htmlFor="checkbox">Ouvrage3</label>
-    </div>   
+          <ul>
+          {data.ouvrages.map(ouvrage => (
+            <div className='catbox'>
+            <input  type="checkbox"  checked={isChecked1}  onChange={handleCheckbox1Change} />
+            <label key={ouvrage.id} htmlFor="checkbox">{ouvrage.title}</label>
+            </div>
+          ))}  
+      </ul>
     </div> 
     <div className='FilterCat'>
     <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
@@ -182,14 +192,14 @@ const Produit = () => {
           <h3 className='filter-name' >Monuments</h3>
           </div>
           <div className='catboxList'>
-    <div className='catbox'>
-      <input  type="checkbox"  checked={isChecked1}  onChange={handleCheckbox1Change} />
-      <label htmlFor="checkbox">Monument1</label>
-    </div>
-    <div className='catbox'>
-      <input  type="checkbox"  checked={isChecked2}  onChange={handleCheckbox2Change} />
-      <label htmlFor="checkbox">Monument2</label>
-    </div>
+          <ul>
+          {data.monuments.map(monument => (
+            <div className='catbox'>
+            <input  type="checkbox"  checked={isChecked1}  onChange={handleCheckbox1Change} />
+            <label key={monument.id} htmlFor="checkbox">{monument.title}</label>
+            </div>
+          ))}  
+      </ul>
     </div> 
 
     <div className='FilterCat'>
@@ -198,18 +208,14 @@ const Produit = () => {
           <h3 className='filter-name' >Places</h3>
           </div>
           <div className='catboxList'>
-    <div className='catbox'>
-      <input  type="checkbox"  checked={isChecked1}  onChange={handleCheckbox1Change} />
-      <label htmlFor="checkbox">Place1</label>
-    </div>
-    <div className='catbox'>
-      <input  type="checkbox"  checked={isChecked2}  onChange={handleCheckbox2Change} />
-      <label htmlFor="checkbox">Place2</label>
-    </div>
-    <div className='catbox'>
-      <input  type="checkbox"  checked={isChecked2}  onChange={handleCheckbox2Change} />
-      <label htmlFor="checkbox">Place3</label>
-    </div>
+          <ul>
+          {data.places.map(place => (
+            <div className='catbox'>
+            <input  type="checkbox"  checked={isChecked1}  onChange={handleCheckbox1Change} />
+            <label key={place.id} htmlFor="checkbox">{place.title}</label>
+            </div>
+          ))}  
+      </ul>
     </div> 
     
           <div className='lineFBar'></div>
