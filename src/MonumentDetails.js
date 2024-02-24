@@ -10,17 +10,18 @@ import deconIcon from "./Assets/decon.png"
 import whitemenuIcon from "./Assets/wmenu.png"
 import closeIcon from "./Assets/close.png"
 import axios from 'axios';
-function MaterialDetails() {
-  const [material, setMaterial] = useState([]);
-  const { materialId } = useParams();
-  console.log('materialId :' ,{materialId});
+import Monument from './Classes/Monument';
+function MonumentDetails() {
+  const [monument, setMonument] = useState([]);
+  const {monumentId} = useParams();
+  console.log('MonumentId :' ,{monumentId});
   useEffect(() => {
     // Convertissez productId en entier en utilisant parseInt()
-    fetch(`http://localhost:2000/api/componentsId/${materialId}`)
+    fetch(`http://localhost:2000/api/componentsId/${monumentId}`)
       .then(response => response.json())
-      .then(data => setMaterial(data))
-      .catch(error => console.error('Error fetching material details:', error));
-  }, [materialId]);
+      .then(data => setMonument(data))
+      .catch(error => console.error('Error fetching Monument details:', error));
+  }, [monumentId]);
 
 
   const [isMenuOpen, setMenuOpen ,setGraph ,isGraph] = useState(false);
@@ -39,10 +40,10 @@ function MaterialDetails() {
        
       <div className="materials">
       <img className="mat-img"   />
-      {material && material.component ? (
-              <p className='mat-name'>{material.component.designation}</p>
+      {monument && monument.component ? (
+              <p className='mat-name'>{monument.component.designation}</p>
           ):(
-            <p>Aucun matériau trouvé</p>
+            <p>Aucun monument trouvé</p>
           )
           }
       </div>
@@ -50,22 +51,11 @@ function MaterialDetails() {
       <div className="Description">
       <h3 >Description</h3>
       
-      {material && material.component ? (
+      {monument && monument.component ? (
 
         <ul>
-            <li><span className='champ'> Type de Famille : </span>  {material.component.inertie_thermique}</li>
-<li><span className='champ'> Forme:</span>   {material.component.forme.map((forme,index)=> (
-         <span key={index}>
-         {forme}{index !== material.component.forme.length - 1 && ', '}
-       </span>
-      ))}</li>
-      <li>
-      <span className='champ'>  Couleur: </span> {material.component.couleur.map((color, index) => (
-    <span key={index}>
-      {color}{index !== material.component.couleur.length - 1 && ', '}
-    </span>
-  ))}
-</li>
+            <li><span className='champ'> Typologie Architecturale : </span>  {monument.component.typologie_architecturale}</li>
+            <li><span className='champ'> Est un Historique Monument ? : </span>  {monument.component.is_historique_monument}</li>
       </ul>
           ):(
             <p>Aucun matériau trouvé</p>
@@ -75,8 +65,8 @@ function MaterialDetails() {
       <div className="Vertical">
       <div className="Source">
       <h3 >Source</h3>
-      {material && material.component ? (
-         <p>{material.component.source}</p>
+      {monument && monument.component ? (
+         <p>{monument.component.source}</p>
          ):(
           <p>Aucun matériau trouvé</p>
         )
@@ -84,6 +74,12 @@ function MaterialDetails() {
       </div>
       <div className="Composition">
       <h3 >Composition</h3>
+      {monument && monument.component ? (
+         <p>{monument.component.description}</p>
+         ):(
+          <p>Aucun produit trouvé</p>
+        )
+}
       </div>
       </div>
       {/* Afficher le menu latéral s'il est ouvert */}
@@ -97,7 +93,7 @@ function MaterialDetails() {
   <div className='lineBar'></div>
   <h3 className='rub' style={{textAlign: 'center' }}>Rubriques</h3>
   <ul className='mats' style={{ paddingLeft: '20px' }}>
-    <li className='rubMat-name' ><Link to="/material">Matériaux</Link></li>
+    <li className='rubMat-name' ><Link to="/Monument">Matériaux</Link></li>
     <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
   <Link to="/categorie1" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Matériaux à base de terre</Link>
 </li>
@@ -157,4 +153,4 @@ function MaterialDetails() {
 
 
 
-export default  MaterialDetails;
+export default  MonumentDetails;

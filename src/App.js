@@ -30,7 +30,10 @@ import Apropos from './Apropos';
 import Profil from './Profil';
 import Interaction from './Interaction';
 import { LangProvider } from './LangContext';
-
+import ProductDetails from './ProductDetails';
+import MaterialDetails from './MaterialDetails';
+import MonumentDetails from './MonumentDetails';
+import OuvrageDetails from './OuvrageDetails'
 function App() {
   return (
     <LangProvider>
@@ -61,8 +64,13 @@ function App() {
           <Route path="/autres" element={<Autres />} />
           <Route path= "/a-propos"element={<Apropos/>}/>
           <Route path="/interaction" element={<Interaction/>}/>
-          <Route path="/details/:productId" element={<Details />} />
-
+          <Route path="/produitdetails/:productId"  element={<ProductDetails />}  />
+          <Route path="/materialdetails/:materialId"  element={<MaterialDetails />}  />
+          <Route path="/monumentdetails/:monumentId"  element={<MonumentDetails />}  />
+          <Route path="/ouvrageetails/:ouvrageId"  element={<OuvrageDetails />}  />
+         
+          
+          
         </Routes>
    
     

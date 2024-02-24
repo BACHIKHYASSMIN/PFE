@@ -10,25 +10,24 @@ import deconIcon from "./Assets/decon.png"
 import whitemenuIcon from "./Assets/wmenu.png"
 import closeIcon from "./Assets/close.png"
 import axios from 'axios';
-function MaterialDetails() {
-  const [material, setMaterial] = useState([]);
-  const { materialId } = useParams();
-  console.log('materialId :' ,{materialId});
+function ProductDetails() {
+  const [product, setProduct] = useState(null);
+  const {productId} = useParams();
+  
+  console.log("productId:", productId);
+
   useEffect(() => {
     // Convertissez productId en entier en utilisant parseInt()
-    fetch(`http://localhost:2000/api/componentsId/${materialId}`)
+    fetch(`http://localhost:2000/api/componentsId/${productId}`)
       .then(response => response.json())
-      .then(data => setMaterial(data))
-      .catch(error => console.error('Error fetching material details:', error));
-  }, [materialId]);
-
+      .then(data => setProduct(data))
+      .catch(error => console.error('Error fetching product details:', error));
+  }, [productId]);
 
   const [isMenuOpen, setMenuOpen ,setGraph ,isGraph] = useState(false);
   const handleMenuToggle = () => {
     setMenuOpen(!isMenuOpen);
   };
-
-
   return (
     
   
@@ -39,10 +38,11 @@ function MaterialDetails() {
        
       <div className="materials">
       <img className="mat-img"   />
-      {material && material.component ? (
-              <p className='mat-name'>{material.component.designation}</p>
+      {product && product.component ? (
+              <p className='mat-name'>{product.component.designation}</p>
+          
           ):(
-            <p>Aucun matériau trouvé</p>
+            <p>Aucun produit trouvé</p>
           )
           }
       </div>
@@ -50,40 +50,56 @@ function MaterialDetails() {
       <div className="Description">
       <h3 >Description</h3>
       
-      {material && material.component ? (
-
+      {product && product.component ? (
         <ul>
-            <li><span className='champ'> Type de Famille : </span>  {material.component.inertie_thermique}</li>
-<li><span className='champ'> Forme:</span>   {material.component.forme.map((forme,index)=> (
-         <span key={index}>
-         {forme}{index !== material.component.forme.length - 1 && ', '}
-       </span>
-      ))}</li>
+             <li> <span className='champ'> Longueur:  </span>  {product.component.longueur}</li>
+             <li><span className='champ'>  Surface :</span>   {product.component.surface} </li>
+             <li><span className='champ'> Largeur: </span> {product.component.largeur}</li>
+      <li><span className='champ'> Isolation Thermique : </span> {product.component.isolation_thermique}</li>
       <li>
-      <span className='champ'>  Couleur: </span> {material.component.couleur.map((color, index) => (
+      <span className='champ'>  Couleur: </span> {product.component.couleur.map((color, index) => (
     <span key={index}>
-      {color}{index !== material.component.couleur.length - 1 && ', '}
+      {color}{index !== product.component.couleur.length - 1 && ', '}
     </span>
   ))}
 </li>
+      <li><span className='champ'> Forme:</span>   {product.component.forme.map((forme,index)=> (
+         <span key={index}>
+         {forme}{index !== product.component.forme.length - 1 && ', '}
+       </span>
+      ))}</li>
+      <li><span className='champ'> Inertie Thermique: </span>  {product.component.inertie_thermique}</li>
+      <li><span className='champ'> Profondeur:</span>   {product.component.profondeur}</li>
+      <li><span className='champ'> Epesseur: </span>  {product.component.epesseur}</li>
+      <li><span className='champ'> Plasticite: </span>  {product.component.plasticite}</li>
+      <li><span className='champ'> Dimention: </span>  {product.component.dimention}</li>
+      <li><span className='champ'> Hauteur: </span>  {product.component.hauteur}</li>
+      <li><span className='champ'> Disponibilité: </span> {product.component.disponibilite}</li>
       </ul>
           ):(
-            <p>Aucun matériau trouvé</p>
+            <p>Aucun produit trouvé</p>
           )
 }
+      
       </div>
       <div className="Vertical">
       <div className="Source">
       <h3 >Source</h3>
-      {material && material.component ? (
-         <p>{material.component.source}</p>
+      {product && product.component ? (
+         <p>{product.component.source}</p>
          ):(
-          <p>Aucun matériau trouvé</p>
+          <p>Aucun produit trouvé</p>
         )
 }
       </div>
       <div className="Composition">
-      <h3 >Composition</h3>
+      <h3 >Caractéristiques</h3>
+      {product && product.component ? (
+         <p>{product.component.caracteristique}</p>
+         ):(
+          <p>Aucun produit trouvé</p>
+        )
+}
       </div>
       </div>
       {/* Afficher le menu latéral s'il est ouvert */}
@@ -157,4 +173,4 @@ function MaterialDetails() {
 
 
 
-export default  MaterialDetails;
+export default ProductDetails;

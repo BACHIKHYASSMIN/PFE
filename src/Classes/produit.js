@@ -31,10 +31,8 @@ const Produit = () => {
   const [data, setData] = useState([]);
   const navigate = useNavigate();
   const handleImageClick = (productId) => {
-    // Naviguer vers la page "Details" lors du clic sur l'image
-    const productIdString = productId.toString();
-
-    navigate(`/details/${productIdString}`);
+    const integerProductId = parseInt(productId, 10);
+    navigate(`/produitdetails/${integerProductId}`);
   };
  
   const  handleFilterMenuToggle = () => {

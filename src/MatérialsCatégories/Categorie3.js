@@ -25,10 +25,11 @@ function Categorie3() {
   const [isChecked3, setChecked3] = useState(false);
   const navigate = useNavigate();
   const [data, setData] = useState([]);
-  const handleImageClick = () => {
-    // Naviguer vers la page "Details" lors du clic sur l'image
-    navigate('/details');
+  const handleImageClick = (materialId) => {
+    const integerMaterialId = parseInt(materialId, 10);
+    navigate(`/materialdetails/${integerMaterialId}`);
   };
+ 
  
 
   useEffect(() => {

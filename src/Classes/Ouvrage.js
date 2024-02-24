@@ -32,9 +32,9 @@ const Ouvrage = () => {
   const [isChecked3, setChecked3] = useState(false);
   const [data, setData] = useState([]);
   const navigate = useNavigate();
-  const handleImageClick = () => {
-    // Naviguer vers la page "Details" lors du clic sur l'image
-    navigate('/details');
+  const handleImageClick = (ouvrageId) => {
+    const integerOuvrageId = parseInt(ouvrageId, 10);
+    navigate(`/ouvrageetails/${integerOuvrageId}`);
   };
  
   const  handleFilterMenuToggle = () => {

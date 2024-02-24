@@ -23,13 +23,10 @@ app.get('/api/data', async (req, res) => {
     // Connexion au driver Neo4j
     driver = neo4j.driver(URI, neo4j.auth.basic(USER, PASSWORD));
     const session = driver.session();
-    
-
-
       // Récupération des materiaux
       const materiauxResult = await session.run('MATCH (n:Materiau) RETURN n');
       const materiauxArr = materiauxResult.records.map(record => ({
-          id: record._fields[0].identity,
+          id: record._fields[0].identity.low,
           title: record._fields[0].properties.designation
       }));
 
@@ -40,7 +37,8 @@ app.get('/api/data', async (req, res) => {
     // Récupération des produits
     const produitsResult = await session.run('MATCH (n:Produit) RETURN n');
     const produitsArr = produitsResult.records.map(record => ({
-        id: record._fields[0].identity,
+        id: record._fields[0].identity.low,
+        
         title: record._fields[0].properties.designation
     }));
 
@@ -51,7 +49,7 @@ app.get('/api/data', async (req, res) => {
     // Récupération des ouvrages
     const ouvragesResult = await session.run('MATCH (n:Ouvrage) RETURN n');
     const ouvragesArr = ouvragesResult.records.map(record => ({
-        id: record._fields[0].identity,
+        id: record._fields[0].identity.low,
         title: record._fields[0].properties.designation
     }));
 
@@ -63,7 +61,7 @@ app.get('/api/data', async (req, res) => {
     // Récupération des Monuments
     const monumentsResult = await session.run('MATCH (n:Monument) RETURN n');
     const monumentArr = monumentsResult.records.map(record => ({
-        id: record._fields[0].identity,
+        id: record._fields[0].identity.low,
         title: record._fields[0].properties.designation
     }));
 
@@ -115,20 +113,32 @@ app.get('/api/data', async (req, res) => {
 }
 });
 
-app.get('/products/:productId', async (req, res) => {
-  const productId = 0;
 
-  const session = driver.session();
+app.get('/api/componentsId/:id', async (req, res) => {
+
+  const URI = 'neo4j://localhost';
+  const USER = 'neo4j';
+  const PASSWORD = 'password';
+  let driver;
+  let session; // Déclarer la variable session en dehors du bloc try
+  const componentId = parseInt(req.params.id, 10);
+
+
   try {
-    const result = await session.run('MATCH (p:Produit) WHERE ID(0) = RETURN p');
-    const product = result.records[0].get('p').properties;
-    res.json(product);
+    // Connexion au driver Neo4j
+    driver = neo4j.driver(URI, neo4j.auth.basic(USER, PASSWORD));
+    session = driver.session(); // Assigner la session ici
+    const componentsresult = await session.run('MATCH (p) WHERE ID(p)=$componentId RETURN p',{componentId});
+    const componentsArr = componentsresult.records[0].get('p').properties;
+    res.json({component:componentsArr});
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Error fetching components details',error);
+    res.status(500).send('Internal Server Error');
   } finally {
-    await session.close();
+    if (session) await session.close(); // Vérifier si la session est définie avant de la fermer
   }
 });
+
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);

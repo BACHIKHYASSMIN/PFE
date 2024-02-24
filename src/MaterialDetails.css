@@ -14,6 +14,8 @@
 }
 
 .Description{
+    border-radius: 2%;
+    margin-left: 3%;
      width: 30%;
 background-color:#ECF0F1;
 
@@ -26,6 +28,7 @@ background-color:#ECF0F1;
 }
 
 .Description ul  {
+    margin-left: 8%;
     list-style: none;
     padding-bottom: 3%;
 }
@@ -33,7 +36,7 @@ background-color:#ECF0F1;
 
 .Description li{
     margin-bottom: 4%;
-    font-weight: bold;
+    font-weight:400;
 }
 
 .Vertical{
@@ -46,16 +49,26 @@ background-color:#ECF0F1;
 }
 
 .Source{
+    overflow-y: scroll;
     text-align: center;
-     width: 400%;
+     width: 150%;
+     height: 250px;
     background-color:#ECF0F1;
+    margin-left: -20%;
+    margin-top: 4%;
+    border-radius: 2%;
 }
 
 .Composition{
-  margin-top: 100%;
+  margin-top: 17%;
     text-align: center;
-     width: 400%;
+     width: 160%;
     background-color:#ECF0F1;
+    overflow-y: scroll;
+    height: 250px;
+margin-left: -20%;
+border-radius: 2%;
+margin-bottom: 5%;
 }
 .dwnload{
     width: 45px;
@@ -68,3 +81,8 @@ background-color:#ECF0F1;
     left:2%;
     top:12%;
   }
+
+.champ{
+    font-weight: bold;
+    color:#2C3E50 ;
+}
