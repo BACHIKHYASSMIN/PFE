@@ -1,0 +1,14 @@
+{
+    "navbar": {
+      "accueil": "Accueil",
+      "graph": "Graph",
+      "carteGeographique": "Carte Géographique",
+      "rechercheAvancee": "Recherche Avancée",
+      "aPropos": "À Propos",
+      "profil": "Profil",
+      "changerLangue": "Changer de Langue"
+    },
+    "Matheader":{
+        "message":"Matériaux"
+    }
+  }

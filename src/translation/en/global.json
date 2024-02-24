@@ -1,0 +1,22 @@
+{
+    
+    "navbar": {
+      "accueil": "Home",
+      "graph": "Graph",
+      "carteGeographique": "Geographical Map",
+      "rechercheAvancee": "Advanced Search",
+      "aPropos": "About",
+      "profil": "Profile",
+      "changerLangue": "Change Language"
+    },
+    
+    "Matheader":{
+        "message":"Materials"
+    },
+
+    "CardMatItem":{
+        
+    }
+
+    
+}

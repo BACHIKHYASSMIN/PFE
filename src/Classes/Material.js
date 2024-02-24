@@ -15,6 +15,7 @@ import Footer from '../Elements/Footer';
 import axios from 'axios';
 import { Form, Select, Button, Input, Card, Row, Col , Typography } from 'antd';
 import ChatBox from '../Elements/ChatBox';
+import { useTranslation } from 'react-i18next';
 
 const Material = () => {
   const [isMenuOpen, setMenuOpen ] = useState(false);
@@ -36,6 +37,10 @@ const Material = () => {
   }, []);
 
 
+  const { t,i18n } = useTranslation();
+  const toggleLang=(lang:String) =>{
+    i18n.changeLanguage(lang);
+  }
   const handleMenuToggle = () => {
     setMenuOpen(!isMenuOpen);
   };
@@ -47,14 +52,14 @@ const Material = () => {
           <img className="menu" src={menuIcon} alt="Menu Icon"
           onClick={handleMenuToggle}  />
           <Typography.Title level={1} style={{ fontWeight: 'bold', marginBottom: '10px',textAlign: 'center', marginLeft:'30%' }}>
-        Matériaux
+          {t("Matheader.message")}
       </Typography.Title>
           </div>
           <div className='MaterialCat'>
   <img className="home" src={homeIcon}  />
-  <Link to="/" style={{ color: 'blue', textDecoration: 'none' }}>Accueil</Link> {/* Lien vers la page d'accueil */}
+  <Link to="/" style={{ color: 'blue', textDecoration: 'none' }}>{t("navbar.accueil")}</Link> {/* Lien vers la page d'accueil */}
   <span className='Path' style={{ color: 'blue' }}>&gt;</span> {/* Utilisation de span pour le symbole ">" */}
-  <Link to="/material" style={{ color: 'blue', textDecoration: 'none' }}>Matériaux</Link> {/* Lien vers la page Monument */}
+  <Link to="/material" style={{ color: 'blue', textDecoration: 'none' }}>{t("Matheader.message")}</Link> {/* Lien vers la page Monument */}
 </div>
           <Categories  categorieName="Matériaux à base de terre"/>
           <Categories  categorieName="Minéraux et Roches"/>
@@ -71,7 +76,7 @@ const Material = () => {
   <div className='lineBar'></div>
   <h3 className='rub' style={{textAlign: 'center' }}>Rubriques</h3>
   <ul className='mats' style={{ paddingLeft: '20px' }}>
-    <li className='rubMat-name' ><Link to="/material">Matériaux</Link></li>
+    <li className='rubMat-name' ><Link to="/material">{t("Matheader.message")}</Link></li>
     <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
   <Link to="/categorie1" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Matériaux à base de terre</Link>
 </li>
@@ -113,11 +118,11 @@ const Material = () => {
   <div className='lineBar'></div>
   <h3 className='rub'  style={{textAlign: 'center' }} >Pages</h3>
   {/* Ajoutez vos liens du menu ici */}
-  <Link className="pageLink" to="/">Accueil</Link>
-  <Link className="pageLink" to="/Graph">Graph</Link>
-  <Link className="pageLink" to="/carte-geographique">Carte Geographique</Link>
-  <Link className="pageLink" to="/recherche-avancee">Recherche Avancée</Link>
-  <Link className="pageLink" to="/a-propos">À propos</Link>
+  <Link className="pageLink" to="/">{t("navbar.accueil")}</Link>
+  <Link className="pageLink" to="/Graph">{t("navbar.graph")}</Link>
+  <Link className="pageLink" to="/carte-geographique">{t("navbar.carteGeographique")}</Link>
+  <Link className="pageLink" to="/recherche-avancee">{t("navbar.rechercheAvancee")}</Link>
+  <Link className="pageLink" to="/a-propos">{t("navbar.aPropos")}</Link>
   <div className='lineDecBar'></div>
   <div className='Decon'>
     <img className="dec" src={deconIcon} alt="Decon Icon" onClick={handleMenuToggle} />

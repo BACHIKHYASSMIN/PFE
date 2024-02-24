@@ -29,13 +29,12 @@ import Categorie3 from './MatérialsCatégories/Categorie3';
 import Apropos from './Apropos';
 import Profil from './Profil';
 import Interaction from './Interaction';
+import { LangProvider } from './LangContext';
 
 function App() {
   return (
+    <LangProvider>
     <div className="Class">
-  
-      
-    
         <Routes>
         <Route path="/" exact element={<Home />} />
           <Route path="/material" element={<Material />} />
@@ -69,6 +68,7 @@ function App() {
     
   
     </div>
+    </LangProvider>
   );
 }
 
