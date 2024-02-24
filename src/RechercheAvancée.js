@@ -1,4 +1,5 @@
-
+import React, { useState } from 'react';
+import { useEffect } from 'react'; 
 import Navbar from './Elements/Navbar';
 import Footer from './Elements/Footer';
 import { Form, Select, Button, Input, Card, Row, Col , Checkbox ,Typography } from 'antd';
@@ -7,11 +8,9 @@ import deconIcon from "./Assets/decon.png"
 import whitemenuIcon from "./Assets/wmenu.png"
 import closeIcon from "./Assets/close.png"
 import { Link } from 'react-router-dom';
-import React, { useState }  from 'react';
 import  menuIcon from "./Assets/icon.png"
-
+import axios from 'axios';
 const { Option } = Select;
-
 
 const RechercheAvancée = () => {
   const [form] = Form.useForm();
@@ -23,6 +22,21 @@ const RechercheAvancée = () => {
   const onFinish = (values) => {
     console.log('Received values of form: ', values);
   };
+
+  const [data, setData] = useState([]);
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const response = await axios.get('http://localhost:2000/api/data');
+      setData(response.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  fetchData();
+}, []);
+
   const itemsData = [
     { title: 'Catégorie 1', subtitle: 'Nom 1', image: 'URL_image_1' },
     { title: 'Catégorie 2', subtitle: 'Nom2', image: 'URL_image_2' },
@@ -87,11 +101,14 @@ const RechercheAvancée = () => {
     <div style={{ marginBottom: '10px' }}>
     <Form.Item name="Matériaux" label="Matériaux">
     <div style={{ display: 'flex', flexDirection: 'column' }}>
-      <Checkbox value="Matériau1">Matériau 1</Checkbox>
-     
-      <Checkbox value="Matériau2">Matériau 2</Checkbox>
-      
-      <Checkbox value="Matériau3">Matériau 3</Checkbox>
+    {data && data.materiaux ? (
+            data.materiaux.map(materiau => (
+  <Checkbox  key={materiau.id} value="Matériau1">{materiau.title}</Checkbox>
+          ))
+          ):(
+            <li>Aucun matériau trouvé</li>
+          )
+      }  
       </div>
     </Form.Item>
     </div>
@@ -99,22 +116,28 @@ const RechercheAvancée = () => {
     <div style={{ marginBottom: '10px' }}>
     <Form.Item name="produit" label="Produit">
     <div style={{ display: 'flex', flexDirection: 'column' }}>
-      <Checkbox value="produit1">Produit 1</Checkbox>
-   
-      <Checkbox value="produit2">Produit 2</Checkbox>
-
-      <Checkbox value="produit3">Produit 3</Checkbox>
+    {data && data.produits ? (
+            data.produits .map(produit => (
+  <Checkbox  key={produit.id} value="">{produit.title}</Checkbox>
+          ))
+          ):(
+            <li>Aucun produit trouvé</li>
+          )
+      }  
       </div>
     </Form.Item>
     </div>
     <div style={{ marginBottom: '10px' }}>
     <Form.Item name="ouvrage" label="Ouvrage">
     <div style={{ display: 'flex', flexDirection: 'column' }}>
-      <Checkbox value="ouvrage1">Ouvrage 1</Checkbox>
-    
-      <Checkbox value="ouvrage2">Ouvrage 2</Checkbox>
-   
-      <Checkbox value="ouvrage3">Ouvrage 3</Checkbox>
+    {data && data.ouvrages ? (
+            data.ouvrages .map(ouvrage=> (
+  <Checkbox  key={ouvrage.id} value="">{ouvrage.title}</Checkbox>
+          ))
+          ):(
+            <li>Aucun ouvrage trouvé</li>
+          )
+      }  
       </div>
     </Form.Item>
     </div>

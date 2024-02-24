@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './MaterialDetails.css';  
 import  matImg from "./Assets/bois.png"
 import dwn from "./Assets/download.png"
@@ -10,9 +10,25 @@ import deconIcon from "./Assets/decon.png"
 import whitemenuIcon from "./Assets/wmenu.png"
 import closeIcon from "./Assets/close.png"
 
-const Details= () => {
+function Details({ match }) {
+  const [product, setProduct] = useState(null);
+  const productId = 0;
+
+  useEffect(() => {
+    fetch(`/api/products/${productId}`)
+      .then(response => response.json())
+      .then(data => setProduct(data))
+      .catch(error => console.error('Error fetching product details:', error));
+  }, [productId]);
+
+  return (
+    <ProductDetailsPage product={product} />
+  );
+  
+}
+
+const ProductDetailsPage=({ product } ) => {
   const [isMenuOpen, setMenuOpen ,setGraph ,isGraph] = useState(false);
- 
 
   const handleMenuToggle = () => {
     setMenuOpen(!isMenuOpen);
@@ -25,11 +41,11 @@ const Details= () => {
        
       <div className="materials">
       <img className="mat-img"   />
-      <p className='mat-name'>Nom</p>
+      <p className='mat-name'> {product.name}</p>
       </div>
 
       <div className="Description">
-      <h3 >Description</h3>
+      <h3 >{product.description}</h3>
       <ul>
       <li>Type de Famille:</li>
       <li>Nature:</li>

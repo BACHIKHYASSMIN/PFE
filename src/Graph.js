@@ -63,7 +63,9 @@ function Graph() {
     fetchData();
   }, []);
 
-  
+  const handleCheckbox1Change = () => {
+    setChecked1(!isChecked1);
+  };
   const monuments = [
     { name: 'Monument 1', lat: 40.7128, lng: -74.0060 },
     { name: 'Monument 2', lat: 34.0522, lng: -118.2437 },
@@ -121,37 +123,59 @@ function Graph() {
   <Form form={form} layout="vertical" name="advanced_search" onFinish={onFinish}>
     {/* Vos champs de formulaire ici */}
     <div style={{ display: 'flex', flexDirection: 'column' }}>
-      <div style={{ marginBottom: '10px' }}>
-        <Form.Item name="Matériaux" label="Matériaux">
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-          <Checkbox value="Matériau1">Matériau 1</Checkbox>
-        
-          <Checkbox value="Matériau2">Matériau 2</Checkbox>
-
-          <Checkbox value="Matériau3">Matériau 3</Checkbox>
+    <div className='FilterCat'>
+          <h3 className='filt-name' >Matériaux</h3>
           </div>
-        </Form.Item>
-      </div>
-      <div style={{ marginBottom: '10px' }}>
-        <Form.Item name="produit" label="Produit">
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-    <Checkbox value="produit1">Produit 1</Checkbox>
-    <Checkbox value="produit2">Produit 2</Checkbox>
-    <Checkbox value="produit3">Produit 3</Checkbox>
-  </div>
-        </Form.Item>
-      </div>
-      <div style={{ marginBottom: '10px' }}>
-        <Form.Item name="ouvrage" label="Ouvrage">
-        <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <ul>
-          {data.ouvrages.map(ouvrage => (
-           <Checkbox   key={ouvrage.id}  value="ouvrage1">{ouvrage.title}</Checkbox>
-          ))}  
+          <div className='catboxList'>
+          <ul>
+          {data && data.materiaux ? (
+            data.materiaux.map(materiau => (
+            <div className='catbox'>
+            <input  type="checkbox"  checked={isChecked1}  onChange={handleCheckbox1Change} />
+            <label key={materiau.id} htmlFor="checkbox">{materiau.title}</label>
+            </div>
+          ))
+          ):(
+            <li>Aucun matériau trouvé</li>
+          ) }  
       </ul>
+    </div> 
+
+      <div className='FilterCat'>
+          <h3 className='filt-name' >Produits</h3>
           </div>
-        </Form.Item>
-      </div>
+          <div className='catboxList'>
+          <ul>
+          {data && data.produits ? (
+            data.produits.map(produit => (
+            <div className='catbox'>
+            <input  type="checkbox"  checked={isChecked1}  onChange={handleCheckbox1Change} />
+            <label key={produit.id} htmlFor="checkbox">{produit.title}</label>
+            </div>
+          ))
+          ):(
+            <li>Aucun produit trouvé</li>
+          ) }  
+      </ul>
+    </div> 
+   
+    <div className='FilterCat'>
+          <h3 className='filt-name' >Ouvrages</h3>
+          </div>
+          <div className='catboxList'>
+          <ul>
+      {data && data.ouvrages ? (
+        data.ouvrages.map(ouvrage => (
+          <div className='catbox'>
+            <input  type="checkbox"  checked={isChecked1}  onChange={handleCheckbox1Change} />
+          <label key={ouvrage.id} htmlFor="checkbox">{ouvrage.title}</label>
+            </div>
+        ))
+      ) : (
+        <li>Aucun ouvrage trouvé</li>
+      )}
+    </ul>
+    </div> 
    
     {/* Répétez ce schéma pour les autres Form.Item */}
     <Form.Item>
@@ -173,7 +197,7 @@ function Graph() {
         
         <div style={{ flex: 1, paddingRight: '40px' }}>
           {/*Ajouter le graph*/}
-          <GraphComponent/>
+      
         </div>
       </div>
       {isMenuOpen && (

@@ -23,7 +23,6 @@ import ChatBox from '../Elements/ChatBox';
 import axios from 'axios';
 const Produit = () => {
  
-
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isFilterMenuOpen, setFilterMenuOpen] = useState(false);
   const [isChecked1, setChecked1] = useState(false);
@@ -31,9 +30,11 @@ const Produit = () => {
   const [isChecked3, setChecked3] = useState(false);
   const [data, setData] = useState([]);
   const navigate = useNavigate();
-  const handleImageClick = () => {
+  const handleImageClick = (productId) => {
     // Naviguer vers la page "Details" lors du clic sur l'image
-    navigate('/details');
+    const productIdString = productId.toString();
+
+    navigate(`/details/${productIdString}`);
   };
  
   const  handleFilterMenuToggle = () => {
@@ -108,32 +109,19 @@ const Produit = () => {
         </Col>
       </Row>
           <div className='catElements'>
-          <div className='catItem'>
-              <p >Ceramic</p>
-              <img  src={agrImg} onClick={handleImageClick}/>
-              </div>
-              <div className='catItem'>
-              <p >Brique</p>
-              <img  src={pierImg} onClick={handleImageClick}/>
-              </div>
-              <div className='catItem'>
-              <p >Ceramix</p>
-              <img  src={pierImg} onClick={handleImageClick}/>
-              </div>
-              <div className='catItem'>
-              <p >Brique</p>
-              <img  src={agrImg} onClick={handleImageClick}/>
-              </div>
-              <div className='catItem'>
-              <p >Ceramic</p>
-              <img  src={pierImg} onClick={handleImageClick}/>
-              </div>
-               <div className='catItem'>
-              <p >Brique</p>
-              <img  src={agrImg} onClick={handleImageClick}/>
-              </div>
-              
-              </div>
+           {data && data.produits ? (
+            data.produits.map(produit => (
+            <div className='catItem'>
+              <p >{produit.title}</p>
+              <img key={produit.id} src='' onClick={() => handleImageClick(produit.id)}/>
+            </div>
+          ))
+          ):(
+            <li>Aucun produit trouvé</li>
+          )
+      }  
+
+      </div>
               <div className='Links'>
               <a >1</a>
               <a >2</a>

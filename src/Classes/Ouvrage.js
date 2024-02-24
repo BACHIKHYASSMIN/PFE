@@ -110,30 +110,17 @@ const Ouvrage = () => {
         </Col>
       </Row>
           <div className='catElements'>
-          <div className='catItem'>
-              <p >Ouvrage 1</p>
-              <img  src={OuvrageImg}  onClick={handleImageClick}/>
-              </div>
-              <div className='catItem'>
-              <p >Ouvrage 2</p>
-              <img  src={OuvrageImg}  onClick={handleImageClick}/>
-              </div>
-              <div className='catItem'>
-              <p >Ouvrage 3</p>
-              <img  src={OuvrageImg}  onClick={handleImageClick}/>
-              </div>
-              <div className='catItem'>
-              <p >Ouvrage 4</p>
-              <img  src={OuvrageImg}  onClick={handleImageClick}/>
-              </div>
-              <div className='catItem'>
-              <p >Ouvrage 5</p>
-              <img  src={OuvrageImg}  onClick={handleImageClick}/>
-              </div>
-               <div className='catItem'>
-              <p >Ouvrage 6</p>
-              <img  src={OuvrageImg}  onClick={handleImageClick}/>
-              </div>
+          {data && data.ouvrages ? (
+            data.ouvrages.map(ouvrage => (
+            <div className='catItem'>
+              <p >{ouvrage.title}</p>
+              <img key={ouvrage.id} src='' onClick={() => handleImageClick(ouvrage.id)}/>
+            </div>
+          ))
+          ):(
+            <li>Aucun produit trouvé</li>
+          )
+      }  
               
               </div>
               <div className='Links'>

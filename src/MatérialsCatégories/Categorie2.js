@@ -112,30 +112,17 @@ function Categorie2() {
       </Row>
           
           <div className='catElements'>
-          <div className='catItem'>
-              <p >Agrégat</p>
-              <img  src={agrImg} onClick={handleImageClick}/>
-              </div>
-              <div className='catItem'>
-              <p >Pierre</p>
-              <img  src={pierImg} onClick={handleImageClick}/>
-              </div>
-              <div className='catItem'>
-              <p >Pierre</p>
-              <img  src={pierImg} onClick={handleImageClick}/>
-              </div>
-              <div className='catItem'>
-              <p >Agrégat</p>
-              <img  src={agrImg} onClick={handleImageClick}/>
-              </div>
-              <div className='catItem'>
-              <p >Pierre</p>
-              <img  src={pierImg} onClick={handleImageClick}/>
-              </div>
-               <div className='catItem'>
-              <p >Agrégat</p>
-              <img  src={agrImg} onClick={handleImageClick}/>
-              </div>
+          {data && data.materiaux ? (
+            data.materiaux.map(materiau => (
+            <div className='catItem'>
+              <p >{materiau.title}</p>
+              <img key={materiau.id} src='' onClick={() => handleImageClick(materiau.id)}/>
+            </div>
+          ))
+          ):(
+            <li>Aucun produit trouvé</li>
+          )
+      }  
               
               </div>
               <div className='Links'>

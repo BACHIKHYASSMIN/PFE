@@ -109,9 +109,14 @@ function Carte() {
 <div style={{ marginBottom: '10px' }}>
 <Form.Item name="Matériaux" label="Monuments">
 <div style={{ display: 'flex', flexDirection: 'column' }}>
-          {data.monuments.map(monument => (
+          {data && data.monuments ? (
+            data.monuments.map(monument => (
            <Checkbox  key={monument.id}  value="">{monument.title}</Checkbox>
-          ))}  
+          ))
+          ):(
+            <li>Aucun produit trouvé</li>
+          )
+        }  
     
  
 

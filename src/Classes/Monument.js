@@ -118,31 +118,17 @@ const Monument = () => {
         </Col>
       </Row>
           <div className='catElements'>
-          <div className='catItem'>
-              <p >Monument 1</p>
-              <img  src={MonumentImg} onClick={handleImageClick}/>
-              </div>
-              <div className='catItem'>
-              <p >Monument 2</p>
-              <img  src={MonumentImg} onClick={handleImageClick}/>
-              </div>
-              <div className='catItem'>
-              <p >Monument 3</p>
-              <img  src={MonumentImg} onClick={handleImageClick}/>
-              </div>
-              <div className='catItem'>
-              <p >Monument 4</p>
-              <img  src={MonumentImg} onClick={handleImageClick}/>
-              </div>
-              <div className='catItem'>
-              <p >Monument 5</p>
-              <img  src={MonumentImg} onClick={handleImageClick}/>
-              </div>
-               <div className='catItem'>
-              <p >Monument 6 </p>
-              <img  src={MonumentImg} onClick={handleImageClick}/>
-              </div>
-              
+          {data && data.monuments ? (
+            data.monuments.map(monument => (
+            <div className='catItem'>
+              <p >{monument.title}</p>
+              <img key={monument.id} src='' onClick={() => handleImageClick(monument.id)}/>
+            </div>
+          ))
+          ):(
+            <li>Aucun produit trouvé</li>
+          )
+      }  
               </div>
               <div className='Links'>
               <a >1</a>
