@@ -199,3 +199,6 @@ padding-right: 40%;
   overflow: hidden;
 }
 
+
+#map { height: 180px;
+margin-top: 10%; }

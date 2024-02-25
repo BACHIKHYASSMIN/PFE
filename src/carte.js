@@ -6,7 +6,8 @@ import  menuIcon from "./Assets/icon.png"
 import deconIcon from "./Assets/decon.png"
 import whitemenuIcon from "./Assets/wmenu.png"
 import closeIcon from "./Assets/close.png"
-
+import 'leaflet/dist/leaflet.css';
+import L from 'leaflet';
 import Navbar from './Elements/Navbar';
 import Footer from './Elements/Footer';
 
@@ -19,11 +20,21 @@ import Monument from './Classes/Monument';
 const { Option } = Select;
 
 function Carte() {
-  const monuments = [
-    { name: 'Monument 1', lat: 40.7128, lng: -74.0060 },
-    { name: 'Monument 2', lat: 34.0522, lng: -118.2437 },
-    // Add more monuments as needed
-  ];
+  
+
+  useEffect(() => {
+    // Créer une carte Leaflet et l'ajouter à l'élément avec l'ID 'map'
+    const map = L.map('map').setView([7.1881, 21.0938], 3);
+    // Ajouter une couche de tuiles à la carte
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Créer un marqueur et l'ajouter à la carte
+    L.marker([36.7372, 3.0867]).addTo(map)
+      .openPopup();
+  }, []);
+
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isChecked1, setChecked1] = useState(false);
   const [isChecked2, setChecked2] = useState(false);
@@ -61,7 +72,17 @@ function Carte() {
     
   
   return (
+    
     <div className='graph'>
+      <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossOrigin=""/>
+      <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+     integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+     crossorigin=""></script>
+
       <Navbar />
       <div className="material-head">
       <img className="menu" src={menuIcon} alt="Menu Icon"
@@ -142,20 +163,7 @@ function Carte() {
         </div>
         
         <div style={{ flex: 1, paddingRight: '40px' }}>
-          <div className='carteGeo'> 
-            <MapContainer center={[28.0339, 1.6596]} zoom={5} style={{ height: '400px', width: '100%' }} >
-              <TileLayer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-              />
-  
-              {monuments.map((monument, index) => (
-                <Marker key={index} position={[monument.lat, monument.lng]}>
-                  <Popup>{monument.name}</Popup>
-                </Marker>
-              ))}
-            </MapContainer>
-          </div>
+        <div id="map" style={{ width: '100%', height: '400px' }}></div>
         </div>
       </div>
    

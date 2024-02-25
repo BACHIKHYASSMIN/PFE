@@ -29,9 +29,22 @@ function Footer() {
         <p className="mailAdr">materialslibrary85@gmail.com</p> 
     </div>
     </div>
-    
+    <div className="Contact">
+    <div className="Location ">
+    <p className="locName">Encadré par :</p> 
+    <p className="locName">ENS Khouri Selma </p> 
+    <p className="locName">ENS Oufaida Houda</p> 
+    </div>
+    </div>
+    <div className="Contact">
+    <div className="Location ">
+    <p className="locName">Réalisé par :</p> 
+    <p className="locName">Bachikh Yassmin</p> 
+    <p className="locName">Belmrabet Izdihar</p> 
+    </div>
+    </div>
     <div className="Right">
-        <p>ALL RIGHTS PRESERVED</p>
+        <p> Tous droits réservés © [2024] </p>
         </div>
 </div>
   );
