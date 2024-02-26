@@ -1,54 +1,184 @@
 import React, { useState, useEffect } from 'react';
-import CytoscapeComponent from 'react-cytoscapejs';
 import axios from 'axios';
+import CytoscapeComponent from 'react-cytoscapejs';
 
-const SchemaViewer = () => {
+const Neo4jGraph = () => {
   const [elements, setElements] = useState([]);
-
+  const formattedElements = [];
   useEffect(() => {
-    const fetchSchema = async () => {
+    const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:4000/api/schema');
-      
-        const schemaData = response.data;
-      
-        // Formater les données récupérées pour les utiliser dans Cytoscape.js
-        const formattedElements = [];
+        // Effectuer une requête à votre endpoint pour récupérer les données
+        const response = await axios.get('http://localhost:4000/api/nodes');
+        const responseData = response.data;
+        const lab=responseData.nodes[0].labels;
 
-        if (schemaData.nodes) {
-            schemaData.nodes.forEach(node => {
-                console.log('Node label:', node.label);
-                formattedElements.push({ data: { id: node.id, label: node.label } });
-            });
-        } else {
-            console.error('No nodes found in schema data');
-        }
-  // Ajouter les arêtes
-  schemaData.relationships.forEach(relationship => {
-    console.log('Relationship label:', relationship.type);
-    formattedElements.push({
-      data: {
-        source: relationship.startNodeId,
-        target: relationship.endNodeId,
-        label: relationship.type // Vous pouvez utiliser le type de relation comme libellé de l'arête
-      }
-    });
-  });
-        // Mettre à jour l'état avec les éléments formatés
+        // Formater les données pour les utiliser dans la structure d'éléments
+        const Nodes = responseData.nodes.map((item, index) => {
+          const positionX = index * 100;
+          const positionY = index * 2;
+            if(item.labels[0].includes('Produit')){
+                return { data:
+                     { id: item.elementId,
+                         label: item.properties.designation,
+                       
+                         },
+                 position:
+                  { x: positionX, y: 0 } ,
+                style:{
+                    backgroundColor:'orange',
+                    fontWeight:'bold'
+                }
+                };
+            }else if(item.labels[0].includes('Restauration') ) {
+              return { data:
+                { id: item.elementId,
+                    label: 'node',
+                  
+                    },
+            position:
+             { x: positionX, y: positionY } ,
+           style:{
+            backgroundColor:'brown',
+           }
+           };
+            }else if( item.labels[0].includes('Technique')) {
+              return { data:
+                { id: item.elementId,
+                    label: 'node',
+                  
+                    },
+            position:
+             { x: positionX, y: positionY } ,
+           style:{
+            backgroundColor:'chocolate',
+           }
+           };
+            } else if( item.labels[0].includes('Pathologie')) {
+              return { data:
+                { id: item.elementId,
+                    label: 'node',
+                  
+                    },
+            position:
+             { x: positionX, y: positionY } ,
+           style:{
+            backgroundColor:'cornflowerblue',
+           }
+           };
+            } else if( item.labels[0].includes('Ouvrage')) {
+              return { data:
+                { id: item.elementId,
+                    label: item.properties.designation,
+                  
+                    },
+            position:
+             { x: positionX, y: positionY} ,
+           style:{
+            backgroundColor:'gold',
+           }
+           };
+            }else if( item.labels[0].includes('Monument')) {
+              return { data:
+                { id: item.elementId,
+                    label: item.properties.designation,
+                  
+                    },
+            position:
+             { x: positionX, y: positionY } ,
+           style:{
+            backgroundColor:'crimson',
+           }
+           };
+            }else if( item.labels[0].includes('ConstruirRelation')) {
+              return { data:
+                { id: item.elementId,
+                    label: item.properties.designation,
+                  
+                    },
+            position:
+             { x: positionX, y: positionY } ,
+           style:{
+            backgroundColor:'aquamarine',
+           }
+           };
+            } else if(item.labels[0].includes('Materiau')) {
+              return { data:
+                { id: item.elementId,
+                    label: 'node',
+                  
+                    },
+            position:
+             { x: positionX, y: positionY } ,
+           style:{
+            backgroundColor:'blue',
+            fontWeight:'bold'
+           }
+           };
+            } else if(item.labels[0].includes('Periode')) {
+              return { data:
+                { id: item.elementId,
+                    label: 'node',
+                  
+                    },
+            position:
+             { x: positionX, y: positionY } ,
+           style:{
+            backgroundColor:'green',
+            fontWeight:'bold'
+           }
+           };
+            } else if(item.labels[0].includes('Place')) {
+              return { data:
+                { id: item.elementId,
+                    label: 'node',
+                  
+                    },
+            position:
+             { x: positionX, y: positionY } ,
+           style:{
+            backgroundColor:'red',
+            fontWeight:'bold'
+           }
+           };
+            } 
+            else {
+            return { data: { id: item.elementId, label: item.properties.designation }, position: { x: positionX, y: 0 } };
+            }
+        });
+        formattedElements.push(...Nodes);
+// Formatage des arêtes
+const edges = responseData.edges.map(edge => ({
+  data: {
+    id: edge.elementId,
+    source: edge.startNodeElementId,
+    target: edge.endNodeElementId,
+    label: edge.type
+  },
+  style:{
+    Color:'red',
+    fontWeight:'bold',
+    fontSize:'200px',
+   }
+}));
+
+formattedElements.push(...edges);
         setElements(formattedElements);
       } catch (error) {
-        console.error('Error fetching schema:', error);
+        console.error('Error fetching data:', error);
       }
     };
 
-    fetchSchema();
+    fetchData();
   }, []);
+
+ 
 
   return (
     <div>
-      <CytoscapeComponent elements={elements} style={{ width: '100%', height: '500px' }} />
+      <CytoscapeComponent elements={elements} style={{ position:'absolute',  left:'-5%',width: '90%', height: '500px' }}  />
     </div>
   );
 };
 
-export default SchemaViewer;
+export default Neo4jGraph;

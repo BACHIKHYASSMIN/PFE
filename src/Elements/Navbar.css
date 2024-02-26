@@ -82,6 +82,7 @@ left:50%;
     padding: 10px 20px; /* Ajouter un espace de rembourrage */
     cursor: pointer; /* Afficher un curseur au survol */
     transition: background-color 0.3s; /* Ajouter une transition pour une animation fluide */
+    background-color:aquamarine;
   }
   
   .navbar-btn:hover {

@@ -1,0 +1,538 @@
+<div class="embed-responsive embed-responsive-16by9">
+    <div id="mynetwork"></div>
+       <div class="embed-responsive-item" id="viz" width="auto" height="100%" frameborder="0" style="border:0" allowfullscreen>
+ 
+       </div>
+    
+ </div>
+ <script>
+    var nodes = []
+    var edges = []
+    var index=0
+ </script>
+ {%for item in nodes%}
+    <script>
+       var label="{{item.label}}"
+       var color="#2763c4"
+       var href="#"
+       if(label=="Materiau"){
+          color="#36FD69"
+          href="/Materiaux/{{item.name}}"
+       }
+       if(label=="Produit"){
+          color="#3681FD"
+          href="/Produits/{{item.name}}"
+       }
+       if(label=="Ouvrage"){
+          color="#EEFD36"
+          href="/Ouvrages/{{item.name}}"
+       }
+       if(label=="Monument"){
+          color="#FD3636"
+          href="/Monuments/{{item.name}}"
+       }
+       if(label=="Periode"){
+          color="#A0F9EA"
+       }
+       if(label=="Place"){
+          color="#F9A0A6"
+       }
+       nodes.push({
+          data: {id:"{{item.name}}",faveColor: color,label:"{{item.label}}" ,sublabel:"{{item.sublabel}}", href: href},
+          
+       })
+    </script>
+ {%endfor%}
+ 
+ {%for item in edges%}
+    <script>
+       
+       edges.push({
+          data: {
+             id:'{{item.id}}',
+             source: '{{item.from}}',
+             target: "{{item.to}}",
+             label: "{{item.label}}",
+          }
+       })
+       index+=index
+    </script>
+ {%endfor%}
+ <script>
+    
+    var cy = cytoscape({
+       container: document.getElementById('viz'),
+       elements: {
+          nodes: nodes,
+          edges: edges
+       },
+       style: [
+          {
+                selector: 'node',
+                style: {
+                   "text-valign" : "center",
+                   "text-halign" : "center",
+                   "label": 'data(id)',
+                   "width" : 100,
+                   "height" : 100,
+                   "background-color": "data(faveColor)",
+                   'href_link':"data(href)"
+                }
+          },
+          {
+                selector: 'edge',
+                style: {
+                   'width': 5,
+                   'line-color': 'light grey',
+                   'target-arrow-color': 'grey',
+                   'target-arrow-shape': 'triangle',
+                   'curve-style': 'bezier',
+                   'label': 'data(label)',
+                   
+                }
+          }
+       ]
+    });
+    
+    cy.layout({name: 'cose'}).run();
+    cy.on('tap', 'node', function(){
+   try { // your browser may block popups
+     window.open( this.data('href') );
+   } catch(e){ // fall back on url change
+     window.location.href = this.data('href');
+   }
+     });
+    console.log(edges[0].data.id)
+    
+ 
+ </script>
+ <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+ <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+ <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+ <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+ <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+ <script>
+   document.addEventListener('DOMContentLoaded', e => {
+         $('#searchbar').autocomplete()
+     }, false);
+ </script>
+ <script>
+ var materiaux=[]
+ var produits=[]
+ var periodes=[]
+ var typos=[]
+ var roles=[]
+ var places=[]
+ var relations=[]
+ </script>
+ {% for i in materiaux %}
+         <script>
+             id="{{i.id}}"
+             materiaux.push("#"+id)
+             
+         
+         </script>
+ {%endfor%}
+ {% for i in produits %}
+         <script>
+             id="{{i.id}}"
+             produits.push("#"+id)
+            
+         </script>
+ {%endfor%}
+ {% for i in periodes %}
+         <script>
+             id="{{i.id}}"
+             periodes.push("#"+id)
+            
+         </script>
+ {%endfor%}
+ {% for i in typos %}
+         <script>
+             id="{{i.id}}"
+             typos.push("#"+id)
+        
+         </script>
+ {%endfor%}
+ 
+ {% for i in roles %}
+         <script>
+             id="{{i.id}}"
+             roles.push("#"+id)
+         
+         </script>
+ {%endfor%}
+ {% for i in places %}
+         <script>
+             id="{{i.id}}"
+             places.push("#"+id)
+         
+         </script>
+ {%endfor%}
+ {% for i in relations %}
+         <script>
+             id="{{i.id}}"
+             relations.push("#"+id)
+         
+         </script>
+ {%endfor%}
+ <script>
+     var filtres=[]
+     function getname(str){
+         var input = str.replace("#","")
+         input=input.replace("_"," ")
+         input=input.replace("_"," ")
+         input=input.replace("_"," ")
+         input=input.replace("_"," ")
+         input=input.replace("_"," ")
+         input=input.replace("_"," ")
+         return input
+     }
+     function filtreredges(filtres,listenodes,input){
+       if((filtres.length==0)&&(input="")){
+             listenodes=nodes
+             listeedges=edges
+             return listeedges
+         }
+       listeedges=[]
+       
+ 
+       for (let index = 0; index < edges.length; index++) {
+                 const element = edges[index];
+                 var source=element.data.source
+                 add=false
+                 for (let i = 0; i < listenodes.length; i++) {
+                         const e = listenodes[i];
+                         if (e.data.id == source){
+                                 add=true
+                                 break
+                         }
+                 }
+                 if( add==true){
+                         var source=element.data.target
+                         for (let i = 0; i < listenodes.length; i++) {
+                                 const e = listenodes[i];
+                                 if (e.data.id == source){
+                                         listeedges.push(element)
+                                         break
+                                 }
+                         }
+                 }
+         }
+         liste=[]
+         for (var i=0 ; i<relations.length;i++){
+             if($.inArray(relations[i],filtres)>=0){
+                 if($(relations[i]).is(":checked")){
+                     var input = relations[i].replace("#","")
+                     console.log("liste",listeedges.length)
+ 
+                     for (let index = 0; index < listeedges.length; index++) {
+                         const element = listeedges[index];
+                         console.log(element.data.label)
+                         if (element.data.label == input){
+                            liste.push(element)
+                            
+                         }
+                     }
+                 }
+             }    
+         }
+         console.log(liste)
+         
+         return listeedges
+     }
+     function filtrer (filtres, listenodes ){
+         if(filtres.length==0){
+             listenodes=nodes
+             listeedges=edges
+             return listenodes
+         }
+         $("#"+id).hide()
+         listenodes=[]
+         listeedges=[]
+         for (var i=0 ; i<produits.length;i++){
+             if($.inArray(produits[i],filtres)>=0){
+                 if($(produits[i]).is(":checked")){
+                     var input=getname(produits[i])
+                     console.log(input)
+                     for (let index = 0; index < nodes.length; index++) {
+                         const element = nodes[index];
+                         if (element.data.id == input){
+                                 listenodes.push(element)
+                         }
+                     }
+                     }
+                 }
+            } 
+        
+         for (var i=0 ; i<materiaux.length;i++){
+             //console.log(materiaux[i],$(materiaux[i]).is(":checked"))
+             if($.inArray(materiaux[i],filtres)>=0){
+                 if($(materiaux[i]).is(":checked")){
+                     var input = getname(materiaux[i])
+                     console.log(input,materiaux[i])
+                     for (let index = 0; index < nodes.length; index++) {
+                         const element = nodes[index];
+                         if (element.data.id == input){
+                                 listenodes.push(element)
+                         }
+                     }
+                 }
+             }
+             
+         }
+         for (var i=0 ; i<places.length;i++){
+             if($.inArray(places[i],filtres)>=0){
+                 if($(places[i]).is(":checked")){
+                     var input = getname(places[i])
+                     console.log(input)
+                     for (let index = 0; index < nodes.length; index++) {
+                         const element = nodes[index];
+                         
+                         if (element.data.id == input){
+                                 listenodes.push(element)
+                                 
+                         }
+                     }
+                 }
+             }    
+         }
+         for (var i=0 ; i<roles.length;i++){
+             if($.inArray(roles[i],filtres)>=0){
+                 if($(roles[i]).is(":checked")){
+                     var input = getname(roles[i])
+                     for (let index = 0; index < nodes.length; index++) {
+                         const element = nodes[index];
+                         //if (element.data.sublabel == input){
+                         if (element.data.id == input){
+                                 listenodes.push(element)
+                         }
+                     }
+                 }
+             }    
+         }
+         
+         for (var i=0 ; i<typos.length;i++){
+             if($.inArray(typos[i],filtres)>=0){
+                 if($(typos[i]).is(":checked")){
+                     var input = getname(typos[i])
+                     for (let index = 0; index < nodes.length; index++) {
+                         const element = nodes[index];
+                         //if (element.data.sublabel == input){
+                         if (element.data.id == input){
+                                 listenodes.push(element)
+                         }
+                     }
+                 }
+             }    
+         }
+         for (var i=0 ; i<periodes.length;i++){
+             if($.inArray(periodes[i],filtres)>=0){
+                 if($(periodes[i]).is(":checked")){
+                     var input = getname(periodes[i])
+                     for (let index = 0; index < nodes.length; index++) {
+                         const element = nodes[index];
+                         if (element.data.id == input){
+                                 listenodes.push(element)
+                         }
+                     }
+                 }
+             }    
+         }
+         return listenodes
+     }
+     var listeall=[]
+       listeall=$.merge(listeall,materiaux)
+       listeall=$.merge(listeall,produits)
+       listeall=$.merge(listeall,periodes)
+       listeall=$.merge(listeall,places)
+       listeall=$.merge(listeall,roles)
+       listeall=$.merge(listeall,relations)
+       listeall=$.merge(listeall,typos)
+       
+ </script>
+ 
+     
+ <script>
+   document.addEventListener('DOMContentLoaded', e => {
+       var id= "{{ item.id}}".replace("/&quot;/g","");
+       var designation= "{{ item.item.designation}}".replace("/&quot;/g","");
+       var classe= "{{ item.classe}}".replace("/&quot;/g","");
+       var subclasse= "{{ item.subclasse}}".replace("/&quot;/g","");
+       var forme= "{{ item.forme}}".replace("/&quot;/g","");
+       var couleur= "{{ item.couleur}}".replace("/&quot;/g","");
+       var dispo= "{{ item.dispo}}".replace("/&quot;/g","");
+       var place= "{{ item.place}}".replace("/&quot;/g","");
+       var periode= "{{ item.periode}}".replace("/&quot;/g","");
+       var role= "{{ item.role}}".replace("/&quot;/g","");
+       var typo= "{{ item.typo}}".replace("/&quot;/g","");
+       for (let i ; i<materiaux.length;i++){
+         
+       }
+       
+       for (let i=0;i<listeall.length;i++ ){
+         
+         $(listeall[i]).click(function(){
+             console.log(filtres)
+             if($(listeall[i]).is(":checked")==true){
+                 if($.inArray(listeall[i],filtres)<0){
+                     filtres.push(listeall[i])
+                 }
+             }else{
+                 
+                 //console.log(filtres.splice($.inArray(listeall[i], filtres), 1))
+                 filtres = $.grep(filtres, function(n) {
+                     return n != listeall[i];
+                     });
+                 console.log(filtres)
+             }
+             var listeedges=[]
+             var listenodes=[]
+             listenodes=filtrer(filtres,listenodes,listeedges)
+             listeedges=filtreredges(filtres,listenodes,"")
+             console.log(listenodes.length)
+             var cy = cytoscape({
+                 container: $('#viz'),
+                 elements: {
+                         nodes: listenodes,
+                         edges: listeedges
+                 },
+                 style: [
+                         {
+                         selector: 'node',
+                         style: {
+                                 "text-valign" : "center",
+                                 "text-halign" : "center",
+                                 "label": 'data(id)',
+                                 "width" : 100,
+                                 "height" : 100,
+                                 "background-color": "data(faveColor)"
+                         }
+                         },
+                         {
+                         selector: 'edge',
+                         style: {
+                                 'width': 5,
+                                 'line-color': 'light grey',
+                                 'target-arrow-color': 'grey',
+                                 'target-arrow-shape': 'triangle',
+                                 'curve-style': 'bezier',
+                                 'label': 'data(label)',
+                         }
+                         }
+                 ]
+                 });
+                 cy.layout({name: 'cose'}).run();
+         })
+       }
+       $('#clear').click(function(){
+             
+             filtres=[]
+             for (let i=0;i<listeall.length;i++ ){
+                 $(listeall[i]).prop("checked",false)
+             }
+             var listeedges=edges
+             var listenodes=nodes
+             var cy = cytoscape({
+                 container: $('#viz'),
+                 elements: {
+                         nodes: listenodes,
+                         edges: listeedges
+                 },
+                 style: [
+                         {
+                         selector: 'node',
+                         style: {
+                                 "text-valign" : "center",
+                                 "text-halign" : "center",
+                                 "label": 'data(id)',
+                                 "width" : 100,
+                                 "height" : 100,
+                                 "background-color": "data(faveColor)"
+                         }
+                         },
+                         {
+                         selector: 'edge',
+                         style: {
+                                 'width': 5,
+                                 'line-color': 'light grey',
+                                 'target-arrow-color': 'grey',
+                                 'target-arrow-shape': 'triangle',
+                                 'curve-style': 'bezier',
+                                 'label': 'data(label)',
+                                 "background-color": "data(faveColor)"
+                         }
+                         }
+                 ]
+                 });
+                 cy.layout({name: 'cose'}).run();
+ 
+         })
+       $('#validerb').click(function(){
+          
+          for (let i=0;i<filtres.length;i++ ){
+                 $(filtres[i]).prop("checked",false)
+          }
+          filtres=[]
+           var listeedges=[]
+           var listenodes=[]
+           var input=$('#searchbar').val()
+           
+           if (input==""){
+             listeedges=edges
+             listenodes=nodes
+           }else{
+             for (let i = 0; i < nodes.length; i++) {
+                const element = nodes[i];
+                designation=element.data.id
+                classe=element.data.label
+                subclasse=element.data.sublabel
+                
+                if((designation.toLocaleLowerCase().includes(input.toLocaleLowerCase()))||(classe.toLocaleLowerCase().includes(input.toLocaleLowerCase()))||(subclasse.toLocaleLowerCase().includes(input.toLocaleLowerCase()))){
+                  
+                   listenodes.push(element)
+                }
+             }
+             var liste=listenodes
+             if(liste.length>0){
+                listeedges=filtreredges(filtres,liste,input)
+             }
+                
+           }
+           
+             var cy = cytoscape({
+                 container: $('#viz'),
+                 elements: {
+                         nodes: listenodes,
+                         edges: listeedges
+                 },
+                 style: [
+                         {
+                         selector: 'node',
+                         style: {
+                                 "text-valign" : "center",
+                                 "text-halign" : "center",
+                                 "label": 'data(id)',
+                                 "width" : 100,
+                                 "height" : 100,
+                                 "background-color": "data(faveColor)"
+                         }
+                         },
+                         {
+                         selector: 'edge',
+                         style: {
+                                 'width': 5,
+                                 'line-color': 'light grey',
+                                 'target-arrow-color': 'grey',
+                                 'target-arrow-shape': 'triangle',
+                                 'curve-style': 'bezier',
+                                 'label': 'data(label)',
+                         }
+                         }
+                 ]
+                 });
+                 cy.layout({name: 'cose'}).run();
+ 
+         })
+     }, false);
+ </script>

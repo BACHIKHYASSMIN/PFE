@@ -18,7 +18,9 @@ import { Form, Select, Button, Input, Card, Row, Col ,Checkbox, Typography } fro
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import ChatBox from './Elements/ChatBox';
 import axios from 'axios';
+import CytoscapeComponent from 'react-cytoscapejs';
 import GraphComponent from './Elements/KnowledgeGraph'
+import Neo4jGraph from './test';
 const { Option } = Select;
 
 
@@ -195,10 +197,10 @@ function Graph() {
 
         </div>
         
-        <div style={{ flex: 1, paddingRight: '40px' }}>
-          {/*Ajouter le graph*/}
+        
+        < Neo4jGraph />
       
-        </div>
+       
       </div>
       {isMenuOpen && (
         
