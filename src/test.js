@@ -9,7 +9,7 @@ const Neo4jGraph = () => {
     const fetchData = async () => {
       try {
         // Effectuer une requête à votre endpoint pour récupérer les données
-        const response = await axios.get('http://localhost:4000/api/nodes');
+        const response = await axios.get('http://localhost:2000/api/nodes');
         const responseData = response.data;
         const lab=responseData.nodes[0].labels;
 
