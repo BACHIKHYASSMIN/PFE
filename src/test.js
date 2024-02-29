@@ -9,14 +9,14 @@ const Neo4jGraph = () => {
     const fetchData = async () => {
       try {
         // Effectuer une requête à votre endpoint pour récupérer les données
-        const response = await axios.get('http://localhost:2000/api/nodes');
+        const response = await axios.get('http://localhost:4000/api/nodes');
         const responseData = response.data;
         const lab=responseData.nodes[0].labels;
 
         // Formater les données pour les utiliser dans la structure d'éléments
         const Nodes = responseData.nodes.map((item, index) => {
           const positionX = index * 100;
-          const positionY = index * 30;
+          const positionY = index * 2;
             if(item.labels[0].includes('Produit')){
                 return { data:
                      { id: item.elementId,
@@ -163,7 +163,6 @@ const edges = responseData.edges.map(edge => ({
 }));
 
 formattedElements.push(...edges);
-formattedElements = Nodes.concat(edges);
         setElements(formattedElements);
       } catch (error) {
         console.error('Error fetching data:', error);
