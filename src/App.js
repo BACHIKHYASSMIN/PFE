@@ -37,7 +37,7 @@ import OuvrageDetails from './OuvrageDetails'
 function App() {
   return (
     <LangProvider>
-    <div className="Class">
+    <div className="App">
         <Routes>
         <Route path="/" exact element={<Home />} />
           <Route path="/material" element={<Material />} />

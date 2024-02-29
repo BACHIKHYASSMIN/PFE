@@ -198,10 +198,11 @@ function Graph() {
         </div>
         
         
-        < Neo4jGraph />
-      
        
+        < Neo4jGraph />
+  
       </div>
+     
       {isMenuOpen && (
         
         <div className="side-menu">

@@ -9,7 +9,7 @@ function Footer() {
   <div className="Footer">
     <div className="LogoName"> <h3>NUMERIQUEMATERIALS</h3></div> 
     <div className="Pages">
-        <ul class="footer-links">
+        <ul className="footer-links">
             <li><a href="/">Acceuil</a></li>
             <li><a>Classes</a></li>
             <li><a href="/graph">Graph</a></li>
