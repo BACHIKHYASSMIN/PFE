@@ -172,12 +172,14 @@ formattedElements.push(...edges);
     fetchData();
   }, []);
 
-  
+   const layoutOptions = {
+    name: 'cose', 
+  };
 
   return (
     
     <div>
-      <CytoscapeComponent elements={elements} style={{ position:'absolute',  left:'-5%',width: '90%', height: '500px' }}  />
+      <CytoscapeComponent elements={elements} style={{ position:'absolute',  left:'-5%',width: '90%', height: '500px' }}  layout={layoutOptions} />
     </div>
   );
 };
