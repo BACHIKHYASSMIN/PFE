@@ -31,6 +31,16 @@ const Ouvrage = () => {
   const [isChecked2, setChecked2] = useState(false);
   const [isChecked3, setChecked3] = useState(false);
   const [data, setData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const handleSearch = () => {
+    const filteredOuvrages = data.ouvrages.filter((ouvrage) =>
+      ouvrage.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setData({ ...data, ouvrages: filteredOuvrages });
+  };
+
+
+
   const navigate = useNavigate();
   const handleImageClick = (ouvrageId) => {
     const integerOuvrageId = parseInt(ouvrageId, 10);
@@ -108,12 +118,14 @@ const Ouvrage = () => {
           <Row gutter={16}>
             <Col flex="auto">
               <Input
-                placeholder="Rechercher un matériau"
+                placeholder="Rechercher un ouvrage"
                 style={{ flex:1, marginRight: '10px', background: '#ECF0F1', color:'#2C3E50' }}
+                value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
               />
             </Col>
             <Col>
-              <Button type="primary" htmlType="submit"  style={{backgroundColor :'#2C3E50'}}>
+              <Button type="primary" htmlType="submit"  style={{backgroundColor :'#2C3E50'}} onClick={handleSearch}>
                 Valider
               </Button>
             </Col>

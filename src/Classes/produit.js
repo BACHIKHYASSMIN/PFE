@@ -29,6 +29,18 @@ const Produit = () => {
   const [isChecked2, setChecked2] = useState(false);
   const [isChecked3, setChecked3] = useState(false);
   const [data, setData] = useState([]);
+
+  const [searchTerm, setSearchTerm] = useState("");
+
+const handleSearch = () => {
+  
+    const filteredProduits = data.produits.filter((produit) =>
+      produit.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setData({ ...data, produits: filteredProduits });
+  }
+
+
   const navigate = useNavigate();
   const handleImageClick = (productId) => {
     const integerProductId = parseInt(productId, 10);
@@ -101,13 +113,16 @@ const Produit = () => {
         <Col flex="auto" style={{ textAlign: 'right' }}>
           <Row gutter={16}>
             <Col flex="auto">
-              <Input
-                placeholder="Rechercher un matériau"
-                style={{ flex:1, marginRight: '10px', background: '#ECF0F1', color:'#2C3E50' }}
-              />
+            <Input
+    placeholder="Rechercher un produit"
+    style={{ flex:1, marginRight: '10px', background: '#ECF0F1', color:'#2C3E50' }}
+    value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
+    
+  />
             </Col>
             <Col>
-              <Button type="primary" htmlType="submit"  style={{backgroundColor :'#2C3E50'}}>
+              <Button type="primary" htmlType="submit"  onClick={handleSearch} style={{backgroundColor :'#2C3E50'}}>
                 Valider
               </Button>
             </Col>
@@ -126,8 +141,8 @@ const Produit = () => {
             <li>Aucun produit trouvé</li>
           )
       }  
-
       </div>
+
               <div className='Links'>
               <a >1</a>
               <a >2</a>

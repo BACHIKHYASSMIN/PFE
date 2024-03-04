@@ -26,6 +26,15 @@ const Monument = () => {
   const [isChecked2, setChecked2] = useState(false);
   const [isChecked3, setChecked3] = useState(false);
   const [data, setData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const handleSearch = () => {
+    const filteredMonuments = data.monuments.filter((monument) =>
+      monument.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setData({ ...data, monuments: filteredMonuments });
+  };
+
+
   const navigate = useNavigate();
   const handleImageClick = (monumentId) => {
     const integerId = parseInt(monumentId, 10);
@@ -112,12 +121,14 @@ const Monument = () => {
           <Row gutter={16}>
             <Col flex="auto">
               <Input
-                placeholder="Rechercher un matériau"
+                placeholder="Rechercher un monument"
                 style={{ flex:1, marginRight: '10px', background: '#ECF0F1', color:'#2C3E50' }}
+                value={searchTerm}
+    onChange={(e) => setSearchTerm(e.target.value)}
               />
             </Col>
             <Col>
-              <Button type="primary" htmlType="submit"  style={{backgroundColor :'#2C3E50'}}>
+              <Button type="primary" htmlType="submit"  style={{backgroundColor :'#2C3E50'}} onClick={handleSearch}>
                 Valider
               </Button>
             </Col>

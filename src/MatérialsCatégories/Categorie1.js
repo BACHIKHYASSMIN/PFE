@@ -25,6 +25,14 @@ function Categorie1() {
   const [isChecked2, setChecked2] = useState(false);
   const [isChecked3, setChecked3] = useState(false);
   const [data, setData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const handleSearch = () => {
+    const filteredMateriaux = data.materiaux.filter((materiau) =>
+      materiau.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setData({ ...data, materiaux: filteredMateriaux });
+  };
+
   const navigate = useNavigate();
   const handleImageClick = (materialId) => {
     const integerMaterialId = parseInt(materialId, 10);
@@ -106,10 +114,12 @@ function Categorie1() {
               <Input
                 placeholder="Rechercher un matériau"
                 style={{ flex:1, marginRight: '10px', background: '#ECF0F1', color:'#2C3E50' }}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
             </Col>
             <Col>
-              <Button type="primary" htmlType="submit"  style={{backgroundColor :'#2C3E50'}}>
+              <Button type="primary" htmlType="submit"  style={{backgroundColor :'#2C3E50'}} onClick={handleSearch}>
                 Valider
               </Button>
             </Col>
