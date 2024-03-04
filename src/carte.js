@@ -42,7 +42,7 @@ function Carte() {
   const [data, setData] = useState([]);
   const [isFilterOpen, setFilterOpen ] = useState(false);
  
-
+  
   const handleMenuToggle = () => {
     setMenuOpen(!isMenuOpen);
   };
@@ -65,12 +65,15 @@ function Carte() {
 
     
   const [form] = Form.useForm();
-
+  const handleCancel = () => {
+    form.resetFields(); // Réinitialiser les champs du formulaire
+  };
   const onFinish = (values) => {
     console.log('Received values of form: ', values);
   };
     
-  
+
+
   return (
     
     <div className='graph'>
@@ -151,7 +154,7 @@ function Carte() {
  <Button type="primary" htmlType="submit" style={{ marginRight: '10px', backgroundColor: '#27AE60', marginTop: '20px' }}>
    Valider
  </Button>
- <Button type="default" style={{ backgroundColor: '#d9d9d9', border: 'none' }}>
+ <Button type="default" style={{ backgroundColor: '#d9d9d9', border: 'none' }} onClick={handleCancel}>
    Annuler
  </Button>
 </Form.Item>

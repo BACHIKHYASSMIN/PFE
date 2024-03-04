@@ -61,6 +61,14 @@ function Categorie3() {
     const handleCheckbox3Change = () => {
       setChecked3(!isChecked3);
     };
+    const handleCancel = () => {
+      setChecked1(false);
+      setChecked2(false);
+      setChecked3(false);
+      // Réinitialiser d'autres états de cases à cocher si nécessaire
+    };
+
+
   return (
       <div className='cat'>
          <Navbar/>
@@ -239,7 +247,7 @@ function Categorie3() {
     </div> 
           <div className='lineFBar'></div>
           <div className='ValBtn'>
-          <button className='annuler'>Annuler</button>
+          <button className='annuler' onClick={handleCancel}>Annuler</button>
           <button className='valider'>Valider</button>
           </div>
         </div>
