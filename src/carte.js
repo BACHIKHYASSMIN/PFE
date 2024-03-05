@@ -1,4 +1,3 @@
-
 import './carte.css';
 import React, { useState, useEffect}  from 'react';
 import  menuIcon from "./Assets/icon.png"
@@ -21,13 +20,7 @@ const { Option } = Select;
 
 function Carte() {
   const [selectedMonuments, setSelectedMonuments] = useState({});
-
-  
-  
   const [isMenuOpen, setMenuOpen] = useState(false);
-  const [isChecked1, setChecked1] = useState(false);
-  const [isChecked2, setChecked2] = useState(false);
-  const [isChecked3, setChecked3] = useState(false);
   const [data, setData] = useState([]);
   const [isFilterOpen, setFilterOpen ] = useState(false);
  
@@ -57,25 +50,19 @@ function Carte() {
     fetchData();
   }, []);
 
-    useEffect(() => {
-    if (data && data.monuments) {
-      const map = L.map('map').setView([7.1881, 21.0938], 3);
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors'
-      }).addTo(map);
-      
-      L.marker([36.7372, 3.0867]).addTo(map)
-      .openPopup();
-    }
-  }, [data, selectedMonuments]);
+  
+
   const [form] = Form.useForm();
   const handleCancel = () => {
     form.resetFields(); // Réinitialiser les champs du formulaire
   };
   const onFinish = (values) => {
-    console.log('Received values of form: ', values);
+    console.log('Received values of form: ');
   };
-    
+  
+  const handleSelection = () => {
+  
+  }
 
 
   return (
@@ -88,7 +75,7 @@ function Carte() {
       crossOrigin=""/>
       <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-     crossorigin=""></script>
+     crossOrigin=""></script>
 
       <Navbar />
       <div className="material-head">
@@ -161,7 +148,7 @@ function Carte() {
 {/* Répétez ce schéma pour les autres Form.Item */}
 
 <Form.Item>
- <Button type="primary" htmlType="submit" style={{ marginRight: '10px', backgroundColor: '#27AE60', marginTop: '20px' }}>
+ <Button type="primary"  onClick={handleSelection()} htmlType="submit" style={{ marginRight: '10px', backgroundColor: '#27AE60', marginTop: '20px' }}>
    Valider
  </Button>
  <Button type="default" style={{ backgroundColor: '#d9d9d9', border: 'none' }} onClick={handleCancel}>
@@ -175,9 +162,25 @@ function Carte() {
    </div>
         </div>
         
-        <div style={{ flex: 1, paddingRight: '40px' }}>
-        <div id="map" style={{ width: '100%', height: '400px' }}></div>
-        </div>
+        <div style={{ width: '100%', height: '400px' }}>
+  <MapContainer center={[7.1881, 21.0938]} zoom={3} scrollWheelZoom={false} style={{ marginLeft: '10%', zIndex: '100', width: '80%', height: '100%' }}>
+    <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+    {data && data.monuments ? (
+      data.monuments.map(monument => (
+        selectedMonuments[monument.id] ? (
+          <Marker key={monument.id} position={[monument.attitude, monument.longitude]}>
+            <Popup>
+              {monument.title}
+            </Popup>
+          </Marker>
+        ) : null
+      ))
+    ) : (
+      <li>Aucun monument trouvé</li>
+    )}
+  </MapContainer>
+</div>
+
       </div>
    
 
@@ -253,5 +256,4 @@ function Carte() {
   );
   
 }
-
 export default Carte;

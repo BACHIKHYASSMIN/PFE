@@ -10,7 +10,7 @@ import App from './App';
 import SchemaViewer from './test';
 import { I18nextProvider } from 'react-i18next';
 import i18next from 'i18next';
-
+import CartePage from './cc'
 import Neo4jGraph from './test';
 import translationEN from './translation/en/global.json';
 import translationFR from './translation/fr/global.json';
