@@ -53,9 +53,7 @@ function Carte() {
   
 
   const [form] = Form.useForm();
-  const handleCancel = () => {
-    form.resetFields(); // Réinitialiser les champs du formulaire
-  };
+ 
   const onFinish = (values) => {
     console.log('Received values of form: ');
   };
@@ -64,7 +62,13 @@ function Carte() {
   
   }
 
-
+  const handleCancel = () => {
+    const updatedSelectedMonuments = {};
+    for (const monumentId in selectedMonuments) {
+      updatedSelectedMonuments[monumentId] = false;
+    }
+    setSelectedMonuments(updatedSelectedMonuments);
+  };
   return (
     
     <div className='graph'>
@@ -148,11 +152,8 @@ function Carte() {
 {/* Répétez ce schéma pour les autres Form.Item */}
 
 <Form.Item>
- <Button type="primary"  onClick={handleSelection()} htmlType="submit" style={{ marginRight: '10px', backgroundColor: '#27AE60', marginTop: '20px' }}>
-   Valider
- </Button>
- <Button type="default" style={{ backgroundColor: '#d9d9d9', border: 'none' }} onClick={handleCancel}>
-   Annuler
+ <Button type="default" style={{ backgroundColor: '#27AE60', border: 'none',color:'#d9d9d9'}} onClick={handleCancel}>
+ Effacer
  </Button>
 </Form.Item>
 </div>
@@ -162,7 +163,7 @@ function Carte() {
    </div>
         </div>
         
-        <div style={{ width: '100%', height: '400px' }}>
+        <div style={{ width: '100%', height: '600px' }}>
   <MapContainer center={[7.1881, 21.0938]} zoom={3} scrollWheelZoom={false} style={{ marginLeft: '10%', zIndex: '100', width: '80%', height: '100%' }}>
     <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
     {data && data.monuments ? (
