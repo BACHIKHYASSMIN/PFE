@@ -1,11 +1,14 @@
 const express = require('express');
 const neo4j = require('neo4j-driver');
-
+const router = express.Router();
+const mysql = require('mysql');
 const app = express();
 const port = 2000;
 app.set('view engine', 'ejs');
 // Middleware pour activer CORS
+app.use(express.json());
 app.use((req, res, next) => {
+
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000'); // Autoriser les requêtes depuis le domaine de votre application cliente
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE'); // Méthodes HTTP autorisées
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization'); // En-têtes autorisés
@@ -62,7 +65,9 @@ app.get('/api/data', async (req, res) => {
     const monumentsResult = await session.run('MATCH (n:Monument) RETURN n');
     const monumentArr = monumentsResult.records.map(record => ({
         id: record._fields[0].identity.low,
-        title: record._fields[0].properties.designation
+        title: record._fields[0].properties.designation,
+        attitude: record._fields[0].properties.attitude,
+        longitude: record._fields[0].properties.longitude
     }));
 
     if (!monumentsResult || monumentsResult.records.length === 0) {
@@ -177,6 +182,67 @@ app.get('/api/nodes', async (req, res) => {
       res.status(500).send('Error fetching schema');
   } finally {
       if (driver) await driver.close();
+  }
+});
+
+app.post('/api/register', async (req, res) => {
+  const { nomComplet, email, motDePasse } = req.body;
+
+  // Créer une connexion à la base de données MySQL
+  const connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'materiautheque'
+  });
+
+  try {
+    // Insertion des données d'inscription dans la base de données
+    const sql = "INSERT INTO logging (`full name`, `email`, `password`) VALUES (?, ?, ?)";
+    connection.query(sql, [nomComplet, email, motDePasse], (err, result) => {
+      if (err) {
+        console.error('Erreur lors de l\'inscription :', err);
+        res.status(500).json({ message: 'Erreur lors de l\'inscription' });
+      } else {
+        console.log('Utilisateur inscrit avec succès');
+        res.status(200).json({ message: 'Inscription réussie' });
+      }
+    });
+  } catch (error) {
+    console.error('Erreur lors de l\'inscription :', error);
+    res.status(500).json({ message: 'Erreur lors de l\'inscription' });
+  }
+});
+
+app.post('/api/login', async (req, res) => {
+  const { email, pass } = req.body;
+
+  const connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'materiautheque'
+  });
+  
+  try {
+  // Recherche de l'utilisateur dans la base de données
+  connection.query('SELECT * FROM logging WHERE `email` = ? AND `password` = ?', [email, pass], (error, results) => {
+      if (error) {
+          console.error('Erreur lors de la connexion :', error);
+          res.status(500).json({ message: 'Erreur lors de la connexion' });
+      } else {
+          if (results.length > 0) {
+              // L'utilisateur est trouvé, authentification réussie
+              res.status(200).json({ message: 'Authentification réussie' });
+          } else {
+              // Aucun utilisateur correspondant trouvé
+              res.status(401).json({ message: 'Email ou mot de passe incorrect' });
+          }
+      }
+  });
+  }catch (error) {
+    console.error('Erreur lors de la connexion :', error);
+    res.status(500).json({ message: 'Erreur lors de connexion' });
   }
 });
 app.listen(port, () => {

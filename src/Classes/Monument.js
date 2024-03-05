@@ -83,7 +83,7 @@ const Monument = () => {
 
     return(
     <na className="material">
-       <Navbar/>
+       <Navbar  /> 
       <div className="material-head">
           <img className="menu" src={menuIcon} alt="Menu Icon"
           onClick={handleMenuToggle}  />

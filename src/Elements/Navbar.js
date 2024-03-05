@@ -19,7 +19,10 @@ const Navbar = () => {
   const handleProfil = () => {
     navigate('/profil');
   };
-
+  const  onConnexionClick = () => {
+    // Naviguer vers la page "Details" lors du clic sur l'image
+    navigate('/connexion');
+  };
   const toggleLang=(lang:String) =>{
     i18n.changeLanguage(lang);
   }
@@ -31,12 +34,12 @@ const Navbar = () => {
         <div className="navbar-logo">NumeriqueMaterials</div>
         <ul className="navbar-menu">
           {/* Use Link to navigate to different pages */}
-          <li className="navbar-item"><Link to="/">{t("navbar.accueil")}</Link></li>
-          <li className="navbar-item"><Link to="/Graph">{t("navbar.graph")}</Link></li>
+          <li className="navbar-item"><Link to="/userHome">{t("navbar.accueil")}</Link></li>
+         <li className="navbar-item"><Link to="/Graph">{t("navbar.graph")}</Link></li>
           <li className="navbar-item"><Link to="/carte-geographique">{t("navbar.carteGeographique")}</Link></li>
           <li className="navbar-item"><Link to="/recherche-avancee">{t("navbar.rechercheAvancee")}</Link></li>
           <li className="navbar-item"><Link to="/a-propos">{t("navbar.aPropos")}</Link></li>
-          <img className="navbar-img" src={img} alt="Navbar Icon"  onClick={handleProfil}/>
+         <img className="navbar-img" src={img} alt="Navbar Icon" onClick={handleProfil} />
           <button  className="navbar-btn" onClick={()=>{toggleLang("en")}}>EN</button>
           <button  className="navbar-btn" onClick={()=>{toggleLang("fr")}}>FR</button>
         </ul>

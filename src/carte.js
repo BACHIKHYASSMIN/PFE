@@ -20,21 +20,10 @@ import Monument from './Classes/Monument';
 const { Option } = Select;
 
 function Carte() {
+  const [selectedMonuments, setSelectedMonuments] = useState({});
+
   
-
-  useEffect(() => {
-    // Créer une carte Leaflet et l'ajouter à l'élément avec l'ID 'map'
-    const map = L.map('map').setView([7.1881, 21.0938], 3);
-    // Ajouter une couche de tuiles à la carte
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
-
-    // Créer un marqueur et l'ajouter à la carte
-    L.marker([36.7372, 3.0867]).addTo(map)
-      .openPopup();
-  }, []);
-
+  
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isChecked1, setChecked1] = useState(false);
   const [isChecked2, setChecked2] = useState(false);
@@ -54,6 +43,11 @@ function Carte() {
     const fetchData = async () => {
       try {
         const response = await axios.get('http://localhost:2000/api/data');
+        const initialSelectedMonuments = response.data.monuments.reduce((acc, monument) => {
+          acc[monument.id] = false;
+          return acc;
+        }, {});
+        setSelectedMonuments(initialSelectedMonuments);
         setData(response.data);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -63,7 +57,17 @@ function Carte() {
     fetchData();
   }, []);
 
-    
+    useEffect(() => {
+    if (data && data.monuments) {
+      const map = L.map('map').setView([7.1881, 21.0938], 3);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(map);
+      
+      L.marker([36.7372, 3.0867]).addTo(map)
+      .openPopup();
+    }
+  }, [data, selectedMonuments]);
   const [form] = Form.useForm();
   const handleCancel = () => {
     form.resetFields(); // Réinitialiser les champs du formulaire
@@ -135,7 +139,13 @@ function Carte() {
 <div style={{ display: 'flex', flexDirection: 'column' }}>
           {data && data.monuments ? (
             data.monuments.map(monument => (
-           <Checkbox  key={monument.id}  value="">{monument.title}</Checkbox>
+           <Checkbox checked={selectedMonuments[monument.id]}
+           onChange={e => {
+             setSelectedMonuments(prevState => ({
+               ...prevState,
+               [monument.id]: e.target.checked
+             }));
+           }} key={monument.id}  value="">{monument.title}</Checkbox>
           ))
           ):(
             <li>Aucun produit trouvé</li>

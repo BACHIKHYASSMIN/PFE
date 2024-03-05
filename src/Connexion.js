@@ -3,27 +3,34 @@ import React, { useState } from 'react';
 import { Button, Form, Input } from 'antd';
 import Inscription from './Inscription';
 import { Link, useNavigate } from 'react-router-dom';
-
-const Connexion = ({ onClose, history }) => { // Ajoutez history en tant que prop
-
+import axios from 'axios';
+import { message } from 'antd';
+const Connexion = ({ onClose}) => { // Ajoutez history en tant que prop
+// Définir des états pour stocker les valeurs des champs de formulaire
+const [email, setEmail] = useState('');
+const [pass, setPassword] = useState();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [showInscription, setShowInscription] = useState(false);
   const navigate= useNavigate();
 
-  const onFinish = (values) => {
-    console.log('Form values:', values);
-    setLoading(true);
-    // Simuler un appel API
-    setTimeout(() => {
-      setLoading(false);
-      onClose(); // Fermer la fenêtre modale après le chargement
-      history.push('/material'); // Rediriger vers la page "material"
-    }, 2000);
+  const handleSubmit = async () => { 
+    
+    try {
+      // Envoyer une requête POST avec les informations d'identification saisies par l'utilisateur
+      
+      const response = await axios.post('http://localhost:2000/api/login', {
+        email, 
+        pass
+      });
+    
+      navigate('/userHome');
+  
+    } catch (error) {
+        message.error(error.response.data.message); 
   };
-  const Connecter = () => {
-    navigate('/material');
-  };
+  }
+
   const toggleInscription = () => {
     setShowInscription(!showInscription);
   };
@@ -38,13 +45,13 @@ const Connexion = ({ onClose, history }) => { // Ajoutez history en tant que pro
         <>
           <h2 style={{ color: '#3498db', marginBottom: '30px' }}>Se Connecter</h2>
           <h5 style={{ color: '#2C3E50', marginBottom: '10px', textAlign: 'left' }}>Email</h5>
-          <Form form={form} onFinish={onFinish}>
+          <Form form={form} >
             <Form.Item
               name="Email"
               rules={[{ required: true, message: 'Entrer votre Email svp' }]}
               style={{ marginBottom: '20px' }}
             >
-              <Input />
+              <Input  value={email} onChange={(e) => setEmail(e.target.value)} />
             </Form.Item>
 
             <h5 style={{ color: '#2C3E50', marginBottom: '10px', textAlign: 'left' }}>Mot de passe</h5>
@@ -53,11 +60,11 @@ const Connexion = ({ onClose, history }) => { // Ajoutez history en tant que pro
               rules={[{ required: true, message: 'Entrer votre Mot de passe svp!' }]}
               style={{ marginBottom: '50px' }}
             >
-              <Input.Password />
+              <Input.Password  value={pass} onChange={(e) => setPassword(e.target.value)}/>
             </Form.Item>
 
             <Form.Item style={{ marginBottom: '40px' }}>
-              <Button type="primary" htmlType="submit" loading={loading} style={{ backgroundColor: '#2C3E50' }}  onClick={Connecter}>
+              <Button type="primary" htmlType="submit" loading={loading} style={{ backgroundColor: '#2C3E50' }}  onClick={handleSubmit}>
                 Connexion
               </Button>
             </Form.Item>

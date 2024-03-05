@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import CytoscapeComponent from 'react-cytoscapejs';
-import Cytoscape from 'cytoscape';
+
 const Neo4jGraph = () => {
   const [elements, setElements] = useState([]);
   const formattedElements = [];
@@ -16,7 +16,7 @@ const Neo4jGraph = () => {
         // Formater les données pour les utiliser dans la structure d'éléments
         const Nodes = responseData.nodes.map((item, index) => {
           const positionX = index * 100;
-          const positionY = index * 30;
+          const positionY = index * 2;
             if(item.labels[0].includes('Produit')){
                 return { data:
                      { id: item.elementId,
@@ -27,8 +27,7 @@ const Neo4jGraph = () => {
                   { x: positionX, y: 0 } ,
                 style:{
                     backgroundColor:'orange',
-                    fontWeight:'bold',
-                    grabbable: true
+                    fontWeight:'bold'
                 }
                 };
             }else if(item.labels[0].includes('Restauration') ) {
@@ -138,8 +137,8 @@ const Neo4jGraph = () => {
             position:
              { x: positionX, y: positionY } ,
            style:{
-            'line-color': 'red', // Utilisez 'line-color' au lieu de 'Color'
-            'font-weight': 'bold',
+            backgroundColor:'red',
+            fontWeight:'bold'
            }
            };
             } 
@@ -154,13 +153,16 @@ const edges = responseData.edges.map(edge => ({
     id: edge.elementId,
     source: edge.startNodeElementId,
     target: edge.endNodeElementId,
-    label:edge.type
+    label: edge.type
   },
-
+  style:{
+    Color:'red',
+    fontWeight:'bold',
+    fontSize:'200px',
+   }
 }));
 
 formattedElements.push(...edges);
-
         setElements(formattedElements);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -170,12 +172,14 @@ formattedElements.push(...edges);
     fetchData();
   }, []);
 
-  
+   const layoutOptions = {
+    name: 'cose', 
+  };
 
   return (
     
     <div>
-      <CytoscapeComponent elements={elements} style={{ position:'absolute',  left:'-5%',width: '90%', height: '500px' }}  />
+      <CytoscapeComponent elements={elements} style={{ position:'absolute',  left:'-5%',width: '90%', height: '500px' }}  layout={layoutOptions} />
     </div>
   );
 };

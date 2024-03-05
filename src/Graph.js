@@ -76,7 +76,7 @@ function Graph() {
    
   return (
       <div className='graph'>
-    <Navbar />
+    <Navbar isAuthenticated={true} /> 
     <div className="material-head">
           <img className="menu" src={menuIcon} alt="Menu Icon"
           onClick={handleMenuToggle}  />

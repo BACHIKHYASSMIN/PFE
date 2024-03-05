@@ -14,7 +14,6 @@ const NavbarHome = ({ }) => {
           <h1>NumeriqueMaterials</h1>
           <ul>
             <li><Link to="/acueil">Accueil</Link></li>
-            <li><Link to="/graph">Graph</Link></li>
             <li><Link to="/carte-geographique">Carte Geographique</Link></li>
             <li><Link to="/recherche-avancee">Recherche Avancée</Link></li>
             <li><Link to="/a-propos">A propos</Link></li>

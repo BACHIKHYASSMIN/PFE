@@ -27,7 +27,8 @@
 
   .navbar-item {
     padding: 7px;
-    margin-right: 15px;
+    margin-right: 5px;
+    display: inline-block;
     cursor: pointer;
   }
   
@@ -75,18 +76,18 @@ left:50%;
   }
 
   .navbar-btn {
-    background-color: #2C3E50;
-    color: #FFFFFF; /* Couleur du texte en blanc */
+    margin-left: 1%;
+    color: #2C3E50; /* Couleur du texte en blanc */
     border: none; /* Supprimer la bordure */
     border-radius: 5px; /* Ajouter un rayon aux coins */
-    padding: 10px 20px; /* Ajouter un espace de rembourrage */
+    padding: 5px 10px; /* Ajouter un espace de rembourrage */
     cursor: pointer; /* Afficher un curseur au survol */
     transition: background-color 0.3s; /* Ajouter une transition pour une animation fluide */
-    background-color:aquamarine;
+    background-color:#FFFFFF;
   }
   
   .navbar-btn:hover {
-    background-color: #FFFFFF; /* Au survol, changer la couleur de fond en blanc */
-    color: #2C3E50; /* Au survol, changer la couleur du texte en bleu foncé */
+    background-color: #2C3E50; /* Au survol, changer la couleur de fond en blanc */
+    color: #FFFFFF; /* Au survol, changer la couleur du texte en bleu foncé */
   }
   

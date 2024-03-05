@@ -74,7 +74,7 @@ const Produit = () => {
     
     return(
     <na className="material">
-       <Navbar/>
+      <Navbar /> 
       <div className="material-head">
           <img className="menu" src={menuIcon} alt="Menu Icon"onClick={handleMenuToggle}  />
         <Typography.Title level={1} style={{ fontWeight: 'bold', marginBottom: '10px',textAlign: 'center', marginLeft:'30%' }}>

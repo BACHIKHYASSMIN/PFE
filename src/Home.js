@@ -80,7 +80,7 @@ const Home = () => {
    
     return (
       <div style={containerStyle}>
-        <Navbar />
+       <Navbar isAuthenticated={false} />
         <img src={matériautheque} alt="Description de l'image" style={{ width: '100%', height: '10%' }} />
   
         <div style={descriptionStyle} >
