@@ -25,10 +25,12 @@ function Categorie1() {
   const [isChecked2, setChecked2] = useState(false);
   const [isChecked3, setChecked3] = useState(false);
   const [isCheckedProduit, setCheckedProduit] = useState({});
-  const [isCheckedPlace, setCheckedPlace] = useState({});
+  const [selectedPlaces, setSelectedPlaces] = useState([]);
   const [isCheckedMonument, setCheckedMonument] = useState({});
   const [isCheckedOuvrage, setCheckedOuvrage] = useState({});
-  const [isCheckedCouleur, setCheckedCouleur] = useState({});
+  const [selectedCouleurs, setSelectedCouleurs] = useState([]);;
+
+  
   const [data, setData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const handleSearch = () => {
@@ -76,14 +78,33 @@ function Categorie1() {
     const handleCheckbox3Change = () => {
       setChecked3(!isChecked3);
     };
+    const handleCheckboxPlaceChange = (placeId) => {
+      if (selectedPlaces.includes(placeId)) {
+        setSelectedPlaces(selectedPlaces.filter(id => id !== placeId));
+      } else {
+        setSelectedPlaces([...selectedPlaces, placeId]);
+      }
+    };
+    const handleCheckboxCouleurChange = (couleurId) => {
+      if (selectedCouleurs.includes(couleurId)) {
+        setSelectedCouleurs(selectedCouleurs.filter(id => id !== couleurId));
+      } else {
+        setSelectedCouleurs([...selectedCouleurs, couleurId]);
+      }
+    };
+
+   
+   
+
     const handleCancel = () => {
       setChecked1(false);
       setChecked2(false);
       setChecked3(false);
-      setCheckedCouleur(false);
+      setSelectedCouleurs([]);
+      setSelectedPlaces([]);
       setCheckedMonument(false);
       setCheckedOuvrage(false);
-      setCheckedPlace(false);
+     
       setCheckedProduit(false);
       // Réinitialiser d'autres états de cases à cocher si nécessaire
     };
@@ -267,55 +288,41 @@ function Categorie1() {
     
 
     <div className='FilterCat'>
-    <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
-          onClick={handleFilterMenuToggle}  />
-          <h3 className='filter-name' >Places</h3>
-          </div>
-          <div className='catboxList'>
-          <ul>
-          { data.places.map(place => (
-        <div key={place.id}>
-          <input
-            type="checkbox"
-            checked={isCheckedPlace[place.id] || false}
-            onChange={e => {
-              const isChecked = e.target.checked;
-              setCheckedPlace(prevState => ({
-                ...prevState,
-                [place.id]: isChecked
-              }));
-            }}
-          />
-          <label htmlFor={`checkbox-${place.id}`}>{place.title}</label>
-        </div>
-      ))}
-      </ul>
-    </div>
-    <div className='FilterCat'>
-    <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
-          onClick={handleFilterMenuToggle}  />
-          <h3 className='filter-name' >Couleurs</h3>
-          </div>
-          <div className='catboxList'>
-          <ul>
-          { data.couleurs.map(couleur => (
-        <div key={couleur.id}>
-          <input
-            type="checkbox"
-            checked={isCheckedCouleur[couleur.id] || false}
-            onChange={e => {
-              const isChecked = e.target.checked;
-              setCheckedCouleur(prevState => ({
-                ...prevState,
-                [couleur.id]: isChecked
-              }));
-            }}
-          />
-          <label htmlFor={`checkbox-${couleur.id}`}>{couleur.title}</label>
-        </div>
-      ))}
-      </ul>
-    </div> 
+        <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown" onClick={handleFilterMenuToggle} />
+        <h3 className='filter-name'>Places</h3>
+      </div>
+      <div className='catboxList'>
+        <ul>
+          {data.places.map(place => (
+            <div key={place.id}>
+              <input
+                type="checkbox"
+                checked={selectedPlaces.includes(place.id)}
+                onChange={() => handleCheckboxPlaceChange(place.id)}
+              />
+              <label htmlFor={`checkbox-${place.id}`}>{place.title}</label>
+            </div>
+          ))}
+        </ul>
+      </div>
+      <div className='FilterCat'>
+        <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown" onClick={handleFilterMenuToggle} />
+        <h3 className='filter-name'>Couleurs</h3>
+      </div>
+      <div className='catboxList'>
+        <ul>
+          {data.couleurs.map(couleur => (
+            <div key={couleur.id}>
+              <input
+                type="checkbox"
+                checked={selectedCouleurs.includes(couleur.id)}
+                onChange={() => handleCheckboxCouleurChange(couleur.id)}
+              />
+              <label htmlFor={`checkbox-${couleur.id}`}>{couleur.title}</label>
+            </div>
+          ))}
+        </ul>
+      </div>
     
           <div className='lineFBar'></div>
           <div className='ValBtn'>

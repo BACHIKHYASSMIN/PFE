@@ -27,8 +27,8 @@ const Monument = () => {
   const [isChecked3, setChecked3] = useState(false);
   const [isCheckedOuvrage, setCheckedOuvrage] = useState({});
   const [isCheckedProduit, setCheckedProduit] = useState({});
-  const [isCheckedPlace, setCheckedPlace] = useState({});
-  const [isCheckedPeriode, setCheckedPeriode] = useState({});
+  const [selectedPlaces, setSelectedPlaces] = useState([]);
+  const [selectedPeriods, setSelectedPeriods] = useState([]);
 
   const [data, setData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -96,22 +96,23 @@ const Monument = () => {
       // Mettez à jour l'état avec la nouvelle valeur
       setCheckedOuvrage(updatedCheckedOuvrages);
     };
-    const handleCheckboxPlace = (index) => {
-      // Créez une copie de l'état actuel des cases à cocher pour les ouvrages
-      const updatedCheckedPlaces = [...isCheckedPlace];
-      // Inversez la valeur de la case à cocher pour l'ouvrage spécifié
-      updatedCheckedPlaces[index] = !updatedCheckedPlaces[index];
-      // Mettez à jour l'état avec la nouvelle valeur
-      setCheckedPlace(updatedCheckedPlaces);
+    const handleCheckboxPlaceChange = (placeId) => {
+      if (selectedPlaces.includes(placeId)) {
+        setSelectedPlaces(selectedPlaces.filter(id => id !== placeId));
+      } else {
+        setSelectedPlaces([...selectedPlaces, placeId]);
+      }
     };
-    const handleCheckboxPeriode = (index) => {
-      // Créez une copie de l'état actuel des cases à cocher pour les ouvrages
-      const updatedCheckedPeriodes = [...isCheckedPeriode];
-      // Inversez la valeur de la case à cocher pour l'ouvrage spécifié
-      updatedCheckedPeriodes[index] = !updatedCheckedPeriodes[index];
-      // Mettez à jour l'état avec la nouvelle valeur
-      setCheckedPeriode(updatedCheckedPeriodes);
-    };
+   
+
+  const handleCheckboxChange = (periodId) => {
+    if (selectedPeriods.includes(periodId)) {
+      setSelectedPeriods(selectedPeriods.filter(id => id !== periodId));
+    } else {
+      setSelectedPeriods([...selectedPeriods, periodId]);
+    }
+  };
+
     const handleCheckboxProduit = (index) => {
  
       setCheckedProduit(!isCheckedProduit);
@@ -121,11 +122,12 @@ const Monument = () => {
       setChecked2(false);
       setChecked3(false);
       setCheckedOuvrage(false);
-      setCheckedPeriode(false);
-      setCheckedPlace(false);
+      setSelectedPeriods([]);
+      setSelectedPlaces([]);
       setCheckedProduit(false);
       // Réinitialiser d'autres états de cases à cocher si nécessaire
     };
+    
 
     return(
     <na className="material">
@@ -273,55 +275,41 @@ const Monument = () => {
     </div> 
 
     <div className='FilterCat'>
-    <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
-          onClick={handleFilterMenuToggle}  />
-          <h3 className='filter-name' >Periodes</h3>
-          </div>
-          <div className='catboxList'>
-          <ul>
-          { data.periodes.map(periode => (
-        <div key={periode.id}>
-          <input
-            type="checkbox"
-            checked={isCheckedPeriode[periode.id] || false}
-            onChange={e => {
-              const isChecked = e.target.checked;
-              setCheckedPeriode(prevState => ({
-                ...prevState,
-                [periode.id]: isChecked
-              }));
-            }}
-          />
-          <label htmlFor={`checkbox-${periode.id}`}>{periode.title}</label>
-        </div>
-      ))}
-      </ul>
-    </div> 
+        <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown" onClick={handleFilterMenuToggle} />
+        <h3 className='filter-name'>Périodes</h3>
+      </div>
+      <div className='catboxList'>
+        <ul>
+          {data.periodes.map(periode => (
+            <div key={periode.id}>
+              <input
+                type="checkbox"
+                checked={selectedPeriods.includes(periode.id)}
+                onChange={() => handleCheckboxChange(periode.id)}
+              />
+              <label htmlFor={`checkbox-${periode.id}`}>{periode.title}</label>
+            </div>
+          ))}
+        </ul>
+      </div>
     <div className='FilterCat'>
-    <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
-          onClick={handleFilterMenuToggle}  />
-          <h3 className='filter-name' >Places</h3>
-          </div>
-          <div className='catboxList'>
-          <ul>
-          { data.places.map(place => (
-        <div key={place.id}>
-          <input
-            type="checkbox"
-            checked={isCheckedPlace[place.id] || false}
-            onChange={e => {
-              const isChecked = e.target.checked;
-              setCheckedPlace(prevState => ({
-                ...prevState,
-                [place.id]: isChecked
-              }));
-            }}
-          />
-          <label htmlFor={`checkbox-${place.id}`}>{place.title}</label>
-        </div>
-      ))}
-      </ul>
-    </div> 
+        <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown" onClick={handleFilterMenuToggle} />
+        <h3 className='filter-name'>Places</h3>
+      </div>
+      <div className='catboxList'>
+        <ul>
+          {data.places.map(place => (
+            <div key={place.id}>
+              <input
+                type="checkbox"
+                checked={selectedPlaces.includes(place.id)}
+                onChange={() => handleCheckboxPlaceChange(place.id)}
+              />
+              <label htmlFor={`checkbox-${place.id}`}>{place.title}</label>
+            </div>
+          ))}
+        </ul>
+      </div>
           <div className='lineFBar'></div>
           <div className='ValBtn'>
           <button className='annuler' onClick={handleCancel}>Annuler</button>

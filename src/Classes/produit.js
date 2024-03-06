@@ -30,7 +30,7 @@ const Produit = () => {
   const [isChecked3, setChecked3] = useState(false);
   const [isCheckedOuvrage, setCheckedOuvrage] = useState({});
   const [isCheckedMonument, setCheckedMonument] = useState({});
-  const [isCheckedPlace, setCheckedPlace] = useState({});
+  const [selectedPlaces, setSelectedPlaces] = useState([]);
   
   const [data, setData] = useState([]);
   
@@ -88,13 +88,12 @@ const handleSearch = () => {
       // Mettez à jour l'état avec la nouvelle valeur
       setCheckedOuvrage(updatedCheckedOuvrages);
     };
-    const handleCheckboxPlace = (index) => {
-      // Créez une copie de l'état actuel des cases à cocher pour les ouvrages
-      const updatedCheckedPlaces = [...isCheckedPlace];
-      // Inversez la valeur de la case à cocher pour l'ouvrage spécifié
-      updatedCheckedPlaces[index] = !updatedCheckedPlaces[index];
-      // Mettez à jour l'état avec la nouvelle valeur
-      setCheckedPlace(updatedCheckedPlaces);
+    const handleCheckboxPlaceChange = (placeId) => {
+      if (selectedPlaces.includes(placeId)) {
+        setSelectedPlaces(selectedPlaces.filter(id => id !== placeId));
+      } else {
+        setSelectedPlaces([...selectedPlaces, placeId]);
+      }
     };
     const handleCheckboxMonument = (index) => {
  
@@ -106,7 +105,7 @@ const handleSearch = () => {
       setChecked3(false);
   setCheckedOuvrage(false);
       setCheckedMonument(false);
-      setCheckedPlace(false);
+      setSelectedPlaces([]);
       // Réinitialiser d'autres états de cases à cocher si nécessaire
     };
 
@@ -263,16 +262,12 @@ const handleSearch = () => {
       </div>
       <div className='catboxList'>
         <ul>
-          {data.places && data.places.map(place => (
+          {data.places.map(place => (
             <div key={place.id}>
               <input
                 type="checkbox"
-                checked={isCheckedPlace[place.id] || false}
-                onChange={() => {
-                  const updatedCheckedPlace = { ...isCheckedPlace };
-                  updatedCheckedPlace[place.id] = !updatedCheckedPlace[place.id];
-                  setCheckedPlace(updatedCheckedPlace);
-                }}
+                checked={selectedPlaces.includes(place.id)}
+                onChange={() => handleCheckboxPlaceChange(place.id)}
               />
               <label htmlFor={`checkbox-${place.id}`}>{place.title}</label>
             </div>
