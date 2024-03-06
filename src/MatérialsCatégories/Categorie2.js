@@ -22,11 +22,11 @@ function Categorie2() {
   const [isChecked1, setChecked1] = useState(false);
   const [isChecked2, setChecked2] = useState(false);
   const [isChecked3, setChecked3] = useState(false);
-  const [isCheckedProduit, setCheckedProduit] = useState(false);
-  const [isCheckedOuvrage, setCheckedOuvrage] = useState(false);
-  const [isCheckedMonument, setCheckedMonument] = useState(false);
-  const [isCheckedPlace, setCheckedPlace] = useState(false);
-  const [isCheckedCouleur, setCheckedCouleur] = useState(false);
+  const [isCheckedProduit, setCheckedProduit] = useState({});
+  const [isCheckedPlace, setCheckedPlace] = useState({});
+  const [isCheckedMonument, setCheckedMonument] = useState({});
+  const [isCheckedOuvrage, setCheckedOuvrage] = useState({});
+  const [isCheckedCouleur, setCheckedCouleur] = useState({});
 
   const [data, setData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -213,66 +213,82 @@ function Categorie2() {
     <div className='FilterCat'>
     <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
           onClick={handleFilterMenuToggle}  />
-          <h3 className='filt-name'>Produits</h3>
+          <h3 className='filter-name' >Produits</h3>
           </div>
           <div className='catboxList'>
           <ul>
-          
-    
-          {data.produits.map(produit => (
-  <div className='catbox' key={produit.id}>
-    <input
-      type="checkbox"
-      checked={produit.isChecked}
-      onChange={() => handleCheckboxProduitChange(produit.id)}
-    />
-    <label htmlFor={`checkbox-${produit.id}`}>{produit.title}</label>
-  </div>
-))}
-
+          { data.produits.map(produit => (
+        <div key={produit.id}>
+          <input
+            type="checkbox"
+            checked={isCheckedProduit[produit.id] || false}
+            onChange={e => {
+              const isChecked = e.target.checked;
+              setCheckedProduit(prevState => ({
+                ...prevState,
+                [produit.id]: isChecked
+              }));
+            }}
+          />
+          <label htmlFor={`checkbox-${produit.id}`}>{produit.title}</label>
+        </div>
+      ))}
       </ul>
     </div> 
     <div className='FilterCat'>
     <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
           onClick={handleFilterMenuToggle}  />
-         <h3 className='filt-name' >Ouvrages</h3>
+          <h3 className='filter-name' >Ouvrages</h3>
           </div>
           <div className='catboxList'>
           <ul>
-          {data.ouvrages.map(ouvrage => (
-  <div className='catbox' key={ouvrage.id}>
-    <input
-      type="checkbox"
-      checked={ouvrage.isChecked}
-      onChange={() => handleCheckboxOuvrageChange(ouvrage.id)}
-    />
-    <label htmlFor={`checkbox-${ouvrage.id}`}>{ouvrage.title}</label>
-  </div>
-))}
-
+          { data.ouvrages.map(ouvrage => (
+        <div key={ouvrage.id}>
+          <input
+            type="checkbox"
+            checked={isCheckedOuvrage[ouvrage.id] || false}
+            onChange={e => {
+              const isChecked = e.target.checked;
+              setCheckedOuvrage(prevState => ({
+                ...prevState,
+                [ouvrage.id]: isChecked
+              }));
+            }}
+          />
+          <label htmlFor={`checkbox-${ouvrage.id}`}>{ouvrage.title}</label>
+        </div>
+      ))}
       </ul>
     </div> 
+    
 
-          <div className='FilterCat'>
+    <div className='FilterCat'>
     <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
           onClick={handleFilterMenuToggle}  />
           <h3 className='filter-name' >Monuments</h3>
           </div>
           <div className='catboxList'>
           <ul>
-{data.monuments.map(monument=> (
-  <div className='catbox' key={monument.id}>
-    <input
-      type="checkbox"
-      checked={monument.isChecked}
-      onChange={() => handleCheckboxMonumentChange(monument.id)}
-    />
-    <label htmlFor={`checkbox-${monument.id}`}>{monument.title}</label>
-  </div>
-))}
-
+          { data.monuments.map(monument => (
+        <div key={monument.id}>
+          <input
+            type="checkbox"
+            checked={isCheckedMonument[monument.id] || false}
+            onChange={e => {
+              const isChecked = e.target.checked;
+              setCheckedMonument(prevState => ({
+                ...prevState,
+                [monument.id]: isChecked
+              }));
+            }}
+          />
+          <label htmlFor={`checkbox-${monument.id}`}>{monument.title}</label>
+        </div>
+      ))}
       </ul>
     </div> 
+    
+
     <div className='FilterCat'>
     <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
           onClick={handleFilterMenuToggle}  />
@@ -280,38 +296,49 @@ function Categorie2() {
           </div>
           <div className='catboxList'>
           <ul>
-{data.places.map(place=> (
-  <div className='catbox' key={place.id}>
-    <input
-      type="checkbox"
-      checked={place.isChecked}
-      onChange={() => handleCheckboxPlaceChange(place.id)}
-    />
-    <label htmlFor={`checkbox-${place.id}`}>{place.title}</label>
-  </div>
-))}
+          { data.places.map(place => (
+        <div key={place.id}>
+          <input
+            type="checkbox"
+            checked={isCheckedPlace[place.id] || false}
+            onChange={e => {
+              const isChecked = e.target.checked;
+              setCheckedPlace(prevState => ({
+                ...prevState,
+                [place.id]: isChecked
+              }));
+            }}
+          />
+          <label htmlFor={`checkbox-${place.id}`}>{place.title}</label>
+        </div>
+      ))}
       </ul>
-   
-    </div> 
+    </div>
     <div className='FilterCat'>
     <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
           onClick={handleFilterMenuToggle}  />
           <h3 className='filter-name' >Couleurs</h3>
           </div>
           <div className='catboxList'>
-          <ul>  
-          {data.couleurs.map(couleur=> (
-  <div className='catbox' key={couleur.id}>
-    <input
-      type="checkbox"
-      checked={couleur.isChecked}
-      onChange={() => handleCheckboxCouleurChange(couleur.id)}
-    />
-    <label htmlFor={`checkbox-${couleur.id}`}>{couleur.title}</label>
-  </div>
-))}
+          <ul>
+          { data.couleurs.map(couleur => (
+        <div key={couleur.id}>
+          <input
+            type="checkbox"
+            checked={isCheckedCouleur[couleur.id] || false}
+            onChange={e => {
+              const isChecked = e.target.checked;
+              setCheckedCouleur(prevState => ({
+                ...prevState,
+                [couleur.id]: isChecked
+              }));
+            }}
+          />
+          <label htmlFor={`checkbox-${couleur.id}`}>{couleur.title}</label>
+        </div>
+      ))}
       </ul>
-    </div> 
+    </div>  
           <div className='lineFBar'></div>
           <div className='ValBtn'>
           <button className='annuler' onClick={handleCancel}>Annuler</button>

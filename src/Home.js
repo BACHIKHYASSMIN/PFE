@@ -135,7 +135,7 @@ const Home = () => {
           <p>
             Numérique Materials vous propose un aperçu complet des pathologies courantes qui affectent le patrimoine bâti. Explorez la section "Pathologies" pour obtenir des informations générales sur les différents problèmes auxquels peuvent être confrontés les édifices historiques. Grâce à notre plateforme, accédez à une variété de connaissances sur les causes et les solutions pour préserver ces structures précieuses. Consultez la section "Pathologies" pour élargir votre compréhension des défis liés à la conservation du patrimoine architectural.
             </p>
-            <a href="/pathologies" style={linkStyle}>Consulter tout les Pathologies ...</a>
+            <a href="/pathologie" style={linkStyle}>Consulter tout les Pathologies ...</a>
           </div>
           <img src={MonumentPhoto} alt="Image des monuments"  style={{ width: '35%', height: '35%' }} />
         </div>
@@ -151,7 +151,7 @@ const Home = () => {
           <p>
             Numérique Materials vous offre une immersion fascinante dans la section "Monuments", où vous pouvez explorer la diversité des monuments historiques . Découvrez leurs types, leurs emplacements et leurs descriptions succinctes pour obtenir une vue d'ensemble du riche patrimoine architectural. Consultez la section dédiée aux monuments pour une expérience captivante et informative.
             </p>
-            <a href="/monuments" style={linkStyle}>Consulter tout les Monuments ...</a>
+            <a href="/monument" style={linkStyle}>Consulter tout les Monuments ...</a>
           </div>
         </div>
   

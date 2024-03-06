@@ -28,8 +28,12 @@ const Produit = () => {
   const [isChecked1, setChecked1] = useState(false);
   const [isChecked2, setChecked2] = useState(false);
   const [isChecked3, setChecked3] = useState(false);
+  const [isCheckedOuvrage, setCheckedOuvrage] = useState({});
+  const [isCheckedMonument, setCheckedMonument] = useState({});
+  const [isCheckedPlace, setCheckedPlace] = useState({});
+  
   const [data, setData] = useState([]);
-
+  
   const [searchTerm, setSearchTerm] = useState("");
 
 const handleSearch = () => {
@@ -76,10 +80,33 @@ const handleSearch = () => {
     const handleCheckbox3Change = () => {
       setChecked3(!isChecked3);
     };
+    const handleCheckboxOuvrage = (index) => {
+      // Créez une copie de l'état actuel des cases à cocher pour les ouvrages
+      const updatedCheckedOuvrages = [...isCheckedOuvrage];
+      // Inversez la valeur de la case à cocher pour l'ouvrage spécifié
+      updatedCheckedOuvrages[index] = !updatedCheckedOuvrages[index];
+      // Mettez à jour l'état avec la nouvelle valeur
+      setCheckedOuvrage(updatedCheckedOuvrages);
+    };
+    const handleCheckboxPlace = (index) => {
+      // Créez une copie de l'état actuel des cases à cocher pour les ouvrages
+      const updatedCheckedPlaces = [...isCheckedPlace];
+      // Inversez la valeur de la case à cocher pour l'ouvrage spécifié
+      updatedCheckedPlaces[index] = !updatedCheckedPlaces[index];
+      // Mettez à jour l'état avec la nouvelle valeur
+      setCheckedPlace(updatedCheckedPlaces);
+    };
+    const handleCheckboxMonument = (index) => {
+ 
+      setCheckedMonument(!isCheckedMonument);
+    };
     const handleCancel = () => {
       setChecked1(false);
       setChecked2(false);
       setChecked3(false);
+  setCheckedOuvrage(false);
+      setCheckedMonument(false);
+      setCheckedPlace(false);
       // Réinitialiser d'autres états de cases à cocher si nécessaire
     };
 
@@ -179,22 +206,32 @@ const handleSearch = () => {
       <label htmlFor="checkbox">Bois</label>
     </div>   
     </div> 
-
     <div className='FilterCat'>
     <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
           onClick={handleFilterMenuToggle}  />
-          <h3 className='filt-name' >Ouvrages</h3>
+          <h3 className='filter-name' >Ouvrages</h3>
           </div>
           <div className='catboxList'>
           <ul>
-          {data.ouvrages.map(ouvrage => (
-            <div className='catbox'>
-            <input  type="checkbox"  checked={isChecked1}  onChange={handleCheckbox1Change} />
-            <label key={ouvrage.id} htmlFor="checkbox">{ouvrage.title}</label>
-            </div>
-          ))}  
+          { data.ouvrages.map(ouvrage => (
+        <div key={ouvrage.id}>
+          <input
+            type="checkbox"
+            checked={isCheckedOuvrage[ouvrage.id] || false}
+            onChange={e => {
+              const isChecked = e.target.checked;
+              setCheckedOuvrage(prevState => ({
+                ...prevState,
+                [ouvrage.id]: isChecked
+              }));
+            }}
+          />
+          <label htmlFor={`checkbox-${ouvrage.id}`}>{ouvrage.title}</label>
+        </div>
+      ))}
       </ul>
     </div> 
+    
     <div className='FilterCat'>
     <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
           onClick={handleFilterMenuToggle}  />
@@ -202,30 +239,46 @@ const handleSearch = () => {
           </div>
           <div className='catboxList'>
           <ul>
-          {data.monuments.map(monument => (
-            <div className='catbox'>
-            <input  type="checkbox"  checked={isChecked1}  onChange={handleCheckbox1Change} />
-            <label key={monument.id} htmlFor="checkbox">{monument.title}</label>
-            </div>
-          ))}  
+          { data.monuments.map(monument => (
+        <div key={monument.id}>
+          <input
+            type="checkbox"
+            checked={isCheckedMonument[monument.id] || false}
+            onChange={e => {
+              const isChecked = e.target.checked;
+              setCheckedMonument(prevState => ({
+                ...prevState,
+                [monument.id]: isChecked
+              }));
+            }}
+          />
+          <label htmlFor={`checkbox-${monument.id}`}>{monument.title}</label>
+        </div>
+      ))}
       </ul>
     </div> 
-
     <div className='FilterCat'>
-    <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
-          onClick={handleFilterMenuToggle}  />
-          <h3 className='filter-name' >Places</h3>
-          </div>
-          <div className='catboxList'>
-          <ul>
-          {data.places.map(place => (
-            <div className='catbox'>
-            <input  type="checkbox"  checked={isChecked1}  onChange={handleCheckbox1Change} />
-            <label key={place.id} htmlFor="checkbox">{place.title}</label>
+        <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown" onClick={handleFilterMenuToggle} />
+        <h3 className='filter-name'>Places</h3>
+      </div>
+      <div className='catboxList'>
+        <ul>
+          {data.places && data.places.map(place => (
+            <div key={place.id}>
+              <input
+                type="checkbox"
+                checked={isCheckedPlace[place.id] || false}
+                onChange={() => {
+                  const updatedCheckedPlace = { ...isCheckedPlace };
+                  updatedCheckedPlace[place.id] = !updatedCheckedPlace[place.id];
+                  setCheckedPlace(updatedCheckedPlace);
+                }}
+              />
+              <label htmlFor={`checkbox-${place.id}`}>{place.title}</label>
             </div>
-          ))}  
-      </ul>
-    </div> 
+          ))}
+        </ul>
+      </div>
     
           <div className='lineFBar'></div>
           <div className='ValBtn'>

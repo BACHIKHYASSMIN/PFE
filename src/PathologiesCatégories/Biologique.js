@@ -25,6 +25,8 @@ function Biologique() {
   const [isChecked1, setChecked1] = useState(false);
   const [isChecked2, setChecked2] = useState(false);
   const [isChecked3, setChecked3] = useState(false);
+  const [isCheckedOuvrage, setCheckedOuvrage] = useState({})
+  const [isCheckedProduit, setCheckedProduit] = useState({})
   const [data, setData] = useState([]);
   const navigate = useNavigate();
   const handleImageClick = () => {
@@ -59,6 +61,15 @@ function Biologique() {
     };
     const handleCheckbox3Change = () => {
       setChecked3(!isChecked3);
+    };
+    const handleCancel = () => {
+      setChecked1(false);
+      setChecked2(false);
+      setChecked3(false);
+  setCheckedOuvrage(false);
+      setCheckedProduit(false);
+    
+      // Réinitialiser d'autres états de cases à cocher si nécessaire
     };
   return (
       <div className='cat'>
@@ -172,41 +183,59 @@ function Biologique() {
     <div className='FilterCat'>
     <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
           onClick={handleFilterMenuToggle}  />
-          <h3 className='filt-name'>Produits</h3>
+          <h3 className='filter-name' >Produits</h3>
           </div>
           <div className='catboxList'>
           <ul>
-          
-    
-          {data.produits.map(produit => (
-            <div className='catbox'>
-            <input  type="checkbox"  checked={isChecked1}  onChange={handleCheckbox1Change} />
-            <label key={produit.id} htmlFor="checkbox">{produit.title}</label>
-            </div>
-          ))}  
+          { data.produits.map(produit => (
+        <div key={produit.id}>
+          <input
+            type="checkbox"
+            checked={isCheckedProduit[produit.id] || false}
+            onChange={e => {
+              const isChecked = e.target.checked;
+              setCheckedProduit(prevState => ({
+                ...prevState,
+                [produit.id]: isChecked
+              }));
+            }}
+          />
+          <label htmlFor={`checkbox-${produit.id}`}>{produit.title}</label>
+        </div>
+      ))}
       </ul>
-  
     </div> 
     <div className='FilterCat'>
     <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
           onClick={handleFilterMenuToggle}  />
-           <h3 className='filt-name' >Ouvrages</h3>
+          <h3 className='filter-name' >Ouvrages</h3>
           </div>
           <div className='catboxList'>
           <ul>
-          {data.ouvrages.map(ouvrage => (
-            <div className='catbox'>
-            <input  type="checkbox"  checked={isChecked1}  onChange={handleCheckbox1Change} />
-            <label key={ouvrage.id} htmlFor="checkbox">{ouvrage.title}</label>
-            </div>
-          ))}  
+          { data.ouvrages.map(ouvrage => (
+        <div key={ouvrage.id}>
+          <input
+            type="checkbox"
+            checked={isCheckedOuvrage[ouvrage.id] || false}
+            onChange={e => {
+              const isChecked = e.target.checked;
+              setCheckedOuvrage(prevState => ({
+                ...prevState,
+                [ouvrage.id]: isChecked
+              }));
+            }}
+          />
+          <label htmlFor={`checkbox-${ouvrage.id}`}>{ouvrage.title}</label>
+        </div>
+      ))}
       </ul>
     </div> 
+    
 
      
           <div className='lineFBar'></div>
           <div className='ValBtn'>
-          <button className='annuler'>Annuler</button>
+          <button className='annuler' onClick ={handleCancel}>Annuler</button>
           <button className='valider'>Valider</button>
           </div>
         </div>
