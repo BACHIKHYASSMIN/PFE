@@ -85,10 +85,10 @@ const Pathologie = () => {
   <Link to="/chromatique-dépot" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Chd")}</Link>
 </li>
 <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/déformation" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Deformation")}</Link>
+  <Link to="/déformation" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Déformation")}</Link>
 </li>
 <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/détachement" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Detachment")}</Link>
+  <Link to="/détachement" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Détachement")}</Link>
 </li>
 <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
   <Link to="/fissure" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Fissure")}</Link>
@@ -104,7 +104,7 @@ const Pathologie = () => {
   <div className='lineBar'></div>
   <h3 className='rub'  style={{textAlign: 'center' }} >{t("Menu.Pages")}</h3>
   {/* Ajoutez vos liens du menu ici */}
-  <Link className="pageLink" to="/">{t("navbar.accueil")}</Link>
+  <Link className="pageLink" to="/userHome">{t("navbar.accueil")}</Link>
   <Link className="pageLink" to="/Graph">{t("navbar.graph")}</Link>
   <Link className="pageLink" to="/carte-geographique">{t("navbar.carteGeographique")}</Link>
   <Link className="pageLink" to="/recherche-avancee">{t("navbar.rechercheAvancee")}</Link>

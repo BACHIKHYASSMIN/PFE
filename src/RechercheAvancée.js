@@ -21,11 +21,12 @@ const RechercheAvancée = () => {
   const toggleLang = (lang) => {
     i18n.changeLanguage(lang);
   }
-  const handleCancel = () => {
-    form.resetFields(); // Réinitialiser les champs du formulaire
-  };
+ 
   const handleMenuToggle = () => {
     setMenuOpen(!isMenuOpen);
+  };
+  const handleCancel = () => {
+    form.resetFields(); // Réinitialiser les champs du formulaire
   };
   const onFinish = (values) => {
     console.log('Received values of form: ', values);
@@ -397,7 +398,7 @@ useEffect(() => {
   <div className='lineBar'></div>
   <h3 className='rub'  style={{textAlign: 'center' }} >{t("Menu.Pages")}</h3>
   {/* Ajoutez vos liens du menu ici */}
-  <Link className="pageLink" to="/">{t("navbar.accueil")}</Link>
+  <Link className="pageLink" to="/userHome">{t("navbar.accueil")}</Link>
   <Link className="pageLink" to="/Graph">{t("navbar.graph")}</Link>
   <Link className="pageLink" to="/carte-geographique">{t("navbar.carteGeographique")}</Link>
   <Link className="pageLink" to="/recherche-avancee">{t("navbar.rechercheAvancee")}</Link>

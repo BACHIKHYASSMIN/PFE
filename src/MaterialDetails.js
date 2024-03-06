@@ -136,7 +136,7 @@ function MaterialDetails() {
   <div className='lineBar'></div>
   <h3 className='rub'  style={{textAlign: 'center' }} >Pages</h3>
   {/* Ajoutez vos liens du menu ici */}
-  <Link className="pageLink" to="/">Accueil</Link>
+  <Link className="pageLink" to="/userHome">Accueil</Link>
   <Link className="pageLink" to="/Graph">Graph</Link>
   <Link className="pageLink" to="/carte-geographique">Carte Geographique</Link>
   <Link className="pageLink" to="/recherche-avancee">Recherche Avancée</Link>

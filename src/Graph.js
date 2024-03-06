@@ -44,7 +44,9 @@ function Graph() {
     console.log('Received values of form: ', values);
   };
     
-
+  const handleCancel = () => {
+    form.resetFields(); // Réinitialiser les champs du formulaire
+  };
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -124,77 +126,65 @@ function Graph() {
 
       <div style={{ flex: 2  ,paddingLeft:'10px'}}>
      
-          {/* Carte avec formulaire de recherche avancée */}
-          <Card style={{ backgroundColor: '#ECF0F1', padding: '20px', width: '400px' }}>
+           {/* Carte avec formulaire de recherche avancée */}
+           <Card style={{ backgroundColor: '#ECF0F1', padding: '20px', width: '400px' }}>
   <Form form={form} layout="vertical" name="advanced_search" onFinish={onFinish}>
     {/* Vos champs de formulaire ici */}
     <div style={{ display: 'flex', flexDirection: 'column' }}>
-    <div className='FilterCat'>
-          <h3 className='filt-name' >{t("Header.Mat")}</h3>
-          </div>
-          <div className='catboxList'>
-          <ul>
-          {data && data.materiaux ? (
+    <div style={{ marginBottom: '10px' }}>
+    <Form.Item name="Matériaux" label={t("Header.Mat")}>
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
+    {data && data.materiaux ? (
             data.materiaux.map(materiau => (
-            <div className='catbox'>
-            <input  type="checkbox"  checked={isChecked1}  onChange={handleCheckbox1Change} />
-            <label key={materiau.id} htmlFor="checkbox">{materiau.title}</label>
-            </div>
+  <Checkbox  key={materiau.id} value="Matériau1">{materiau.title}</Checkbox>
           ))
           ):(
             <li>{t("Messages.MatErr")}</li>
-          ) }  
-      </ul>
-    </div> 
+          )
+      }  
+      </div>
+    </Form.Item>
+    </div>
 
-      <div className='FilterCat'>
-          <h3 className='filt-name' >{t("Header.Prod")}</h3>
-          </div>
-          <div className='catboxList'>
-          <ul>
-          {data && data.produits ? (
-            data.produits.map(produit => (
-            <div className='catbox'>
-            <input  type="checkbox"  checked={isChecked1}  onChange={handleCheckbox1Change} />
-            <label key={produit.id} htmlFor="checkbox">{produit.title}</label>
-            </div>
+    <div style={{ marginBottom: '10px' }}>
+    <Form.Item name="produit" label={t("Header.Prod")}>
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
+    {data && data.produits ? (
+            data.produits .map(produit => (
+  <Checkbox  key={produit.id} value="">{produit.title}</Checkbox>
           ))
           ):(
             <li>{t("Messages.ProdErr")}</li>
-          ) }  
-      </ul>
-    </div> 
-   
-    <div className='FilterCat'>
-          <h3 className='filt-name' >{t("Header.Ouv")}</h3>
-          </div>
-          <div className='catboxList'>
-          <ul>
-      {data && data.ouvrages ? (
-        data.ouvrages.map(ouvrage => (
-          <div className='catbox'>
-            <input  type="checkbox"  checked={isChecked1}  onChange={handleCheckbox1Change} />
-          <label key={ouvrage.id} htmlFor="checkbox">{ouvrage.title}</label>
-            </div>
-        ))
-      ) : (
-        <li>{t("Messages.OuvErr")}</li>
-      )}
-    </ul>
-    </div> 
-   
+          )
+      }  
+      </div>
+    </Form.Item>
+    </div>
+    <div style={{ marginBottom: '10px' }}>
+    <Form.Item name="ouvrage" label={t("Header.Ouv")}>
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
+    {data && data.ouvrages ? (
+            data.ouvrages .map(ouvrage=> (
+  <Checkbox  key={ouvrage.id} value="">{ouvrage.title}</Checkbox>
+          ))
+          ):(
+            <li>{t("Messages.OuvErr")}</li>
+          )
+      }  
+      </div>
+    </Form.Item>
+    </div>
     {/* Répétez ce schéma pour les autres Form.Item */}
     <Form.Item>
       <Button type="primary" htmlType="submit" style={{ marginRight: '10px', backgroundColor: '#27AE60', marginTop: '20px' }}>
       {t("Btn.Valider")}
       </Button>
-      <Button type="default" style={{ backgroundColor: '#d9d9d9', border: 'none' }}>
+      <Button type="default" style={{ backgroundColor: '#d9d9d9', border: 'none' }} onClick={handleCancel}>
       {t("Btn.Annuler")}
       </Button>
     </Form.Item>
     </div>
   </Form>
-  
 </Card>
 
 
@@ -256,7 +246,7 @@ function Graph() {
   <div className='lineBar'></div>
   <h3 className='rub'  style={{textAlign: 'center' }} >{t("Menu.Pages")}</h3>
   {/* Ajoutez vos liens du menu ici */}
-  <Link className="pageLink" to="/">{t("navbar.accueil")}</Link>
+  <Link className="pageLink" to="/userHome">{t("navbar.accueil")}</Link>
   <Link className="pageLink" to="/Graph">{t("navbar.graph")}</Link>
   <Link className="pageLink" to="/carte-geographique">{t("navbar.carteGeographique")}</Link>
   <Link className="pageLink" to="/recherche-avancee">{t("navbar.rechercheAvancee")}</Link>

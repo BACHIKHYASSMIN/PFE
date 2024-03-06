@@ -172,7 +172,7 @@ formattedElements.push(...edges);
     fetchData();
   }, []);
 
-   const layoutOptions = {
+  const layoutOptions = {
     name: 'cose', 
   };
 
