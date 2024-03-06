@@ -6,7 +6,7 @@ import ArrowdIcon from "../Assets/arrowd.png"
 import ArrowRight from "../Assets/chevron.png"
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-
+import deconIcon from "../Assets/decon.png"
 
 // Utilisez la fonction translate ici...
 
@@ -23,10 +23,12 @@ const Navbar = () => {
     // Naviguer vers la page "Details" lors du clic sur l'image
     navigate('/connexion');
   };
-  const toggleLang=(lang:String) =>{
+  const toggleLang = (lang) => {
     i18n.changeLanguage(lang);
   }
-
+  const handleDeconnect = () => {
+    navigate('/');
+  };
 
   return (
     <nav className="navbar">
@@ -40,9 +42,13 @@ const Navbar = () => {
           <li className="navbar-item"><Link to="/recherche-avancee">{t("navbar.rechercheAvancee")}</Link></li>
           <li className="navbar-item"><Link to="/a-propos">{t("navbar.aPropos")}</Link></li>
          <img className="navbar-img" src={img} alt="Navbar Icon" onClick={handleProfil} />
-          <button  className="navbar-btn" onClick={()=>{toggleLang("en")}}>EN</button>
-          <button  className="navbar-btn" onClick={()=>{toggleLang("fr")}}>FR</button>
+          <img className="navbar-imgD" src={deconIcon} alt="Decon Icon" onClick={handleDeconnect} />
         </ul>
+        <div className="navbar-button">
+        <button  className="navbar-btn" onClick={()=>{toggleLang("en")}}>EN</button>
+          <button  className="navbar-btn" onClick={()=>{toggleLang("fr")}}>FR</button>
+        </div>
+       
       </div>
     </nav>
   );

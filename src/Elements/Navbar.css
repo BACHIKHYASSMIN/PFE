@@ -20,21 +20,21 @@
   }
   
   .navbar-menu {
+    margin-left: -10%;
     list-style: none;
     display: flex;
   align-items: center;
   }
 
   .navbar-item {
-    padding: 7px;
-    margin-right: 5px;
-    display: inline-block;
+    padding-right: 50px;
     cursor: pointer;
   }
   
   .navbar-item a{
    color: white;
    text-decoration: none;
+   white-space: nowrap;
   }
   
   .navbar-item:last-child {
@@ -44,6 +44,7 @@
   .navbar-img{
     margin-right: 15px;
     cursor: pointer;
+
 
   }
 
@@ -76,11 +77,12 @@ left:50%;
   }
 
   .navbar-btn {
-    margin-left: 1%;
+  margin-left: 1%;
+  margin-bottom: 2%;
     color: #2C3E50; /* Couleur du texte en blanc */
     border: none; /* Supprimer la bordure */
     border-radius: 5px; /* Ajouter un rayon aux coins */
-    padding: 5px 10px; /* Ajouter un espace de rembourrage */
+    padding: 3px 5px; /* Ajouter un espace de rembourrage */
     cursor: pointer; /* Afficher un curseur au survol */
     transition: background-color 0.3s; /* Ajouter une transition pour une animation fluide */
     background-color:#FFFFFF;
@@ -90,4 +92,12 @@ left:50%;
     background-color: #2C3E50; /* Au survol, changer la couleur de fond en blanc */
     color: #FFFFFF; /* Au survol, changer la couleur du texte en bleu foncé */
   }
-  
+  .navbar-imgD{
+    margin-left: 2%;
+    cursor: pointer;
+    width:20px;
+  }
+  .navbar-button{
+    position: absolute;
+    right:-1%;
+  }

@@ -1,7 +1,7 @@
 import './carte.css';
 import React, { useState, useEffect}  from 'react';
 import  menuIcon from "./Assets/icon.png"
-
+import { useNavigate } from 'react-router-dom';
 import deconIcon from "./Assets/decon.png"
 import whitemenuIcon from "./Assets/wmenu.png"
 import closeIcon from "./Assets/close.png"
@@ -9,7 +9,7 @@ import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import Navbar from './Elements/Navbar';
 import Footer from './Elements/Footer';
-
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { Form, Select, Button, Input, Card, Row, Col ,Checkbox, Typography } from 'antd';
 import ChatBox from './Elements/ChatBox';
@@ -23,14 +23,22 @@ function Carte() {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [data, setData] = useState([]);
   const [isFilterOpen, setFilterOpen ] = useState(false);
- 
-  
+  const { t,i18n } = useTranslation();
+  const navigate = useNavigate();
+  const toggleLang = (lang) => {
+    i18n.changeLanguage(lang);
+  }
   const handleMenuToggle = () => {
     setMenuOpen(!isMenuOpen);
   };
   const handleFilterToggle = () => {
     setFilterOpen(!isFilterOpen);
   };
+
+  const handleDeconnect = () => {
+    navigate('/');
+  };
+  
   
   useEffect(() => {
     const fetchData = async () => {
@@ -86,14 +94,14 @@ function Carte() {
       <img className="menu" src={menuIcon} alt="Menu Icon"
           onClick={handleMenuToggle}  />
       <Typography.Title level={1} style={{ fontWeight: 'bold', marginBottom: '40px',textAlign: 'center' }}>
-        Carte Géographique
+      {t("navbar.carteGeographique")}
       </Typography.Title>
       </div>
       <Row justify="space-between" align="middle" style={{ marginBottom: '20px', paddingLeft: '10px', paddingRight: '10px' }}>
         <Col>
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <div style={{ width: '400px', height: '60px', background: '#2C3E50', marginRight: '20px' }}>
-              <Link onClick={handleFilterToggle}><h2 style={{ textAlign: 'center', color: 'white', textDecoration:'none'}}>Filtres</h2></Link>
+              <Link onClick={handleFilterToggle}><h2 style={{ textAlign: 'center', color: 'white', textDecoration:'none'}}> {t("Tokens.Filter")}</h2></Link>
             </div>
           </div>
         </Col>
@@ -101,13 +109,13 @@ function Carte() {
           <Row gutter={16}>
             <Col flex="auto">
               <Input
-                placeholder="Entrer une requête de recherche"
+                placeholder= {t("Tokens.rechReq")}
                 style={{ flex:1, marginRight: '10px', background: '#ECF0F1' }}
               />
             </Col>
             <Col>
               <Button type="primary" htmlType="submit"  style={{backgroundColor :'#2C3E50'}}>
-                Rechercher
+              {t("Tokens.Recherche")}
               </Button>
             </Col>
           </Row>
@@ -139,7 +147,7 @@ function Carte() {
            }} key={monument.id}  value="">{monument.title}</Checkbox>
           ))
           ):(
-            <li>Aucun produit trouvé</li>
+            <li> {t("Messages.MonuErr")}</li>
           )
         }  
     
@@ -153,7 +161,7 @@ function Carte() {
 
 <Form.Item>
  <Button type="default" style={{ backgroundColor: '#27AE60', border: 'none',color:'#d9d9d9'}} onClick={handleCancel}>
- Effacer
+ {t("Btn.Effacer")}
  </Button>
 </Form.Item>
 </div>
@@ -177,7 +185,7 @@ function Carte() {
         ) : null
       ))
     ) : (
-      <li>Aucun monument trouvé</li>
+      <li>{t("Messages.MonuErr")}</li>
     )}
   </MapContainer>
 </div>
@@ -194,56 +202,56 @@ function Carte() {
     <img className="closemenu" src={closeIcon} alt="Close Icon" onClick={handleMenuToggle} />
   </div>
   <div className='lineBar'></div>
-  <h3 className='rub' style={{textAlign: 'center' }}>Rubriques</h3>
+  <h3 className='rub' style={{textAlign: 'center' }}>{t("Menu.Rubrique")}</h3>
   <ul className='mats' style={{ paddingLeft: '20px' }}>
-    <li className='rubMat-name' ><Link to="/material">Matériaux</Link></li>
+    <li className='rubMat-name' ><Link to="/material">{t("Header.Mat")}</Link></li>
     <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/categorie1" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Matériaux à base de terre</Link>
+  <Link to="/categorie1" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.MAT")}</Link>
 </li>
 <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/categorie2" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Minéraux et Roches</Link>
+  <Link to="/categorie2" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.MER")}</Link>
 </li>
 <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/categorie3" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Bois</Link>
+  <Link to="/categorie3" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Bois")}</Link>
 </li>
-    <li className='rubMat-name'><Link to="/produit">Produits</Link></li>
-    <li className='rubMat-name'><Link to="/ouvrage">Ouvrages</Link></li>
-    <li className='rubMat-name'><Link to="/pathologie">Pathologies</Link></li>
+    <li className='rubMat-name'><Link to="/produit">{t("Header.Prod")}</Link></li>
+    <li className='rubMat-name'><Link to="/ouvrage">{t("Header.Ouv")}</Link></li>
+    <li className='rubMat-name'><Link to="/pathologie">{t("Header.Path")}</Link></li>
     <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/biologique" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Biologique</Link>
+  <Link to="/biologique" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Biologique")}</Link>
 </li>
 <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/chromatique-dépot" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Chromatique-dépot</Link>
+  <Link to="/chromatique-dépot" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Chd")}</Link>
 </li>
 <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/déformation" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Déformation</Link>
+  <Link to="/déformation" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Deformation")}</Link>
 </li>
 <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/détachement" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Détachement</Link>
+  <Link to="/détachement" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Detachment")}</Link>
 </li>
 <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/fissure" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Fissure</Link>
+  <Link to="/fissure" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Fissure")}</Link>
 </li>
 <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/perte de matière" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Pertes de matière</Link>
+  <Link to="/perte de matière" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.PDM")}</Link>
 </li>
 <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/autres" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Autres</Link>
+  <Link to="/autres" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Autres")}</Link>
 </li>
-    <li className='rubMat-name'><Link to="/monument">Monuments</Link></li>
+    <li className='rubMat-name'><Link to="/monument">{t("Header.Monu")}</Link></li>
     </ul>
   <div className='lineBar'></div>
-  <h3 className='rub'  style={{textAlign: 'center' }} >Pages</h3>
+  <h3 className='rub'  style={{textAlign: 'center' }} >{t("Menu.Pages")}</h3>
   {/* Ajoutez vos liens du menu ici */}
-  <Link className="pageLink" to="/">Accueil</Link>
-  <Link className="pageLink" to="/Graph">Graph</Link>
-  <Link className="pageLink" to="/carte-geographique">Carte Geographique</Link>
-  <Link className="pageLink" to="/recherche-avancee">Recherche Avancée</Link>
-  <Link className="pageLink" to="/a-propos">À propos</Link>
+  <Link className="pageLink" to="/">{t("navbar.accueil")}</Link>
+  <Link className="pageLink" to="/Graph">{t("navbar.graph")}</Link>
+  <Link className="pageLink" to="/carte-geographique">{t("navbar.carteGeographique")}</Link>
+  <Link className="pageLink" to="/recherche-avancee">{t("navbar.rechercheAvancee")}</Link>
+  <Link className="pageLink" to="/a-propos">{t("navbar.aPropos")}</Link>
   <div className='lineDecBar'></div>
   <div className='Decon'>
-    <img className="dec" src={deconIcon} alt="Decon Icon" onClick={handleMenuToggle} />
-    <a className='decLink' href="/lien2">Deconnexion</a>
+    <img className="dec" src={deconIcon} alt="Decon Icon" onClick={handleDeconnect} />
+    <a className='decLink' href="/lien2">{t("Menu.Deconnexion")}</a>
   </div>
 </div>
 

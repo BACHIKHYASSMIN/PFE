@@ -12,6 +12,12 @@ import Navbar from './NavbarHome';
 import Footer from './Elements/Footer';
 
 const Home = () => {
+
+  const handleMaterialLinkClick = (previousUrl) => {
+    localStorage.setItem('previousUrl', previousUrl);
+    
+  };
+  
     const containerStyle = {
       position: 'relative',
       width: '100%',   // 100% de la largeur de la vue
@@ -96,7 +102,7 @@ const Home = () => {
             <p>
             Numerique Materials vous invite à plonger dans l'univers captivant des matériaux architecturaux  à travers sa section dédiée. Notre plateforme offre une immersion au sein des textures, des couleurs et des propriétés uniques de ces matériaux, mettant en lumière leur contribution essentielle à la construction et à la préservation des édifices historiques. Découvrez la richesse de ces éléments fondamentaux du patrimoine bâti et explorez comment ils façonnent l'histoire architecturale. Bienvenue dans notre espace dédié aux matériaux, où chaque découverte renforce votre lien avec le patrimoine architectural.
             </p>
-            <a href="/material" style={linkStyle}>Consulter tout les Matériaux ...</a>
+            <a href='/connexion' onClick={handleMaterialLinkClick('/material')} style={linkStyle}>Consulter tout les Matériaux ...</a>
           </div>
         </div>
   
@@ -109,7 +115,7 @@ const Home = () => {
             <p>
             Numerique Materials vous invite à explorer les produits liés au patrimoine bâti , et à plonger dans les détails de leurs propriétés distinctives,vous pouvez consulter ces produits et découvrir leurs formes, disponibilités, provenances et bien plus encore. Explorez les trésors patrimoniaux avec nous et approfondissez votre connaissance des éléments qui façonnent ces monuments emblématiques.
             </p>
-            <a href="/produit" style={linkStyle}>Consulter tout les Produits ...</a>
+            <a href="/connexion" onClick={handleMaterialLinkClick('/produit')} style={linkStyle}>Consulter tout les Produits ...</a>
           </div>
           <img src={ProduitPhoto} alt="Image des produits" style={{ width: '35%', height: '35%' }} />
         </div>
@@ -123,7 +129,7 @@ const Home = () => {
             <p>
             Numérique Materials vous offre une expérience enrichissante à travers sa section dédiée aux ouvrages architecturaux. Explorez un large éventail d'ouvrages, plongez dans leurs détails fascinants et accédez à une mine d'informations sur l'histoire, l'architecture et les aspects techniques. Consultez la section "Ouvrages" pour une exploration complète du patrimoine architectural de la Casbah d'Alger.
             </p>
-            <a href="/ouvrage" style={linkStyle}>Consulter tout les Ouvrages ...</a>
+            <a href="/connexion" onClick={handleMaterialLinkClick('/ouvrage')} style={linkStyle}>Consulter tout les Ouvrages ...</a>
           </div>
         </div>
     </li>
@@ -135,7 +141,7 @@ const Home = () => {
           <p>
             Numérique Materials vous propose un aperçu complet des pathologies courantes qui affectent le patrimoine bâti. Explorez la section "Pathologies" pour obtenir des informations générales sur les différents problèmes auxquels peuvent être confrontés les édifices historiques. Grâce à notre plateforme, accédez à une variété de connaissances sur les causes et les solutions pour préserver ces structures précieuses. Consultez la section "Pathologies" pour élargir votre compréhension des défis liés à la conservation du patrimoine architectural.
             </p>
-            <a href="/pathologies" style={linkStyle}>Consulter tout les Pathologies ...</a>
+            <a href="/connexion" onClick={handleMaterialLinkClick('/pathologie')} style={linkStyle}>Consulter tout les Pathologies ...</a>
           </div>
           <img src={MonumentPhoto} alt="Image des monuments"  style={{ width: '35%', height: '35%' }} />
         </div>
@@ -151,7 +157,7 @@ const Home = () => {
           <p>
             Numérique Materials vous offre une immersion fascinante dans la section "Monuments", où vous pouvez explorer la diversité des monuments historiques . Découvrez leurs types, leurs emplacements et leurs descriptions succinctes pour obtenir une vue d'ensemble du riche patrimoine architectural. Consultez la section dédiée aux monuments pour une expérience captivante et informative.
             </p>
-            <a href="/monuments" style={linkStyle}>Consulter tout les Monuments ...</a>
+            <a href="/connexion" onClick={handleMaterialLinkClick('/monument')} style={linkStyle}>Consulter tout les Monuments ...</a>
           </div>
         </div>
   

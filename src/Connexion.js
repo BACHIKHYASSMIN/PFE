@@ -13,6 +13,21 @@ const [pass, setPassword] = useState();
   const [loading, setLoading] = useState(false);
   const [showInscription, setShowInscription] = useState(false);
   const navigate= useNavigate();
+// Après la connexion réussie
+const handleSuccessfulLogin = () => {
+  // Récupérer l'URL stockée dans le localStorage
+  const previousUrl = localStorage.getItem('previousUrl');
+  // Vérifier si une URL précédente existe
+  if (previousUrl) {
+    // Rediriger vers l'URL précédente
+    window.location.href = previousUrl;
+    // Supprimer l'URL précédente du localStorage
+    localStorage.removeItem('previousUrl');
+  } else {
+    // Si aucune URL précédente n'est trouvée, rediriger vers une page par défaut
+    window.location.href = '/'; // Par exemple, la page d'accueil
+  }
+};
 
   const handleSubmit = async () => { 
     
@@ -24,7 +39,17 @@ const [pass, setPassword] = useState();
         pass
       });
     
-      navigate('/userHome');
+      const previousUrl = localStorage.getItem('previousUrl');
+      // Vérifier si une URL précédente existe
+      if (previousUrl) {
+        // Rediriger vers l'URL précédente
+        window.location.href = previousUrl;
+        // Supprimer l'URL précédente du localStorage
+        localStorage.removeItem('previousUrl');
+      } else {
+        // Si aucune URL précédente n'est trouvée, rediriger vers une page par défaut
+        window.location.href = '/'; // Par exemple, la page d'accueil
+      }
   
     } catch (error) {
         message.error(error.response.data.message); 

@@ -20,9 +20,12 @@ import { useTranslation } from 'react-i18next';
 const Material = () => {
   const [isMenuOpen, setMenuOpen ] = useState(false);
   const [data, setData] = useState([]);
-
+  const { t,i18n } = useTranslation();
   const [produits, setProduits] = useState([]);
-
+  const navigate = useNavigate();
+  const handleDeconnect = () => {
+    navigate('/');
+  };
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -37,10 +40,6 @@ const Material = () => {
   }, []);
 
 
-  const { t,i18n } = useTranslation();
-  const toggleLang=(lang:String) =>{
-    i18n.changeLanguage(lang);
-  }
   const handleMenuToggle = () => {
     setMenuOpen(!isMenuOpen);
   };
@@ -52,21 +51,21 @@ const Material = () => {
           <img className="menu" src={menuIcon} alt="Menu Icon"
           onClick={handleMenuToggle}  />
           <Typography.Title level={1} style={{ fontWeight: 'bold', marginBottom: '10px',textAlign: 'center', marginLeft:'30%' }}>
-          {t("Matheader.message")}
+          {t("Header.Mat")}
       </Typography.Title>
           </div>
           <div className='MaterialCat'>
   <img className="home" src={homeIcon}  />
-  <Link to="/" style={{ color: 'blue', textDecoration: 'none' }}>{t("navbar.accueil")}</Link> {/* Lien vers la page d'accueil */}
-  <span className='Path' style={{ color: 'blue' }}>&gt;</span> {/* Utilisation de span pour le symbole ">" */}
-  <Link to="/material" style={{ color: 'blue', textDecoration: 'none' }}>{t("Matheader.message")}</Link> {/* Lien vers la page Monument */}
+  <Link to="/" style={{ marginLeft:'10px',color: 'blue', textDecoration: 'none' }}>{t("navbar.accueil")}</Link> 
+  <span className='Path' style={{ color: 'blue' }}  >&gt;</span> 
+  <Link to="/material" style={{ marginLeft:'10px', color: 'blue', textDecoration: 'none' }}>{t("Header.Mat")}</Link>
 </div>
-          <Categories  categorieName="Matériaux à base de terre"/>
-          <Categories  categorieName="Minéraux et Roches"/>
-          <Categories  categorieName="Bois"/>
+          <Categories  categorieName={t("Menu.MAT")}/>
+          <Categories  categorieName={t("Menu.MER")}/>
+          <Categories  categorieName={t("Menu.Bois")}/>
 
           {/* Afficher le menu latéral s'il est ouvert */}
-      {isMenuOpen && (
+          {isMenuOpen && (
         
         <div className="side-menu">
   <div className="popIcons">
@@ -74,49 +73,46 @@ const Material = () => {
     <img className="closemenu" src={closeIcon} alt="Close Icon" onClick={handleMenuToggle} />
   </div>
   <div className='lineBar'></div>
-  <h3 className='rub' style={{textAlign: 'center' }}>Rubriques</h3>
+  <h3 className='rub' style={{textAlign: 'center' }}>{t("Menu.Rubrique")}</h3>
   <ul className='mats' style={{ paddingLeft: '20px' }}>
-    <li className='rubMat-name' ><Link to="/material">{t("Matheader.message")}</Link></li>
+    <li className='rubMat-name' ><Link to="/material">{t("Header.Mat")}</Link></li>
     <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/categorie1" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Matériaux à base de terre</Link>
+  <Link to="/categorie1" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.MAT")}</Link>
 </li>
 <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/categorie2" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Minéraux et Roches</Link>
+  <Link to="/categorie2" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.MER")}</Link>
 </li>
 <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/categorie3" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Bois</Link>
+  <Link to="/categorie3" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Bois")}</Link>
 </li>
-<li className='rubMat-name'><Link to="/produit">Produits</Link></li>
-
-
-
-    <li className='rubMat-name'><Link to="/ouvrage">Ouvrages</Link></li>
-    <li className='rubMat-name'><Link to="/pathologie">Pathologies</Link></li>
+    <li className='rubMat-name'><Link to="/produit">{t("Header.Prod")}</Link></li>
+    <li className='rubMat-name'><Link to="/ouvrage">{t("Header.Ouv")}</Link></li>
+    <li className='rubMat-name'><Link to="/pathologie">{t("Header.Path")}</Link></li>
     <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/biologique" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Biologique</Link>
+  <Link to="/biologique" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Biologique")}</Link>
 </li>
 <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/chromatique-dépot" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Chromatique-dépot</Link>
+  <Link to="/chromatique-dépot" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Chd")}</Link>
 </li>
 <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/déformation" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Déformation</Link>
+  <Link to="/déformation" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Deformation")}</Link>
 </li>
 <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/détachement" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Détachement</Link>
+  <Link to="/détachement" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Detachment")}</Link>
 </li>
 <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/fissure" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Fissure</Link>
+  <Link to="/fissure" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Fissure")}</Link>
 </li>
 <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/perte de matière" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Pertes de matière</Link>
+  <Link to="/perte de matière" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.PDM")}</Link>
 </li>
 <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/autres" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Autres</Link>
+  <Link to="/autres" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Autres")}</Link>
 </li>
-    <li className='rubMat-name'><Link to="/monument">Monuments</Link></li>
+    <li className='rubMat-name'><Link to="/monument">{t("Header.Monu")}</Link></li>
     </ul>
   <div className='lineBar'></div>
-  <h3 className='rub'  style={{textAlign: 'center' }} >Pages</h3>
+  <h3 className='rub'  style={{textAlign: 'center' }} >{t("Menu.Pages")}</h3>
   {/* Ajoutez vos liens du menu ici */}
   <Link className="pageLink" to="/">{t("navbar.accueil")}</Link>
   <Link className="pageLink" to="/Graph">{t("navbar.graph")}</Link>
@@ -125,8 +121,8 @@ const Material = () => {
   <Link className="pageLink" to="/a-propos">{t("navbar.aPropos")}</Link>
   <div className='lineDecBar'></div>
   <div className='Decon'>
-    <img className="dec" src={deconIcon} alt="Decon Icon" onClick={handleMenuToggle} />
-    <a className='decLink' href="/lien2">Deconnexion</a>
+    <img className="dec" src={deconIcon} alt="Decon Icon" onClick={handleDeconnect} />
+    <a className='decLink' href="/lien2">{t("Menu.Deconnexion")}</a>
   </div>
 </div>
 
@@ -139,6 +135,7 @@ const Material = () => {
 
 
 const Categories = (props) => {
+  const { t,i18n } = useTranslation();
   const CatName = props.categorieName;
   const navigate = useNavigate();
   const handleImageClick = () => {
@@ -153,11 +150,11 @@ const Categories = (props) => {
     categoryContent = (
       <div className='CategorieList'>
         <div className='CardMatItem'>
-          <p >Terre Cuite</p>
+          <p >{t("Header.TC")}</p>
           <img  onClick={handleImageClick} />
         </div>
         <div className='CardMatItem'>
-          <p >Terre non Cuite</p>
+          <p >{t("Header.TNC")}</p>
           <img  onClick={handleImageClick}  />
         </div>
         
@@ -169,11 +166,11 @@ const Categories = (props) => {
     categoryContent = (
       <div className='CategorieList'>
         <div className='CardMatItem'>
-          <p >Conglomérat et liant</p>
+          <p >{t("Header.CEL")}</p>
           <img  onClick={handleImageClick} />
         </div>
         <div className='CardMatItem'>
-          <p >Pierre</p>
+          <p >{t("Header.Pierre")}</p>
           <img  onClick={handleImageClick} />
         </div>
        
@@ -185,15 +182,15 @@ const Categories = (props) => {
     categoryContent = (
       <div className='CategorieList'>
         <div className='CardMatItem'>
-          <p >Cèdre</p>
+          <p >{t("Header.Cédre")}</p>
           <img  onClick={handleImageClick} />
         </div>
         <div className='CardMatItem'>
-          <p >Thuya</p>
+          <p >{t("Header.Thuya")}</p>
           <img  onClick={handleImageClick} />
         </div>
         <div className='CardMatItem'>
-          <p >Essence non Identifiée</p>
+          <p >{t("Header.ENI")}</p>
           <img  onClick={handleImageClick} />
         </div>
         {/* Ajoutez d'autres éléments génériques si nécessaire */}
@@ -210,7 +207,7 @@ const Categories = (props) => {
       </div>
       <div className='CardDetails'>
         <Link to={categoryUrl}>
-          <h3>Voir Tout</h3> 
+          <h3>{t("Tokens.voirTout")}</h3> 
         </Link>
       </div>
       {categoryContent}

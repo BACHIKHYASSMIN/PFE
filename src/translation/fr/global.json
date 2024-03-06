@@ -6,9 +6,122 @@
       "rechercheAvancee": "Recherche Avancée",
       "aPropos": "À Propos",
       "profil": "Profil",
-      "changerLangue": "Changer de Langue"
+      "changerLangue": "Changer de Langue",
+      "classes":"Classes"
     },
-    "Matheader":{
-        "message":"Matériaux"
-    }
+    "Header":{
+        "Mat":"Matériaux",
+        "Prod":"Produits",
+        "Monu":"Monuments",
+        "Ouv":"Ouvrages",
+        "Path":"Pathologies",
+        "Periode":"Période",
+        "Place":"Place",
+        "Color":"Couleur",
+        "Categorie":"Catégories",
+        "Cédre":"Cédre",
+        "Thuya":"Thuya",
+        "ENI":"Essence non Identifiée",
+        "CEL":"Conglomérat et liant",
+        "Pierre":"Pierre",
+        "TC":"Terre Cuite",
+        "TNC":"Terre non Cuite"
+    },
+    "intro":{
+       "NumeriqueMaterial":"NumeriqueMaterial est une platforme de matériathèque numérique du domaine du patrimoine bâti de la Casbah d'Alger, deployée en Algérie, qui vous permet d'accerder à tous moment, librement et gratuitement au données sur les matériaux, produits, ouvrages, monuments, pathologies, causes de dégardation techniques de construction du le patrimoine bati en Algérie.",
+       "MaterialP":" Numerique Materials vous invite à plonger dans l'univers captivant des matériaux architecturaux  à travers sa section dédiée. Notre plateforme offre une immersion au sein des textures, des couleurs et des propriétés uniques de ces matériaux, mettant en lumière leur contribution essentielle à la construction et à la préservation des édifices historiques. Découvrez la richesse de ces éléments fondamentaux du patrimoine bâti et explorez comment ils façonnent l'histoire architecturale. Bienvenue dans notre espace dédié aux matériaux, où chaque découverte renforce votre lien avec le patrimoine architectural.",
+       "ProductP":"Numerique Materials vous invite à explorer les produits liés au patrimoine bâti , et à plonger dans les détails de leurs propriétés distinctives,vous pouvez consulter ces produits et découvrir leurs formes, disponibilités, provenances et bien plus encore. Explorez les trésors patrimoniaux avec nous et approfondissez votre connaissance des éléments qui façonnent ces monuments emblématiques.",
+       "BuildingP":"Numérique Materials vous offre une expérience enrichissante à travers sa section dédiée aux ouvrages architecturaux. Explorez un large éventail d'ouvrages, plongez dans leurs détails fascinants et accédez à une mine d'informations sur l'histoire, l'architecture et les aspects techniques. Consultez la section 'Ouvrages' pour une exploration complète du patrimoine architectural de la Casbah d'Alger.",
+       "MonumP":"Numérique Materials vous offre une immersion fascinante dans la section 'Monuments', où vous pouvez explorer la diversité des monuments historiques . Découvrez leurs types, leurs emplacements et leurs descriptions succinctes pour obtenir une vue d'ensemble du riche patrimoine architectural. Consultez la section dédiée aux monuments pour une expérience captivante et informative.",
+       "PathP":"Numérique Materials vous propose un aperçu complet des pathologies courantes qui affectent le patrimoine bâti. Explorez la section 'Pathologies' pour obtenir des informations générales sur les différents problèmes auxquels peuvent être confrontés les édifices historiques. Grâce à notre plateforme, accédez à une variété de connaissances sur les causes et les solutions pour préserver ces structures précieuses. Consultez la section 'Pathologies' pour élargir votre compréhension des défis liés à la conservation du patrimoine architectural."
+      },
+      "Tokens":{
+        "suivre":"Consulter tout les ",
+         "Viz":"Visualiser le Graphe",
+         "VizP":"Découvrez une représentation graphique des connaissances disponibles sur Numerique Materials.",
+         "Loc":"Localiser les Monuments",
+          "LocP":"Explorez la carte géographique pour repérer l'emplacement des monuments historiques de la Casbah d'Alger.",
+          "RechP":"Effectuez des recherches ciblées en utilisant des mots-clés pour trouver des informations spécifiques sur le patrimoine bâti.",
+          "Recherche":"Rechercher",
+          "Filter":"Filtres",
+          "rechReq":"Entrer une requête de recherche",
+          "voirPlus":"Voir Plus",
+          "voirTout":"Voir Tout",
+          "fullName":"Nom Et Prenom",
+          "Infos":"Informations Personelle",
+          "userName":"Nom d'utilisateur",
+          "EnvoyerMess":"Envoyer un message",
+          "Destinataire":"Destinataire",
+          "Objet":"Objet",
+          "mess":"Contenu du message",
+          "ObjPlc":"Objet du message",
+          "DesPlc":"Adresse e-mail du destinataire",
+          "RechercherUn":"Rechercher ",
+          "FamilleMat":"Famille des matériaux"
+      },
+      "Footer":{
+        "localosation":"El harrach,Alger,Algérie",
+        "ENcadrement":"Encadré par :",
+        "Realisation":"Réalisé par :",
+        "Droits":"Tous droits réservés "
+
+      },
+      "Btn":{
+        "Valider":"Valider",
+        "Annuler":"Annuler",
+        "Effacer":"Effacer",
+        "Modifier":"Modifier",
+        "Envoyer":"Envoyer",
+        "Repondre":"Répondre"
+      },
+      "Messages":{
+        "MatErr":"Aucun matériau trouvée",
+        "ProdErr":"Aucun produit trouvée",
+        "OuvErr":"Aucun ouvrage trouvée",
+        "MonuErr":"Aucun Monument trouvé",
+        "PerErr":"Aucune période trouvée",
+        "PlaceErr":"Aucune place trouvée",
+        "ColorErr":"Aucune couleur trouvée"
+      },
+      "Menu":{
+        "Rubrique":"Rubriques",
+        "MAT":"Matériaux à base de terre",
+        "MER":"Minéraux et Roches",
+        "Bois":"Bois",
+        "Biologique":"Biologique",
+        "Chd":"Chromatique-dépot",
+        "Déformation":"Déformation",
+        "Détachement":"Détachement",
+        "Fissure":"Fissure",
+        "PDM":"Pertes de matière",
+        "Autres":"Autres",
+        "Pages":"Pages",
+        "Deconnexion":"Deconnexion"
+      },
+      "Title":{
+        "abouT":"À Propos de NumeriqueMaterials",
+        "Decouvrir":"Découvrez NumeriqueMaterials",
+        "objectif":"Objectifs du Projet",
+        "fonction":"Fonctionnalités de la Plateforme",
+        "espace":"Espace d'Interaction"
+      },
+      "Paragraph":{
+        "decouvert":"NumeriqueMaterials représente une matériauthèque numérique en ligne spécialisée dans la facilitation de la recherche de matériaux. NumeriqueMaterials offre aux utilisateurs une base de données complète et actualisée, comprenant une vaste gamme de matériaux de construction et de conception.Cette plateforme est conçue pour être accessible et conviviale, offrant ainsi une expérience utilisateur intuitive et efficace pour les chercheurs, les ingénieurs et les professionnels de l'architecture. L'objectif est de simplifier le processus de recherche de matériaux, permettant aux utilisateurs de la plateforme de trouver rapidement les informations nécessaires pour leurs projets.",
+        "objectifsP":"Les objectifs de NumeriqueMaterials sont les suivants :",
+        "objectifsL1":"Fournir une plateforme conviviale et intuitive pour la recherche de matériaux de construction.",
+        "objectifsL2":"Offrir une base de données complète et actualisée de matériaux provenant de diverses sources.",
+        "objectifsL3":"Permettre aux utilisateurs de filtrer et d'étudier facilement les différents matériaux en fonction de leurs besoins spécifiques.",
+        "objectifsL4":"Faciliter la gestion des matériaux pour les architectes, les ingénieurs et les professionnels de la construction.",
+        "fonctionP":"Fonctionnalités offertes par NumeriqueMaterials :",
+        "fonctionL1":"Consultation de vastes collections de matériaux, produits, ouvrages, pathologies et monuments disponibles dans la base de données et provenant de diverses sources fiables.",
+        "fonctionL2":"Recherche avancée avec des filtres personnalisables pour trouver rapidement les matériaux recherchés.",
+        "fonctionL3":"Visualisation de graphiques et de données statistiques pour analyser les tendances et les performances des matériaux.",
+        "fonctionL4":"Utilisation de filtres pour affiner les résultats de recherche en fonction de critères spécifiques.",
+        "fonctionL5":"Exploration des détails techniques, des caractéristiques et des propriétés de chaque matériau, produit, ouvrage, pathologie et monument.",
+        "espaceP":"La plateforme NumeriqueMaterials dispose d'un Espace d'Interaction dédié à l'échange et à la collaboration entre utilisateurs.  Dans cet espace, vous avez la possibilité de :",
+        "espaceL1":"Partager vos expériences et suggestions pour contribuer à l'amélioration continue de NumeriqueMaterials.",
+        "espaceL2":"Échanger des idées, des conseils et des références avec une communauté active et engagée.",
+        "espaceL3":"Collaborer avec d'autres utilisateurs afin de résoudre des problèmes spécifiques ou de mener à bien des projets communs.",
+        "espaceL4":"Poser des questions pour obtenir des informations complémentaires "
+      }
   }

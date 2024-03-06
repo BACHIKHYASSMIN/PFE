@@ -46,8 +46,8 @@
     margin-bottom: 80px;
     padding: 50px;
    position: relative;
-   
-    max-width:100%; /* Ajustez la largeur maximale selon vos préférences */
+   margin-left: 15%;
+    max-width:60%; /* Ajustez la largeur maximale selon vos préférences */
      /* Pour centrer le container */
   }
   .section-container1 {
@@ -56,8 +56,8 @@
     padding: 50px;
    position: relative;
    
-    max-width:100%; /* Ajustez la largeur maximale selon vos préférences */
-     /* Pour centrer le container */
+   margin-left: 15%;
+    max-width:60%; 
   }
   
   .section-container2 {
@@ -66,8 +66,8 @@
     padding: 50px;
    position: relative;
    
-    max-width:100%; /* Ajustez la largeur maximale selon vos préférences */
-     /* Pour centrer le container */
+   margin-left: 15%;
+    max-width:60%; 
   }
   .section-container:not(:last-child):after {
     content: "";
@@ -108,4 +108,12 @@
     width: 1em;
     margin-left: -1em;
   }
-  
+  .slider-container {
+    display: flex;
+    overflow-x: hidden;
+    transition: transform 2s ease-in-out;
+  }
+  .slide {
+    flex: 0 0 auto;
+    width: 100%; /* Ou une largeur fixe selon votre mise en page */
+  }

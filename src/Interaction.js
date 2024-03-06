@@ -8,10 +8,11 @@ import MenuIcon from "./Assets/menu.png";
 import deconIcon from "./Assets/decon.png"
 import closeIcon from "./Assets/close.png"
 import whitemenuIcon from "./Assets/wmenu.png"
-
+import { useTranslation } from 'react-i18next';
 const Interaction = () => {
   const [message, setMessage] = useState('');
   const [isMenuOpen, setMenuOpen] = useState(false);
+  const { t,i18n } = useTranslation();
   const [messages, setMessages] = useState([
     { message: 'Message 1', reply: false },
     { message: 'Message 2', reply: false },
@@ -49,7 +50,7 @@ const Interaction = () => {
       </header>
       <div className="background">
   <div className="interaction">
-    <h1>Espace d'interaction</h1>
+    <h1>{t("Title.espace")}</h1>
     <div className="flex-container">
       <div className="messages">
         <h2>Messages</h2>
@@ -59,7 +60,7 @@ const Interaction = () => {
             <p>{message.message}</p>
             {/* Bouton pour répondre au message */}
             {!message.reply && (
-              <button onClick={() => replyToMessage(index)}>Répondre</button>
+              <button onClick={() => replyToMessage(index)}>{t("Btn.Repondre")}</button>
             )}
             {/* Formulaire pour répondre au message */}
             {replyIndex === index && (
@@ -69,7 +70,7 @@ const Interaction = () => {
                   value={replyMessage}
                   onChange={handleReplyChange}
                 />
-                <button type="submit">Envoyer</button>
+                <button type="submit">{t("Btn.Envoyer")}</button>
               </form>
             )}
           </div>
@@ -83,9 +84,9 @@ const Interaction = () => {
           type="text"
           value={replyMessage}
           onChange={handleReplyChange}
-          placeholder="Envoyer un message..."
+          placeholder={t("Tokens.EnvoyerMess")}
         />
-        <button type="submit" className="send-button">Envoyer</button>
+        <button type="submit" className="send-button">{t("Btn.Envoyer")}</button>
       </form>
     </div>
   </div>

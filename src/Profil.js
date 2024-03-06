@@ -11,6 +11,7 @@ import ChatBox from './Elements/ChatBox';
 import deconIcon from "./Assets/decon.png"
 import whitemenuIcon from "./Assets/wmenu.png"
 import closeIcon from "./Assets/close.png"
+import { useTranslation } from 'react-i18next';
 
 function Profil() {
   const [isEditing, setIsEditing] = useState(false);
@@ -22,6 +23,7 @@ function Profil() {
   const [recipientEmail, setRecipientEmail] = useState('');
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
+  const { t,i18n } = useTranslation();
   const { TextArea } = Input;
   const handleRecipientEmailChange = (e) => {
     setRecipientEmail(e.target.value);
@@ -80,7 +82,9 @@ function Profil() {
     const file = event.target.files[0];
   
   };
-
+  const toggleLang = (lang) => {
+    i18n.changeLanguage(lang);
+  }
   const handleMessageIconClick = () => {
     setIsSendingMessage(true); 
   };
@@ -89,6 +93,10 @@ function Profil() {
     <div className='profil'>
       <div className='Profilhead'>
       <img src={MenuIcon} alt="Profile"  on onClick={handleMenuToggle} />
+      <div className="langBtn">
+      <button  className="lang-btn" onClick={()=>{toggleLang("en")}}>EN</button>
+      <button  className="lang-btn" onClick={()=>{toggleLang("fr")}}>FR</button>
+      </div>
       </div>
       <div className={`ProfilCard ${isEditing ? 'editing' : ''} ${isSendingMessage ? 'sending-message' : ''}`}>
         <div className='ProfilImage'>
@@ -108,7 +116,7 @@ function Profil() {
         <input type="file" ref={inputRef} style={{ display: 'none' }} onChange={handleFileSelect} />
         <div className='ProfilData'>
           <div className='Output'>
-            <h4>Nom Et Prenom :</h4>
+            <h4>{t("Tokens.fullName")}:</h4>
             <div className='MailOutput'>Nom Complet</div>
           </div>
           <div className='Output'>
@@ -117,19 +125,19 @@ function Profil() {
           </div>
         </div>
         <Button className='Edit' onClick={toggleEditing}>
-  {isEditing ? 'Annuler' : isSendingMessage ? 'Annuler' : 'Modifier'}
+  {isEditing || isSendingMessage ? t("Btn.Annuler") : t("Btn.Modifier")}
 </Button>
       </div>
       {isEditing && (
         <div className='EditForm'>
-           <h3>Informations Personelle</h3>
+           <h3>{t("Tokens.Infos")}</h3>
            <div className='ProfilInput'>
-           <h5>Nom d'utilisateur</h5>
+           <h5>{t("Tokens.userName")}</h5>
            <Input value={editedName} onChange={handleNameChange} placeholder="Nom d'utilisateur" />
            </div>
 
            <div className='ProfilInput'>
-           <h5>Nom Complete</h5>
+           <h5>{t("Tokens.fullName")}</h5>
            <Input value={editedName} onChange={handleNameChange} placeholder="Nom et Prenom" />
            </div>
 
@@ -142,13 +150,13 @@ function Profil() {
            <h5>Password</h5>
            <Input value={editedName} onChange={handleNameChange} type='password' />
            </div>
-          <Button type="primary" onClick={handleSave} className='Save'>Valider</Button>
+          <Button type="primary" onClick={handleSave} className='Save'>{t("Btn.Valider")}</Button>
         </div>
       )}
 
 
   
-         {isMenuOpen && (
+{isMenuOpen && (
         
         <div className="side-menu">
   <div className="popIcons">
@@ -156,56 +164,56 @@ function Profil() {
     <img className="closemenu" src={closeIcon} alt="Close Icon" onClick={handleMenuToggle} />
   </div>
   <div className='lineBar'></div>
-  <h3 className='rub' style={{textAlign: 'center' }}>Rubriques</h3>
+  <h3 className='rub' style={{textAlign: 'center' }}>{t("Menu.Rubrique")}</h3>
   <ul className='mats' style={{ paddingLeft: '20px' }}>
-    <li className='rubMat-name' ><Link to="/material">Matériaux</Link></li>
+    <li className='rubMat-name' ><Link to="/material">{t("Header.Mat")}</Link></li>
     <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/categorie1" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Matériaux à base de terre</Link>
+  <Link to="/categorie1" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.MAT")}</Link>
 </li>
 <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/categorie2" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Minéraux et Roches</Link>
+  <Link to="/categorie2" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.MER")}</Link>
 </li>
 <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/categorie3" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Bois</Link>
+  <Link to="/categorie3" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Bois")}</Link>
 </li>
-    <li className='rubMat-name'><Link to="/produit">Produits</Link></li>
-    <li className='rubMat-name'><Link to="/ouvrage">Ouvrages</Link></li>
-    <li className='rubMat-name'><Link to="/pathologie">Pathologies</Link></li>
+    <li className='rubMat-name'><Link to="/produit">{t("Header.Prod")}</Link></li>
+    <li className='rubMat-name'><Link to="/ouvrage">{t("Header.Ouv")}</Link></li>
+    <li className='rubMat-name'><Link to="/pathologie">{t("Header.Path")}</Link></li>
     <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/biologique" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Biologique</Link>
+  <Link to="/biologique" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Biologique")}</Link>
 </li>
 <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/chromatique-dépot" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Chromatique-dépot</Link>
+  <Link to="/chromatique-dépot" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Chd")}</Link>
 </li>
 <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/déformation" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Déformation</Link>
+  <Link to="/déformation" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Deformation")}</Link>
 </li>
 <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/détachement" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Détachement</Link>
+  <Link to="/détachement" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Detachment")}</Link>
 </li>
 <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/fissure" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Fissure</Link>
+  <Link to="/fissure" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Fissure")}</Link>
 </li>
 <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/perte de matière" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Pertes de matière</Link>
+  <Link to="/perte de matière" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.PDM")}</Link>
 </li>
 <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/autres" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Autres</Link>
+  <Link to="/autres" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Autres")}</Link>
 </li>
-    <li className='rubMat-name'><Link to="/monument">Monuments</Link></li>
+    <li className='rubMat-name'><Link to="/monument">{t("Header.Monu")}</Link></li>
     </ul>
   <div className='lineBar'></div>
-  <h3 className='rub'  style={{textAlign: 'center' }} >Pages</h3>
+  <h3 className='rub'  style={{textAlign: 'center' }} >{t("Menu.Pages")}</h3>
   {/* Ajoutez vos liens du menu ici */}
-  <Link className="pageLink" to="/">Accueil</Link>
-  <Link className="pageLink" to="/Graph">Graph</Link>
-  <Link className="pageLink" to="/carte-geographique">Carte Geographique</Link>
-  <Link className="pageLink" to="/recherche-avancee">Recherche Avancée</Link>
-  <Link className="pageLink" to="/a-propos">À propos</Link>
+  <Link className="pageLink" to="/">{t("navbar.accueil")}</Link>
+  <Link className="pageLink" to="/Graph">{t("navbar.graph")}</Link>
+  <Link className="pageLink" to="/carte-geographique">{t("navbar.carteGeographique")}</Link>
+  <Link className="pageLink" to="/recherche-avancee">{t("navbar.rechercheAvancee")}</Link>
+  <Link className="pageLink" to="/a-propos">{t("navbar.aPropos")}</Link>
   <div className='lineDecBar'></div>
   <div className='Decon'>
     <img className="dec" src={deconIcon} alt="Decon Icon" onClick={handleMenuToggle} />
-    <a className='decLink' href="/lien2">Deconnexion</a>
+    <a className='decLink' href="/lien2">{t("Menu.Deconnexion")}</a>
   </div>
 </div>
 
@@ -215,32 +223,32 @@ function Profil() {
 {isSendingMessage && ( 
         <div className='SendMessage'>
           
-          <h3>Envoyer un message </h3>
+          <h3>{t("Tokens.EnvoyerMess")}</h3>
           <Form onFinish={handleSubmit}>
-      <Form.Item name="recipientEmail" label="Destinataire">
+      <Form.Item name="recipientEmail" label={t("Tokens.Destinataire")}>
         <Input
           value={recipientEmail}
           onChange={handleRecipientEmailChange}
-          placeholder="Adresse e-mail du destinataire"
+          placeholder={t("Tokens.DesPlc")}
         />
       </Form.Item>
-      <Form.Item name="subject" label="Objet">
+      <Form.Item name="subject" label={t("Tokens.Objet")}>
         <Input
           value={subject}
           onChange={handleSubjectChange}
-          placeholder="Objet du message"
+          placeholder={t("Tokens.ObjPlc")}
         />
       </Form.Item>
       <Form.Item name="message" label="Message">
         <TextArea
           value={message}
           onChange={handleMessageChange}
-          placeholder="Contenu du message"
+          placeholder={t("Tokens.mess")}
           autoSize={{ minRows: 3, maxRows: 6 }}
         />
       </Form.Item>
       <Form.Item>
-          <Button  className="Edit" type="primary" onClick={() => setIsSendingMessage(false)}>Envoyer</Button>
+          <Button  className="Edit" type="primary" onClick={() => setIsSendingMessage(false)}>{t("Btn.Envoyer")}</Button>
           </Form.Item>
     </Form>
         </div>

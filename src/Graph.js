@@ -21,6 +21,7 @@ import axios from 'axios';
 import CytoscapeComponent from 'react-cytoscapejs';
 import GraphComponent from './Elements/KnowledgeGraph'
 import Neo4jGraph from './test';
+import { useTranslation } from 'react-i18next';
 const { Option } = Select;
 
 
@@ -30,7 +31,10 @@ function Graph() {
   const [isChecked2, setChecked2] = useState(false);
   const [isChecked3, setChecked3] = useState(false);
   const [data, setData] = useState([]);
-
+  const { t,i18n } = useTranslation();
+  const toggleLang = (lang) => {
+    i18n.changeLanguage(lang);
+  }
   const handleMenuToggle = () => {
     setMenuOpen(!isMenuOpen);
   };
@@ -81,7 +85,7 @@ function Graph() {
           <img className="menu" src={menuIcon} alt="Menu Icon"
           onClick={handleMenuToggle}  />
     <Typography.Title level={1} style={{ fontWeight: 'bold', marginBottom: '40px',textAlign: 'center' }}>
-        Graph
+    {t("navbar.graph")}
       </Typography.Title>
       </div>
       <Row justify="space-between" align="middle" style={{ marginBottom: '20px', paddingLeft: '10px', paddingRight: '10px' }}>
@@ -96,13 +100,13 @@ function Graph() {
           <Row gutter={16}>
             <Col flex="auto">
               <Input
-                placeholder="Entrer une requête de recherche"
+                placeholder={t("Tokens.rechReq")}
                 style={{ flex:1, marginRight: '10px', background: '#ECF0F1' }}
               />
             </Col>
             <Col>
               <Button type="primary" htmlType="submit"  style={{backgroundColor :'#2C3E50'}}>
-                Rechercher
+              {t("Tokens.Recherche")}
               </Button>
             </Col>
           </Row>
@@ -126,7 +130,7 @@ function Graph() {
     {/* Vos champs de formulaire ici */}
     <div style={{ display: 'flex', flexDirection: 'column' }}>
     <div className='FilterCat'>
-          <h3 className='filt-name' >Matériaux</h3>
+          <h3 className='filt-name' >{t("Header.Mat")}</h3>
           </div>
           <div className='catboxList'>
           <ul>
@@ -138,13 +142,13 @@ function Graph() {
             </div>
           ))
           ):(
-            <li>Aucun matériau trouvé</li>
+            <li>{t("Messages.MatErr")}</li>
           ) }  
       </ul>
     </div> 
 
       <div className='FilterCat'>
-          <h3 className='filt-name' >Produits</h3>
+          <h3 className='filt-name' >{t("Header.Prod")}</h3>
           </div>
           <div className='catboxList'>
           <ul>
@@ -156,13 +160,13 @@ function Graph() {
             </div>
           ))
           ):(
-            <li>Aucun produit trouvé</li>
+            <li>{t("Messages.ProdErr")}</li>
           ) }  
       </ul>
     </div> 
    
     <div className='FilterCat'>
-          <h3 className='filt-name' >Ouvrages</h3>
+          <h3 className='filt-name' >{t("Header.Ouv")}</h3>
           </div>
           <div className='catboxList'>
           <ul>
@@ -174,7 +178,7 @@ function Graph() {
             </div>
         ))
       ) : (
-        <li>Aucun ouvrage trouvé</li>
+        <li>{t("Messages.OuvErr")}</li>
       )}
     </ul>
     </div> 
@@ -182,10 +186,10 @@ function Graph() {
     {/* Répétez ce schéma pour les autres Form.Item */}
     <Form.Item>
       <Button type="primary" htmlType="submit" style={{ marginRight: '10px', backgroundColor: '#27AE60', marginTop: '20px' }}>
-        Valider
+      {t("Btn.Valider")}
       </Button>
       <Button type="default" style={{ backgroundColor: '#d9d9d9', border: 'none' }}>
-        Annuler
+      {t("Btn.Annuler")}
       </Button>
     </Form.Item>
     </div>
@@ -211,60 +215,61 @@ function Graph() {
     <img className="closemenu" src={closeIcon} alt="Close Icon" onClick={handleMenuToggle} />
   </div>
   <div className='lineBar'></div>
-  <h3 className='rub' style={{textAlign: 'center' }}>Rubriques</h3>
+  <h3 className='rub' style={{textAlign: 'center' }}>{t("Menu.Rubrique")}</h3>
   <ul className='mats' style={{ paddingLeft: '20px' }}>
-    <li className='rubMat-name' ><Link to="/material">Matériaux</Link></li>
+    <li className='rubMat-name' ><Link to="/material">{t("Header.Mat")}</Link></li>
     <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/categorie1" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Matériaux à base de terre</Link>
+  <Link to="/categorie1" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.MAT")}</Link>
 </li>
 <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/categorie2" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Minéraux et Roches</Link>
+  <Link to="/categorie2" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.MER")}</Link>
 </li>
 <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/categorie3" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Bois</Link>
+  <Link to="/categorie3" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Bois")}</Link>
 </li>
-    <li className='rubMat-name'><Link to="/produit">Produits</Link></li>
-    <li className='rubMat-name'><Link to="/ouvrage">Ouvrages</Link></li>
-    <li className='rubMat-name'><Link to="/pathologie">Pathologies</Link></li>
+    <li className='rubMat-name'><Link to="/produit">{t("Header.Prod")}</Link></li>
+    <li className='rubMat-name'><Link to="/ouvrage">{t("Header.Ouv")}</Link></li>
+    <li className='rubMat-name'><Link to="/pathologie">{t("Header.Path")}</Link></li>
     <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/biologique" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Biologique</Link>
+  <Link to="/biologique" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Biologique")}</Link>
 </li>
 <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/chromatique-dépot" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Chromatique-dépot</Link>
+  <Link to="/chromatique-dépot" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Chd")}</Link>
 </li>
 <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/déformation" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Déformation</Link>
+  <Link to="/déformation" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Deformation")}</Link>
 </li>
 <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/détachement" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Détachement</Link>
+  <Link to="/détachement" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Detachment")}</Link>
 </li>
 <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/fissure" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Fissure</Link>
+  <Link to="/fissure" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Fissure")}</Link>
 </li>
 <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/perte de matière" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Pertes de matière</Link>
+  <Link to="/perte de matière" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.PDM")}</Link>
 </li>
 <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/autres" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Autres</Link>
+  <Link to="/autres" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Autres")}</Link>
 </li>
-    <li className='rubMat-name'><Link to="/monument">Monuments</Link></li>
+    <li className='rubMat-name'><Link to="/monument">{t("Header.Monu")}</Link></li>
     </ul>
   <div className='lineBar'></div>
-  <h3 className='rub'  style={{textAlign: 'center' }} >Pages</h3>
+  <h3 className='rub'  style={{textAlign: 'center' }} >{t("Menu.Pages")}</h3>
   {/* Ajoutez vos liens du menu ici */}
-  <Link className="pageLink" to="/">Accueil</Link>
-  <Link className="pageLink" to="/Graph">Graph</Link>
-  <Link className="pageLink" to="/carte-geographique">Carte Geographique</Link>
-  <Link className="pageLink" to="/recherche-avancee">Recherche Avancée</Link>
-  <Link className="pageLink" to="/a-propos">À propos</Link>
+  <Link className="pageLink" to="/">{t("navbar.accueil")}</Link>
+  <Link className="pageLink" to="/Graph">{t("navbar.graph")}</Link>
+  <Link className="pageLink" to="/carte-geographique">{t("navbar.carteGeographique")}</Link>
+  <Link className="pageLink" to="/recherche-avancee">{t("navbar.rechercheAvancee")}</Link>
+  <Link className="pageLink" to="/a-propos">{t("navbar.aPropos")}</Link>
   <div className='lineDecBar'></div>
   <div className='Decon'>
     <img className="dec" src={deconIcon} alt="Decon Icon" onClick={handleMenuToggle} />
-    <a className='decLink' href="/lien2">Deconnexion</a>
+    <a className='decLink' href="/lien2">{t("Menu.Deconnexion")}</a>
   </div>
 </div>
 
       )}
+
 
       
 <ChatBox/>   
