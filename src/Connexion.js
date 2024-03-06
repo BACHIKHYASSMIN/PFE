@@ -48,7 +48,7 @@ const handleSuccessfulLogin = () => {
         localStorage.removeItem('previousUrl');
       } else {
         // Si aucune URL précédente n'est trouvée, rediriger vers une page par défaut
-        window.location.href = '/'; // Par exemple, la page d'accueil
+        window.location.href = '/userHome'; // Par exemple, la page d'accueil
       }
   
     } catch (error) {

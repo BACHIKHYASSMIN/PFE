@@ -1,0 +1,9 @@
+.__________cytoscape_container div canvas {
+  position: absolute;
+  left: -2%;
+  width:675,5px;
+  height: 500px;
+  user-select: none;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  outline-style: none;
+}

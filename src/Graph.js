@@ -22,19 +22,30 @@ import CytoscapeComponent from 'react-cytoscapejs';
 import GraphComponent from './Elements/KnowledgeGraph'
 import Neo4jGraph from './test';
 import { useTranslation } from 'react-i18next';
-const { Option } = Select;
+import { useNavigate } from 'react-router-dom';
+
 
 
 function Graph() {
   const [isMenuOpen, setMenuOpen] = useState(false);
-  const [isChecked1, setChecked1] = useState(false);
-  const [isChecked2, setChecked2] = useState(false);
-  const [isChecked3, setChecked3] = useState(false);
   const [data, setData] = useState([]);
   const { t,i18n } = useTranslation();
+  const [selectedMaterials, setSelectedMaterials] = useState([]);
   const toggleLang = (lang) => {
     i18n.changeLanguage(lang);
   }
+  const navigate = useNavigate();
+
+
+  const handleMaterialSelect = (materialId) => {
+    setSelectedMaterials((prevSelected) => {
+      if (prevSelected.includes(materialId)) {
+        return prevSelected.filter((id) => id !== materialId);
+      } else {
+        return [...prevSelected, materialId];
+      }
+    });
+  };
   const handleMenuToggle = () => {
     setMenuOpen(!isMenuOpen);
   };
@@ -46,6 +57,12 @@ function Graph() {
     
   const handleCancel = () => {
     form.resetFields(); // Réinitialiser les champs du formulaire
+  };
+
+  const handleSubmit = () => {
+    const selectedMaterialsQuery = selectedMaterials.join('&');
+    navigate(`/graph?materials=${selectedMaterialsQuery}`);
+    
   };
   useEffect(() => {
     const fetchData = async () => {
@@ -59,6 +76,7 @@ function Graph() {
 
     fetchData();
   }, []);useEffect(() => {
+
     const fetchData = async () => {
       try {
         const response = await axios.get('http://localhost:2000/api/data');
@@ -71,14 +89,7 @@ function Graph() {
     fetchData();
   }, []);
 
-  const handleCheckbox1Change = () => {
-    setChecked1(!isChecked1);
-  };
-  const monuments = [
-    { name: 'Monument 1', lat: 40.7128, lng: -74.0060 },
-    { name: 'Monument 2', lat: 34.0522, lng: -118.2437 },
-    // Add more monuments as needed
-  ];
+  
    
   return (
       <div className='graph'>
@@ -136,7 +147,8 @@ function Graph() {
     <div style={{ display: 'flex', flexDirection: 'column' }}>
     {data && data.materiaux ? (
             data.materiaux.map(materiau => (
-  <Checkbox  key={materiau.id} value="Matériau1">{materiau.title}</Checkbox>
+  <Checkbox  key={materiau.id} onChange={() => handleMaterialSelect(materiau.id)}
+  checked={selectedMaterials.includes(materiau.id)} value="Matériau1">{materiau.title}</Checkbox>
           ))
           ):(
             <li>{t("Messages.MatErr")}</li>

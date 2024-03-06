@@ -1,10 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import CytoscapeComponent from 'react-cytoscapejs';
-
+import './GraphStyle.css'
+import { useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
+import queryString from 'query-string';
 const Neo4jGraph = () => {
+
   const [elements, setElements] = useState([]);
   const formattedElements = [];
+  const location = useLocation();
+  const navigate = useNavigate();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -12,65 +18,53 @@ const Neo4jGraph = () => {
         const response = await axios.get('http://localhost:2000/api/nodes');
         const responseData = response.data;
         const lab=responseData.nodes[0].labels;
-
+      
         // Formater les données pour les utiliser dans la structure d'éléments
         const Nodes = responseData.nodes.map((item, index) => {
           const positionX = index * 100;
           const positionY = index * 2;
+
             if(item.labels[0].includes('Produit')){
                 return { data:
                      { id: item.elementId,
                          label: item.properties.designation,
-                       
+                         type:item.labels[0],
                          },
                  position:
                   { x: positionX, y: 0 } ,
                 style:{
                     backgroundColor:'orange',
                     fontWeight:'bold'
-                }
+                },
                 };
+                
             }else if(item.labels[0].includes('Restauration') ) {
               return { data:
                 { id: item.elementId,
                     label: 'node',
-                  
+                    type:item.labels[0],
                     },
-            position:
-             { x: positionX, y: positionY } ,
-           style:{
-            backgroundColor:'brown',
-           }
+                
            };
             }else if( item.labels[0].includes('Technique')) {
-              return { data:
+              return {data:
                 { id: item.elementId,
                     label: 'node',
-                  
+                    type:item.labels[0],
                     },
-            position:
-             { x: positionX, y: positionY } ,
-           style:{
-            backgroundColor:'chocolate',
-           }
            };
             } else if( item.labels[0].includes('Pathologie')) {
               return { data:
                 { id: item.elementId,
                     label: 'node',
-                  
+                    type:item.labels[0],
                     },
-            position:
-             { x: positionX, y: positionY } ,
-           style:{
-            backgroundColor:'cornflowerblue',
-           }
            };
             } else if( item.labels[0].includes('Ouvrage')) {
               return { data:
                 { id: item.elementId,
                     label: item.properties.designation,
-                  
+                    type:item.labels[0],
                     },
             position:
              { x: positionX, y: positionY} ,
@@ -82,7 +76,7 @@ const Neo4jGraph = () => {
               return { data:
                 { id: item.elementId,
                     label: item.properties.designation,
-                  
+                    type:item.labels[0],
                     },
             position:
              { x: positionX, y: positionY } ,
@@ -94,7 +88,7 @@ const Neo4jGraph = () => {
               return { data:
                 { id: item.elementId,
                     label: item.properties.designation,
-                  
+                    type:item.labels[0],
                     },
             position:
              { x: positionX, y: positionY } ,
@@ -105,8 +99,8 @@ const Neo4jGraph = () => {
             } else if(item.labels[0].includes('Materiau')) {
               return { data:
                 { id: item.elementId,
-                    label: 'node',
-                  
+                    label: item.properties.designation,
+                    type:item.labels[0],
                     },
             position:
              { x: positionX, y: positionY } ,
@@ -118,8 +112,8 @@ const Neo4jGraph = () => {
             } else if(item.labels[0].includes('Periode')) {
               return { data:
                 { id: item.elementId,
-                    label: 'node',
-                  
+                    label: item.properties.designation,
+                    type:item.labels[0],
                     },
             position:
              { x: positionX, y: positionY } ,
@@ -129,10 +123,11 @@ const Neo4jGraph = () => {
            }
            };
             } else if(item.labels[0].includes('Place')) {
-              return { data:
+              return { 
+                data:
                 { id: item.elementId,
-                    label: 'node',
-                  
+                    label: item.properties.designation,
+                    type:item.labels[0],
                     },
             position:
              { x: positionX, y: positionY } ,
@@ -140,10 +135,9 @@ const Neo4jGraph = () => {
             backgroundColor:'red',
             fontWeight:'bold'
            }
-           };
-            } 
+           }; }
             else {
-            return { data: { id: item.elementId, label: item.properties.designation }, position: { x: positionX, y: 0 } };
+            return { data: { id: item.elementId, label: item.properties.designation, type:item.labels[0], }, };
             }
         });
         formattedElements.push(...Nodes);
@@ -156,11 +150,12 @@ const edges = responseData.edges.map(edge => ({
     label: edge.type
   },
   style:{
-    Color:'red',
+    Color:'Black',
     fontWeight:'bold',
-    fontSize:'200px',
+    fontSize:'100px',
    }
 }));
+
 
 formattedElements.push(...edges);
         setElements(formattedElements);
@@ -170,16 +165,60 @@ formattedElements.push(...edges);
     };
 
     fetchData();
+    
   }, []);
 
+  useEffect(() => {
+    // Extraire l'ID de l'élément sélectionné des paramètres d'URL
+    const queryParams = queryString.parse(location.search);
+    const selectedItemId = queryParams.itemId;
+    
+    console.log('ELEMENT ',selectedItemId)
+}, [location.search, elements]);
+
+  
   const layoutOptions = {
     name: 'cose', 
+  };
+
+  const cyEventHandler = (cy) => {
+    cy.on('tap', 'node', (event) => {
+      const nodeId = event.target.id();
+      const nodelabels=event.target._private.data.type;
+      if (nodelabels && nodelabels.includes('Produit')) {
+        navigate(`/produitdetails/${nodeId}`);
+    }else if(nodelabels.includes('Materiau')){
+      navigate(`/materialdetails/${nodeId}`);
+    }else if (nodelabels.includes('Monument')){
+      navigate(`/monumentdetails/${nodeId}`);
+    }else if(nodelabels.includes('Ouvrage')){
+      navigate(`/ouvrageetails/${nodeId}`);
+    }
+    });
   };
 
   return (
     
     <div>
-      <CytoscapeComponent elements={elements} style={{ position:'absolute',  left:'-5%',width: '90%', height: '500px' }}  layout={layoutOptions} />
+     <CytoscapeComponent
+  elements={elements}
+  style={{
+    position: 'absolute',
+    left: '35%',
+    width: '50%',
+    height: '500px'
+  }}
+  layout={layoutOptions}
+  cy={(cy) => {
+    cyEventHandler(cy);
+    cy.layout({ name: 'cose' }).run();
+   
+  }}
+  
+>
+
+</CytoscapeComponent>
+
     </div>
   );
 };
