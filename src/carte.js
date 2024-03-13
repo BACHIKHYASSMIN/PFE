@@ -24,7 +24,17 @@ function Carte() {
   const [data, setData] = useState([]);
   const [isFilterOpen, setFilterOpen ] = useState(false);
   const { t,i18n } = useTranslation();
+  const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
+
+  const handleSearch = () => {
+  
+    const filteredMonuments = data.monuments.filter((monument) =>
+    monument.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setData({ ...data, monuments: filteredMonuments });
+  }
+
   const toggleLang = (lang) => {
     i18n.changeLanguage(lang);
   }
@@ -131,10 +141,12 @@ function Carte() {
               <Input
                 placeholder= {t("Tokens.rechReq")}
                 style={{ flex:1, marginRight: '10px', background: '#ECF0F1' }}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
             </Col>
             <Col>
-              <Button type="primary" htmlType="submit"  style={{backgroundColor :'#2C3E50'}}>
+              <Button type="primary" htmlType="submit"  onClick={handleSearch} style={{backgroundColor :'#2C3E50'}}>
               {t("Tokens.Recherche")}
               </Button>
             </Col>
