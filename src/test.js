@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef  } from 'react';
 import axios from 'axios';
 import CytoscapeComponent from 'react-cytoscapejs';
 import './GraphStyle.css'
@@ -169,11 +169,10 @@ formattedElements.push(...edges);
   }, []);
 
   useEffect(() => {
-    // Extraire l'ID de l'élément sélectionné des paramètres d'URL
     const queryParams = queryString.parse(location.search);
     const selectedItemId = queryParams.itemId;
-    
-    console.log('ELEMENT ',selectedItemId)
+    const integerProductId = parseInt(selectedItemId, 10);
+    console.log('ELEMENT ',integerProductId)
 }, [location.search, elements]);
 
   

@@ -37,15 +37,7 @@ function Graph() {
   const navigate = useNavigate();
 
 
-  const handleMaterialSelect = (materialId) => {
-    setSelectedMaterials((prevSelected) => {
-      if (prevSelected.includes(materialId)) {
-        return prevSelected.filter((id) => id !== materialId);
-      } else {
-        return [...prevSelected, materialId];
-      }
-    });
-  };
+ 
   const handleMenuToggle = () => {
     setMenuOpen(!isMenuOpen);
   };
@@ -61,8 +53,15 @@ function Graph() {
 
   const handleSubmit = () => {
     const selectedMaterialsQuery = selectedMaterials.join('&');
+  
     navigate(`/graph?materials=${selectedMaterialsQuery}`);
     
+  };
+  const handleCheckboxChange = (materialId) => {
+    setSelectedMaterials((prevSelectedMaterials) => ({
+      ...prevSelectedMaterials,
+      [materialId]: !prevSelectedMaterials[materialId],
+    }));
   };
   useEffect(() => {
     const fetchData = async () => {
@@ -147,8 +146,8 @@ function Graph() {
     <div style={{ display: 'flex', flexDirection: 'column' }}>
     {data && data.materiaux ? (
             data.materiaux.map(materiau => (
-  <Checkbox  key={materiau.id} onChange={() => handleMaterialSelect(materiau.id)}
-  checked={selectedMaterials.includes(materiau.id)} value="Matériau1">{materiau.title}</Checkbox>
+  <Checkbox  key={materiau.id} onChange={() =>handleCheckboxChange(materiau.id)} 
+  checked={selectedMaterials[materiau.id]} value="Matériau1">{materiau.title}</Checkbox>
           ))
           ):(
             <li>{t("Messages.MatErr")}</li>
@@ -205,7 +204,8 @@ function Graph() {
         
         
        
-        < Neo4jGraph />
+        <Neo4jGraph selectedMaterials={selectedMaterials} />
+
   
       </div>
      

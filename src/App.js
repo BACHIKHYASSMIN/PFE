@@ -70,8 +70,9 @@ function App() {
           <Route path="/materialdetails/:materialId"  element={<MaterialDetails />}  />
           <Route path="/monumentdetails/:monumentId"  element={<MonumentDetails />}  />
           <Route path="/ouvrageetails/:ouvrageId"  element={<OuvrageDetails />}  />
-          <Route path="/graph?materials=:materialId"  element={<Neo4jGraph />}  />
+          <Route path="/connexion/:previousUrl"  element={<Connexion />}  />
           <Route path="/userHome" element={< UserHome />} />
+          
           
          
         </Routes>
