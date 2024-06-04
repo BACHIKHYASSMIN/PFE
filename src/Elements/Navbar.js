@@ -7,6 +7,7 @@ import ArrowRight from "../Assets/chevron.png"
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import deconIcon from "../Assets/decon.png"
+import { useAuth } from '../AuthContext';
 
 // Utilisez la fonction translate ici...
 
@@ -14,8 +15,10 @@ import deconIcon from "../Assets/decon.png"
 
 const Navbar = () => {
   const [isClassMenuOpen, setClassMenuOpen] = useState(false);
+  const { logout } = useAuth(); 
   const { t,i18n } = useTranslation();
   const navigate = useNavigate();
+
   const handleProfil = () => {
     navigate('/profil');
   };
@@ -27,6 +30,7 @@ const Navbar = () => {
     i18n.changeLanguage(lang);
   }
   const handleDeconnect = () => {
+    logout();// Mettre à jour l'état de connexion à false
     navigate('/');
   };
 
