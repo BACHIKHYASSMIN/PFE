@@ -1,39 +1,51 @@
-import React, { useState } from 'react';
-import { useEffect } from 'react'; 
-import './RechercheAvancée.css'
+import React, { useState, useEffect } from 'react';
+import { Form, Select, Button, Input, Card, Row, Col, Checkbox, Typography, Modal, Pagination } from 'antd';
 import Navbar from './Elements/Navbar';
 import Footer from './Elements/Footer';
-import { Form, Select, Button, Input, Card, Row, Col , Checkbox ,Typography ,Modal} from 'antd';
 import ChatBox from './Elements/ChatBox';
-import deconIcon from "./Assets/decon.png"
-import whitemenuIcon from "./Assets/wmenu.png"
-import closeIcon from "./Assets/close.png"
-import { Link } from 'react-router-dom';
-import  menuIcon from "./Assets/icon.png"
+import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
-const { Option } = Select;
-const RechercheAvancée = () => {
+import deconIcon from "./Assets/decon.png";
+import whitemenuIcon from "./Assets/wmenu.png";
+import closeIcon from "./Assets/close.png";
+import menuIcon from "./Assets/icon.png";
+import './RechercheAvancée.css';
 
+const { Option } = Select;
+
+const RechercheAvancée = () => {
   const [form] = Form.useForm();
   const [isMenuOpen, setMenuOpen] = useState(false);
-  const { t,i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const navigate = useNavigate();
+  const [data, setData] = useState([]);
+  const [combinedData, setCombinedData] = useState([]);
+  const [selectedFields, setSelectedFields] = useState([]);
+  const [isAdvancedSearchOpen, setAdvancedSearchOpen] = useState(false);
+  const [selectedPeriod, setSelectedPeriod] = useState([]);
+  const [selectedPlace, setSelectedPlace] = useState([]);
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedColor, setSelectedColor] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(15); // Default number of items per page
+
   const toggleLang = (lang) => {
     i18n.changeLanguage(lang);
   }
- 
+
   const handleMenuToggle = () => {
     setMenuOpen(!isMenuOpen);
   };
+
   const handleCancel = () => {
-    form.resetFields(); // Réinitialiser les champs du formulaire
+    form.resetFields();
   };
+
   const onFinish = (values) => {
     console.log('Received values of form: ', values);
   };
 
-  const [data, setData] = useState([]);
-useEffect(() => {
   const fetchData = async () => {
     try {
       const response = await axios.get('http://localhost:2000/api/data');
@@ -43,30 +55,30 @@ useEffect(() => {
     }
   };
 
-  fetchData();
-}, []);
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-  const itemsData = [
-    { title: 'Catégorie 1', subtitle: 'Nom 1', image: 'URL_image_1' },
-    { title: 'Catégorie 2', subtitle: 'Nom2', image: 'URL_image_2' },
-    { title: 'Catégorie 3', subtitle: 'Nom 3', image: 'URL_image_3' },
-    { title: 'Catégorie 1', subtitle: 'Nomn 1', image: 'URL_image_1' },
-    { title: 'Catégorie 2', subtitle: 'Nom 2', image: 'URL_image_2' },
-    { title: 'Catégorie 3', subtitle: 'Nom 3', image: 'URL_image_3' },
-    { title: 'Catégorie 1', subtitle: 'Nom 1', image: 'URL_image_1' },
-    { title: 'Catégorie 2', subtitle: 'Nom 2', image: 'URL_image_2' },
-    { title: 'Catégorie 3', subtitle: 'Nom 3', image: 'URL_image_3' },
-    
-    // Ajoutez le reste des données ici
-  ];
-  const [matchAll, setMatchAll] = useState(false);
-  const [selectedFields, setSelectedFields] = useState([]);
-  const [customData, setCustomData] = useState('');
-  const [selectedContains, setSelectedContains] = useState('');
-  const [selectedDate, setSelectedDate] = useState('');
-  const [selectedQ, setSelectedQ] = useState('');
-  const [selectedAdvancedSearch, setSelectedAdvancedSearch] = useState('');
-  const [selectedCustomDate, setSelectedCustomDate] = useState('');
+  useEffect(() => {
+    if (data) {
+      const combined = [
+        ...(data.materiaux || []).map(item => ({ ...item, category: t("Header.Mat") })),
+        ...(data.produits || []).map(item => ({ ...item, category: t("Header.Prod") })),
+        ...(data.ouvrages || []).map(item => ({ ...item, category: t("Header.Ouv") })),
+        ...(data.pathologies || []).map(item => ({ ...item, category: t("Header.Path") })),
+        ...(data.monuments || []).map(item => ({ ...item, category: t("Header.Monu") }))
+      ];
+      setCombinedData(shuffleArray(combined));
+    }
+  }, [data, t]);
+
+  const shuffleArray = (array) => {
+    for (let i = array.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  };
 
   const handleSelectFieldsChange = (event) => {
     const value = event.target.value;
@@ -81,8 +93,6 @@ useEffect(() => {
     // Handle form submission
   };
 
-  const [isAdvancedSearchOpen, setAdvancedSearchOpen] = useState(false);
-
   const handleAdvancedSearch = () => {
     setAdvancedSearchOpen(true);
   };
@@ -90,27 +100,22 @@ useEffect(() => {
   const handleCancelAdvancedSearch = () => {
     setAdvancedSearchOpen(false);
   };
-  const [selectedPeriod, setSelectedPeriod] = useState([]);
-  const [selectedPlace, setSelectedPlace] = useState([]);
-  const [selectedCategories, setSelectedCategories] = useState([]);
-  const [selectedColor, setSelectedColor] = useState([]);
-  
-  
+
   const handlePeriodChange = (value) => {
     setSelectedPeriod(value);
   };
+
   const handlePlaceChange = (value) => {
     setSelectedPlace(value);
   };
-  
+
   const handleCategoriesChange = (value) => {
     setSelectedCategories(value);
   };
-  
+
   const handleColorChange = (value) => {
     setSelectedColor(value);
   };
-  
 
   const handleApplyAdvancedSearch = () => {
     // Perform some action with the selected values
@@ -118,238 +123,290 @@ useEffect(() => {
     console.log("Place:", selectedPlace);
     console.log("Categories:", selectedCategories);
     console.log("Color:", selectedColor);
-  
+
     // Reset the selected values
     setSelectedPeriod([]);
     setSelectedPlace([]);
     setSelectedCategories([]);
     setSelectedColor([]);
-  
+
     // Close the modal
     handleCancelAdvancedSearch();
   };
 
+  const handleVoirPlus = (id) => {
+    navigate(`/details/${id}`);
+  };
+
+  const getDetailLink = (category, itemId) => {
+    switch (category) {
+      case t("Header.Mat"):
+        return `/materiauDetails/${itemId}`;
+      
+    
+  case t("Header.Prod"):
+        return `/produitDetails/${itemId}`;
+      case t("Header.Monu"):
+        return `/monumentDetails/${itemId}`;
+      case t("Header.Ouv"):
+        return `/ouvrageDetails/${itemId}`;
+      case t("Header.Path"):
+        return `/details/${itemId}`;
+      default:
+        return `/details/${itemId}`;
+    }
+  };
+
+
+
+  const renderItems = (items) => {
+    return items.map((item, index) => (
+      <Card
+        key={index}
+        title={item.category}
+              extra={<Link to={getDetailLink(item.category, item.id)}>Voir plus</Link>}
+        style={{ width: '30%', marginRight: '10px', marginLeft: '20px', marginBottom: '20px', border: '1px solid #2C3E50' }}
+      >
+        <Row gutter={16} align="middle">
+          <Col span={8}>
+            <p>{item.title}</p>
+          </Col>
+          <Col span={16}>
+            <div>
+              <img src={item.image} alt={item.title} style={{ maxWidth: '100%' }} />
+            </div>
+          </Col>
+        </Row>
+      </Card>
+    ));
+  };
+
+  // Get current items based on pagination
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = combinedData.slice(indexOfFirstItem, indexOfLastItem);
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  const handleItemsPerPageChange = (value) => {
+    setItemsPerPage(value);
+    setCurrentPage(1); // Reset to the first page whenever the items per page is changed
+  };
+
   return (
     <div>
-   <Navbar/>
-   <div className="material-head">
-          <img className="menu" src={menuIcon} alt="Menu Icon"
-          onClick={handleMenuToggle}  />
-  <Typography.Title level={1} style={{ fontWeight: 'bold', marginBottom: '40px',textAlign: 'center' }}>
-  {t("navbar.rechercheAvancee")}
-      </Typography.Title>
+      <Navbar />
+      <div className="material-head">
+        <img className="menu" src={menuIcon} alt="Menu Icon" onClick={handleMenuToggle} />
+        <Typography.Title level={1} style={{ fontWeight: 'bold', marginBottom: '40px', textAlign: 'center' }}>
+          {t("navbar.rechercheAvancee")}
+        </Typography.Title>
       </div>
       <Row justify="space-between" align="middle" style={{ marginBottom: '20px', paddingLeft: '10px', paddingRight: '10px' }}>
         <Col>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-    <div style={{ width: '400px', height: '60px', background: '#2C3E50', marginRight: '20px' }}>
-      <h2 style={{ textAlign: 'center', color: 'white' }}> {t("Tokens.Filter")}</h2>
-    </div>
-    </div>
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <div style={{ width: '400px', height: '60px', background: '#2C3E50', marginRight: '20px' }}>
+              <h2 style={{ textAlign: 'center', color: 'white' }}> {t("Tokens.Filter")}</h2>
+            </div>
+          </div>
         </Col>
         <Col flex="auto" style={{ textAlign: 'right' }}>
-      
-        <Form layout="vertical">
-    <Row gutter={16}>
-            <Col flex="auto">
-              <Input
-                placeholder={t("Tokens.rechReq")}
-                style={{ flex:1, marginRight: '10px', background: '#ECF0F1', color:'#2C3E50' }}
-              />
-            </Col>
-            <Col>
-              <Button type="primary" htmlType="submit"  style={{backgroundColor :'#2C3E50',float: 'right'}} onClick={handleAdvancedSearch}>
-              {t("navbar.rechercheAvancee")}
-              </Button>
-            </Col>
-          </Row>
-
-
-
-          <Modal
-  title= {t("navbar.rechercheAvancee")}
-  visible={isAdvancedSearchOpen}
-  onCancel={handleCancelAdvancedSearch}
-  footer={
-    <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-      <Button style={{ marginRight: '10px' }} onClick={handleCancelAdvancedSearch}>
-      {t("Btn.Annuler")}
-      </Button>
-      <Button type="primary" onClick={handleApplyAdvancedSearch}>
-      {t("Btn.Valider")}
-      </Button>
-    </div>
-  }
->
-  <Form layout="vertical">
-    <Form.Item label= {t("Header.Periode")}>
-    <Select
-  mode="multiple"
-  value={selectedPeriod}
-  onChange={handlePeriodChange}
-  style={{ width: '100%' }}
->
-  {data && data.periodes ? (
-    data.periodes.map(periode => (
-      <Option key={periode.id} value={periode.title}>
-        {periode.title}
-      </Option>
-    ))
-  ) : (
-    <Option value="">{t("Messages.PerErr")}</Option>
-  )}
-</Select>
-    </Form.Item>
-    <Form.Item label= {t("Header.Place")}>
-    <Select
-  mode="multiple"
-  value={selectedPlace}
-  onChange={handlePlaceChange}
-  style={{ width: '100%' }}
->
-  {data && data.places ? (
-    data.places.map(place => (
-      <Option key={place.id} value={place.title}>
-        {place.title}
-      </Option>
-    ))
-  ) : (
-    <Option value="">{t("Messages.PlaceErr")}</Option>
-  )}
-</Select>
-    </Form.Item>
-    <Form.Item label= {t("Header.Categorie")}>
-      <Select
-        mode="multiple"
-        value={selectedCategories}
-        onChange={handleCategoriesChange}
-        style={{ width: '100%' }}
-      >
-        <Option value="materiau">{t("Header.Mat")}</Option>
-        <Option value="produit">{t("Header.Prod")}</Option>
-        <Option value="ouvrage">{t("Header.Ouv")}</Option>
-        <Option value="pathologie">{t("Header.Path")}</Option>
-        <Option value="monument">{t("Header.Monu")}</Option>
-      </Select>
-    </Form.Item>
-    <Form.Item label= {t("Header.Color")}>
-      <Select
-        mode="multiple"
-        value={selectedColor}
-        onChange={handleColorChange}
-        style={{ width: '100%' }}
-      >
-     {data && data.couleurs ? (
-    data.couleurs.map(couleur => (
-      <Option key={couleur.id} value={couleur.title}>
-        {couleur.title}
-      </Option>
-    ))
-  ) : (
-    <Option value="">{t("Messages.ColorErr")}</Option>
-  )}
-      </Select>
-    </Form.Item>
-  </Form>
-</Modal>
-  </Form>
-
-        </Col>
-      </Row>
-
-      <div style={{ display: 'flex' }}>
-      
-
-       
-      <div style={{ flex: 2  ,paddingLeft:'10px'}}>
-     
-          {/* Carte avec formulaire de recherche avancée */}
-          <Card style={{ backgroundColor: '#ECF0F1', padding: '20px', width: '400px' }}>
-  <Form form={form} layout="vertical" name="advanced_search" onFinish={onFinish}>
-    {/* Vos champs de formulaire ici */}
-    <div style={{ display: 'flex', flexDirection: 'column' }}>
-    <div style={{ marginBottom: '10px' }}>
-    <Form.Item name="Matériaux" label={t("Header.Mat")}>
-    <div style={{ display: 'flex', flexDirection: 'column' }}>
-    {data && data.materiaux ? (
-            data.materiaux.map(materiau => (
-  <Checkbox  key={materiau.id} value="Matériau1">{materiau.title}</Checkbox>
-          ))
-          ):(
-            <li>{t("Messages.MatErr")}</li>
-          )
-      }  
-      </div>
-    </Form.Item>
-    </div>
-
-    <div style={{ marginBottom: '10px' }}>
-    <Form.Item name="produit" label={t("Header.Prod")}>
-    <div style={{ display: 'flex', flexDirection: 'column' }}>
-    {data && data.produits ? (
-            data.produits .map(produit => (
-  <Checkbox  key={produit.id} value="">{produit.title}</Checkbox>
-          ))
-          ):(
-            <li>{t("Messages.ProdErr")}</li>
-          )
-      }  
-      </div>
-    </Form.Item>
-    </div>
-    <div style={{ marginBottom: '10px' }}>
-    <Form.Item name="ouvrage" label={t("Header.Ouv")}>
-    <div style={{ display: 'flex', flexDirection: 'column' }}>
-    {data && data.ouvrages ? (
-            data.ouvrages .map(ouvrage=> (
-  <Checkbox  key={ouvrage.id} value="">{ouvrage.title}</Checkbox>
-          ))
-          ):(
-            <li>{t("Messages.OuvErr")}</li>
-          )
-      }  
-      </div>
-    </Form.Item>
-    </div>
-    {/* Répétez ce schéma pour les autres Form.Item */}
-    <Form.Item>
-      <Button type="primary" htmlType="submit" style={{ marginRight: '10px', backgroundColor: '#27AE60', marginTop: '20px' }}>
-      {t("Btn.Valider")}
-      </Button>
-      <Button type="default" style={{ backgroundColor: '#d9d9d9', border: 'none' }} onClick={handleCancel}>
-      {t("Btn.Annuler")}
-      </Button>
-    </Form.Item>
-    </div>
-  </Form>
-</Card>
-
-        </div>
-
-        <div style={{ display: 'flex', flexWrap: 'wrap' , }}>
-        {/* Ensemble de cartes */}
-        {itemsData.map((item, index) => (
-          <Card
-            key={index}
-            title={item.title}
-            extra={<a href="#">Voir plus</a>}
-            style={{ width: '30%', marginRight: '10px',marginLeft: '20px', marginBottom: '20px' ,border: '1px solid #2C3E50',}}  >
-           <Row gutter={16} align="middle">
-              <Col span={8}>
-              <p>{item.subtitle}</p>
+          <Form layout="vertical">
+            <Row gutter={16}>
+              <Col flex="auto">
+                <Input
+                  placeholder={t("Tokens.rechReq")}
+                  style={{ flex: 1, marginRight: '10px', background: '#ECF0F1', color: '#2C3E50' }}
+                />
               </Col>
-              <Col span={16}>
-                <div>
-                  <img src={item.image} alt={item.title} style={{ maxWidth: '100%' }} />
-                </div>
+              <Col>
+                <Button type="primary" htmlType="submit" style={{ backgroundColor: '#2C3E50', float: 'right' }} onClick={handleAdvancedSearch}>
+                  {t("navbar.rechercheAvancee")}
+                </Button>
               </Col>
             </Row>
+            <Modal
+              title={t("navbar.rechercheAvancee")}
+              visible={isAdvancedSearchOpen}
+              onCancel={handleCancelAdvancedSearch}
+              footer={
+                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                  <Button style={{ marginRight: '10px' }} onClick={handleCancelAdvancedSearch}>
+                    {t("Btn.Annuler")}
+                  </Button>
+                  <Button type="primary" onClick={handleApplyAdvancedSearch}>
+                    {t("Btn.Valider")}
+                  </Button>
+                </div>
+              }
+            >
+              <Form layout="vertical">
+                <Form.Item label={t("Header.Periode")}>
+                  <Select
+                    mode="multiple"
+                    value={selectedPeriod}
+                    onChange={handlePeriodChange}
+                    style={{ width: '100%' }}
+                  >
+                    {data && data.periodes ? (
+                      data.periodes.map(periode => (
+                        <Option key={periode.id} value={periode.title}>
+                          {periode.title}
+                        </Option>
+                      ))
+                    ) : (
+                      <Option value="">{t("Messages.PeriodeErr")}</Option>
+                    )}
+                  </Select>
+                </Form.Item>
+                <Form.Item label={t("Header.Place")}>
+                  <Select
+                    mode="multiple"
+                    value={selectedPlace}
+                    onChange={handlePlaceChange}
+                    style={{ width: '100%' }}
+                  >
+                    {data && data.places ? (
+                      data.places.map(place => (
+                        <Option key={place.id} value={place.title}>
+                          {place.title}
+                        </Option>
+                      ))
+                    ) : (
+                      <Option value="">{t("Messages.PlaceErr")}</Option>
+                    )}
+                  </Select>
+                </Form.Item>
+                <Form.Item label={t("Header.Categorie")}>
+                  <Select
+                    mode="multiple"
+                    value={selectedCategories}
+                    onChange={handleCategoriesChange}
+                    style={{ width: '100%' }}
+                  >
+                    <Option value="materiau">{t("Header.Mat")}</Option>
+                    <Option value="produit">{t("Header.Prod")}</Option>
+                    <Option value="ouvrage">{t("Header.Ouv")}</Option>
+                    <Option value="pathologie">{t("Header.Path")}</Option>
+                    <Option value="monument">{t("Header.Monu")}</Option>
+                  </Select>
+                </Form.Item>
+                <Form.Item label={t("Header.Color")}>
+                  <Select
+                    mode="multiple"
+                    value={selectedColor}
+                    onChange={handleColorChange}
+                    style={{ width: '100%' }}
+                  >
+                    {data && data.couleurs ? (
+                      data.couleurs.map(couleur => (
+                        <Option key={couleur.id} value={couleur.title}>
+                          {couleur.title}
+                        </Option>
+                      ))
+                    ) : (
+                      <Option value="">{t("Messages.ColorErr")}</Option>
+                    )}
+                  </Select>
+                </Form.Item>
+              </Form>
+            </Modal>
+          </Form>
+        </Col>
+      </Row>
+      <div style={{ display: 'flex', justifyContent: 'space-between', paddingLeft: '10px', paddingRight: '10px' }}>
+        <div style={{ flex: 1, position: 'sticky', top: '20px' }}>
+          <Card style={{ backgroundColor: '#ECF0F1', padding: '20px', width: '400px' }}>
+            <Form form={form} layout="vertical" name="advanced_search" onFinish={onFinish}>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <div style={{ marginBottom: '10px' }}>
+                  <Form.Item name="Matériaux" label={t("Header.Mat")}>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      {data && data.materiaux ? (
+                        data.materiaux.map(materiau => (
+                          <Checkbox key={materiau.id} value="Matériau1">{materiau.title}</Checkbox>
+                        ))
+                      ) : (
+                        <li>{t("Messages.MatErr")}</li>
+                      )}
+                    </div>
+                  </Form.Item>
+                </div>
+                <div style={{ marginBottom: '10px' }}>
+                  <Form.Item name="produit" label={t("Header.Prod")}>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      {data && data.produits ? (
+                        data.produits.map(produit => (
+                          <Checkbox key={produit.id} value="">{produit.title}</Checkbox>
+                        ))
+                      ) : (
+                        <li>{t("Messages.ProdErr")}</li>
+                      )}
+                    </div>
+                  </Form.Item>
+                </div>
+                <div style={{ marginBottom: '10px' }}>
+                  <Form.Item name="ouvrage" label={t("Header.Ouv")}>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      {data && data.ouvrages ? (
+                        data.ouvrages.map(ouvrage => (
+                          <Checkbox key={ouvrage.id} value="">{ouvrage.title}</Checkbox>
+                        ))
+                      ) : (
+                        <li>{t("Messages.OuvErr")}</li>
+                      )}
+                    </div>
+                  </Form.Item>
+                </div>
+                <Form.Item>
+                  <Button type="primary" htmlType="submit" style={{ marginRight: '10px', backgroundColor: '#27AE60', marginTop: '20px' }}>
+                    {t("Btn.Valider")}
+                  </Button>
+                  <Button type="default" style={{ backgroundColor: '#d9d9d9', border: 'none' }} onClick={handleCancel}>
+                    {t("Btn.Annuler")}
+                  </Button>
+                </Form.Item>
+              </div>
+            </Form>
           </Card>
-        ))}
-      </div>
-
         </div>
-        {isMenuOpen && (
+        <div style={{ flex: 3, marginLeft: '10px', marginRight: '10px' }}>
+          <Row gutter={[16, 16]}>
+            {currentItems && renderItems(currentItems)}
+          </Row>
+          <div style={{ textAlign: 'center', marginTop: '20px' }}>
+           
+          <Row justify="center" align="middle">
+  <Col>
+    <Pagination
+      current={currentPage}
+      pageSize={itemsPerPage}
+      total={combinedData.length}
+      showSizeChanger={false}
+      onChange={handlePageChange}
+    />
+  </Col>
+  <Col>
+    <Select
+      value={itemsPerPage}
+      onChange={handleItemsPerPageChange}
+      style={{ width: '120px', marginLeft: '10px' }}
+    >
+<Option value={15}>15/page</Option>
+              <Option value={30}>30/page</Option>
+              <Option value={45}>45/page</Option>
+              <Option value={60}>60/page</Option>
+    </Select>
+  </Col>
+</Row>
+
+
+          </div>
+        </div>
+      </div>
+      {isMenuOpen && (
         
         <div className="side-menu">
   <div className="popIcons">
@@ -411,15 +468,10 @@ useEffect(() => {
 </div>
 
       )}
-
-
-      
-<ChatBox/>   
-        <Footer />
+      <ChatBox />
+      <Footer />
     </div>
   );
-}
-
-
+};
 
 export default RechercheAvancée;

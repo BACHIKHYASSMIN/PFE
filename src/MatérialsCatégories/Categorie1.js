@@ -44,7 +44,7 @@ function Categorie1() {
   const navigate = useNavigate();
   const handleImageClick = (materialId) => {
     const integerMaterialId = parseInt(materialId, 10);
-    navigate(`/materialdetails/${integerMaterialId}`);
+    navigate(`/materiauDetails/${integerMaterialId}`);
   };
   const handleDeconnect = () => {
     navigate('/');

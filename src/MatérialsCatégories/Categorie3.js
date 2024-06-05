@@ -41,7 +41,7 @@ function Categorie3() {
   };
   const handleImageClick = (materialId) => {
     const integerMaterialId = parseInt(materialId, 10);
-    navigate(`/materialdetails/${integerMaterialId}`);
+    navigate(`/materiauDetails/${integerMaterialId}`);
   };
  
  

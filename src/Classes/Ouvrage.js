@@ -50,7 +50,7 @@ const Ouvrage = () => {
   const navigate = useNavigate();
   const handleImageClick = (ouvrageId) => {
     const integerOuvrageId = parseInt(ouvrageId, 10);
-    navigate(`/ouvrageetails/${integerOuvrageId}`);
+    navigate(`/ouvrageDetails/${integerOuvrageId}`);
   };
  
   const  handleFilterMenuToggle = () => {

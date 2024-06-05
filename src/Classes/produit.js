@@ -49,7 +49,7 @@ const handleSearch = () => {
   const navigate = useNavigate();
   const handleImageClick = (productId) => {
     const integerProductId = parseInt(productId, 10);
-    navigate(`/produitdetails/${integerProductId}`);
+    navigate(`/produitDetails/${integerProductId}`);
   };
  
   const handleDeconnect = () => {

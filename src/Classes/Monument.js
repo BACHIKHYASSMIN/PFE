@@ -44,7 +44,7 @@ const Monument = () => {
   const navigate = useNavigate();
   const handleImageClick = (monumentId) => {
     const integerId = parseInt(monumentId, 10);
-    navigate(`/monumentdetails/${integerId}`);
+    navigate(`/monumentDetails/${integerId}`);
   };
   const handleDeconnect = () => {
     navigate('/');
