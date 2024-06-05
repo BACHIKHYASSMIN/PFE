@@ -19,12 +19,12 @@ import Monument from './Classes/Monument';
 const { Option } = Select;
 
 function Carte() {
+  const [monuments, setMonuments] = useState([]);
   const [selectedMonuments, setSelectedMonuments] = useState({});
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [data, setData] = useState([]);
   const [isFilterOpen, setFilterOpen ] = useState(false);
   const { t,i18n } = useTranslation();
-  const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
   const handleSearch = () => {
@@ -48,8 +48,13 @@ function Carte() {
   const handleDeconnect = () => {
     navigate('/');
   };
-  
-  
+
+  const [searchData, setSearchData] = useState({
+    title: ""
+  });
+
+ 
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -60,6 +65,7 @@ function Carte() {
         }, {});
         setSelectedMonuments(initialSelectedMonuments);
         setData(response.data);
+        setMonuments(response.data.monuments);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -68,12 +74,7 @@ function Carte() {
     fetchData();
   }, []);
 
-  const handleSelection = (monument) => {
-    setSelectedMonuments((prevSelectedMonuments) => ({
-        ...prevSelectedMonuments,
-        [monument.id]: true,
-    }));
-};
+  
 
   const [form] = Form.useForm();
  
@@ -81,7 +82,9 @@ function Carte() {
     console.log('Received values of form: ');
   };
   
-
+  const handleSelection = () => {
+  
+  }
 
   const handleCancel = () => {
     const updatedSelectedMonuments = {};
@@ -91,22 +94,6 @@ function Carte() {
     setSelectedMonuments(updatedSelectedMonuments);
     
   };
-
-  function CustomMarker({ monument, onClick }) {
-    const map = useMap();
-
-    useEffect(() => {
-        if (selectedMonuments[monument.id]) {
-            map.flyTo([monument.attitude, monument.longitude], 15);
-        }
-    }, [selectedMonuments, monument]);
-
-    return (
-        <Marker position={[monument.attitude, monument.longitude]} onClick={onClick}>
-            <Popup>{monument.title}</Popup>
-        </Marker>
-    );
-}
   return (
     
     <div className='graph'>
@@ -141,12 +128,10 @@ function Carte() {
               <Input
                 placeholder= {t("Tokens.rechReq")}
                 style={{ flex:1, marginRight: '10px', background: '#ECF0F1' }}
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
               />
             </Col>
             <Col>
-              <Button type="primary" htmlType="submit"  onClick={handleSearch} style={{backgroundColor :'#2C3E50'}}>
+              <Button type="primary" htmlType="submit"  style={{backgroundColor :'#2C3E50'}}>
               {t("Tokens.Recherche")}
               </Button>
             </Col>
@@ -204,18 +189,23 @@ function Carte() {
         </div>
         
         <div style={{ width: '100%', height: '600px' }}>
-  <MapContainer center={[36.7538, 3.0588]} zoom={10} scrollWheelZoom={false} style={{ marginLeft: '10%', zIndex: '100', width: '80%', height: '100%' }}>
+  <MapContainer center={[7.1881, 21.0938]} zoom={3} scrollWheelZoom={false} style={{ marginLeft: '10%', zIndex: '100', width: '80%', height: '100%' }}>
     <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
     {data && data.monuments ? (
       data.monuments.map(monument => (
         selectedMonuments[monument.id] ? (
-          <CustomMarker key={monument.id} position={[monument.attitude, monument.longitude]} monument={monument} onClick={() => handleSelection(monument)} />
-                            ) : null
+          <Marker key={monument.id} position={[monument.attitude, monument.longitude]}>
+            <Popup>
+              {monument.title}
+            </Popup>
+          </Marker>
+        ) : null
       ))
     ) : (
       <li>{t("Messages.MonuErr")}</li>
     )}
   </MapContainer>
+  
 </div>
 
       </div>

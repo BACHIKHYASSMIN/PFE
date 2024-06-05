@@ -10,36 +10,58 @@ const Connexion = ({ onClose}) => { // Ajoutez history en tant que prop
 // Définir des états pour stocker les valeurs des champs de formulaire
 const [email, setEmail] = useState('');
 const [pass, setPassword] = useState();
-const matUrl = useParams();
-  console.log("matUrl:", matUrl);
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const [showInscription, setShowInscription] = useState(false);
- 
+  const navigate= useNavigate();
 // Après la connexion réussie
-
-
-const handleSubmit = async () => {
-  try {
-    const response = await axios.post('http://localhost:2000/api/login', {
-      email,
-      pass
-    });
-    
-    if (  matUrl === 1) {
-      window.location.href = './material';
-    } else {
-      window.location.href = './userHome';
-    }
-  } catch (error) {
-    message.error(error.response.data.message);
+const handleSuccessfulLogin = () => {
+  // Récupérer l'URL stockée dans le localStorage
+  const previousUrl = localStorage.getItem('previousUrl');
+  // Vérifier si une URL précédente existe
+  if (previousUrl) {
+    // Rediriger vers l'URL précédente
+    window.location.href = previousUrl;
+    // Supprimer l'URL précédente du localStorage
+    localStorage.removeItem('previousUrl');
+  } else {
+    // Si aucune URL précédente n'est trouvée, rediriger vers une page par défaut
+    window.location.href = '/'; // Par exemple, la page d'accueil
   }
 };
+
+  const handleSubmit = async () => { 
+    
+    try {
+      // Envoyer une requête POST avec les informations d'identification saisies par l'utilisateur
+      
+      const response = await axios.post('http://localhost:2000/api/login', {
+        email, 
+        pass
+      });
+    
+      const previousUrl = localStorage.getItem('previousUrl');
+      // Vérifier si une URL précédente existe
+      if (previousUrl) {
+        // Rediriger vers l'URL précédente
+        window.location.href = previousUrl;
+        // Supprimer l'URL précédente du localStorage
+        localStorage.removeItem('previousUrl');
+      } else {
+        // Si aucune URL précédente n'est trouvée, rediriger vers une page par défaut
+        window.location.href = '/userHome'; // Par exemple, la page d'accueil
+      }
+  
+    } catch (error) {
+        message.error(error.response.data.message); 
+  };
+  }
 
   const toggleInscription = () => {
     setShowInscription(!showInscription);
   };
-
+  
   return (
     <>
     {<div className="connexion-overlay"></div>}
