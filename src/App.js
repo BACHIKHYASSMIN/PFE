@@ -67,19 +67,11 @@ function App() {
           <Route path="/autres" element={<Autres />} />
           <Route path= "/a-propos"element={<Apropos/>}/>
           <Route path="/interaction" element={<Interaction/>}/>
-<<<<<<< HEAD
-          <Route path="/produitDetails/:productId"  element={<ProductDetails />}  />
-          <Route path="/materiauDetails/:materialId"  element={<MaterialDetails />}  />
-          <Route path="/monumentDetails/:monumentId"  element={<MonumentDetails />}  />
-          <Route path="/ouvrageDetails/:ouvrageId"  element={<OuvrageDetails />}  />
-          <Route path="/graph?materials=:materialId"  element={<Neo4jGraph />}  />
-=======
           <Route path="/produitdetails/:productId"  element={<ProductDetails />}  />
           <Route path="/materialdetails/:materialId"  element={<MaterialDetails />}  />
           <Route path="/monumentdetails/:monumentId"  element={<MonumentDetails />}  />
           <Route path="/ouvrageetails/:ouvrageId"  element={<OuvrageDetails />}  />
           <Route path="/connexion/:previousUrl"  element={<Connexion />}  />
->>>>>>> 3caa012e75dddd594338f991b4226a586382cb71
           <Route path="/userHome" element={< UserHome />} />
           
           

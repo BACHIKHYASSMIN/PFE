@@ -180,7 +180,7 @@ const RechercheAvancée = () => {
       </Card>
     ));
   };
-
+  
   // Get current items based on pagination
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;

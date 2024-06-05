@@ -133,7 +133,7 @@ const UserHome = () => {
         <div style={textColumnStyle}>
         <h2>{t("Header.Path")}</h2>
         <p>{t("intro.PathP")} </p>
-          <a href="/pathologies" style={linkStyle}>{t("Tokens.suivre")}{t("Header.Path")}...</a>
+          <a href="/pathologie" style={linkStyle}>{t("Tokens.suivre")}{t("Header.Path")}...</a>
         </div>
         <img src={MonumentPhoto} alt="Image des monuments"  style={{ width: '35%', height: '35%' }} />
       </div>
@@ -147,7 +147,7 @@ const UserHome = () => {
         <div style={textColumnStyle}>
         <h2>{t("Header.Monu")}</h2>
         <p>{t("intro.MonumP")}</p>
-          <a href="/monuments" style={linkStyle}>{t("Tokens.suivre")}{t("Header.Monu")}...</a>
+          <a href="/monument" style={linkStyle}>{t("Tokens.suivre")}{t("Header.Monu")}...</a>
         </div>
       </div>
 
