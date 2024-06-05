@@ -50,3 +50,24 @@
     padding: 0;
     margin: 0;
   }
+
+  .navbar-btn {
+    margin-left: 1%;
+    margin-bottom: 2%;
+      color: #2C3E50; /* Couleur du texte en blanc */
+      border: none; /* Supprimer la bordure */
+      border-radius: 5px; /* Ajouter un rayon aux coins */
+      padding: 3px 5px; /* Ajouter un espace de rembourrage */
+      cursor: pointer; /* Afficher un curseur au survol */
+      transition: background-color 0.3s; /* Ajouter une transition pour une animation fluide */
+      background-color:#FFFFFF;
+    }
+    
+    .navbar-btn:hover {
+      background-color: #2C3E50; /* Au survol, changer la couleur de fond en blanc */
+      color: #FFFFFF; /* Au survol, changer la couleur du texte en bleu foncé */
+    }
+    .navbar-button{
+      position: absolute;
+      right:-1.5%;
+    }

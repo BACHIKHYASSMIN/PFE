@@ -7,7 +7,8 @@
       "aPropos": "À Propos",
       "profil": "Profil",
       "changerLangue": "Changer de Langue",
-      "classes":"Classes"
+      "classes":"Classes",
+      "connexion":"Se Connecter"
     },
     "Header":{
         "Mat":"Matériaux",

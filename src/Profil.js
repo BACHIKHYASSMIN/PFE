@@ -12,7 +12,7 @@ import deconIcon from "./Assets/decon.png"
 import whitemenuIcon from "./Assets/wmenu.png"
 import closeIcon from "./Assets/close.png"
 import { useTranslation } from 'react-i18next';
-
+import LanguagePopup from './Elements/LangSwitch';
 function Profil() {
   const [isEditing, setIsEditing] = useState(false);
   const [editedName, setEditedName] = useState('');
@@ -25,6 +25,7 @@ function Profil() {
   const [message, setMessage] = useState('');
   const { t,i18n } = useTranslation();
   const { TextArea } = Input;
+
   const handleRecipientEmailChange = (e) => {
     setRecipientEmail(e.target.value);
   };
@@ -94,8 +95,7 @@ function Profil() {
       <div className='Profilhead'>
       <img src={MenuIcon} alt="Profile"  on onClick={handleMenuToggle} />
       <div className="langBtn">
-      <button  className="lang-btn" onClick={()=>{toggleLang("en")}}>EN</button>
-      <button  className="lang-btn" onClick={()=>{toggleLang("fr")}}>FR</button>
+      <LanguagePopup toggleLang={toggleLang} />
       </div>
       </div>
       <div className={`ProfilCard ${isEditing ? 'editing' : ''} ${isSendingMessage ? 'sending-message' : ''}`}>

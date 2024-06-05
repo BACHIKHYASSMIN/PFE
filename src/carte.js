@@ -14,8 +14,11 @@ import { Link } from 'react-router-dom';
 import { Form, Select, Button, Input, Card, Row, Col ,Checkbox, Typography } from 'antd';
 import ChatBox from './Elements/ChatBox';
 import axios from 'axios';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import Monument from './Classes/Monument';
+import NavbarHome from './NavbarHome';
+
+import { useAuth } from './AuthContext';
 const { Option } = Select;
 
 function Carte() {
@@ -23,11 +26,13 @@ function Carte() {
   const [selectedMonuments, setSelectedMonuments] = useState({});
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [data, setData] = useState([]);
-  const [form] = Form.useForm();
-  const onFinish = (values) => { console.log('Valeurs reçues du formulaire : '); } ;
-  const [isFilterOpen, setFilterOpen] = useState(false);
-  const { t, i18n } = useTranslation();
+  const [isFilterOpen, setFilterOpen ] = useState(false);
+  const { t,i18n } = useTranslation();
   const navigate = useNavigate();
+  const { isConnected } = useAuth();
+
+
+
   const toggleLang = (lang) => {
     i18n.changeLanguage(lang);
   }
@@ -67,10 +72,17 @@ function Carte() {
     fetchData();
   }, []);
 
-  const handleSelection = () => {
-    handleSearchSubmit();
+  
+
+  const [form] = Form.useForm();
+ 
+  const onFinish = (values) => {
+    console.log('Received values of form: ');
   };
   
+  const handleSelection = () => {
+  
+  }
 
   const handleCancel = () => {
     const updatedSelectedMonuments = {};
@@ -78,8 +90,9 @@ function Carte() {
       updatedSelectedMonuments[monumentId] = false;
     }
     setSelectedMonuments(updatedSelectedMonuments);
+    
   };
- 
+
   const handleSearchSubmit = () => {
     // Mettez à jour la liste des monuments en fonction du titre saisi
     const filteredMonuments = monuments.filter(monument => {
@@ -91,8 +104,6 @@ function Carte() {
       monuments: filteredMonuments
     });
   };
-
-  
   return (
     
     <div className='graph'>
@@ -104,8 +115,8 @@ function Carte() {
       <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
      crossOrigin=""></script>
-
-      <Navbar />
+  <Navbar /> 
+      
       <div className="material-head">
       <img className="menu" src={menuIcon} alt="Menu Icon"
           onClick={handleMenuToggle}  />
@@ -123,16 +134,15 @@ function Carte() {
         </Col>
         <Col flex="auto" style={{ textAlign: 'right' }}>
           <Row gutter={16}>
-          <Col flex="auto">
-          <Input
-  placeholder={t("Tokens.rechReq")}
-  style={{ flex: 1, marginRight: '10px', background: '#ECF0F1' }}
-  onChange={(e) => setSearchData({ title: e.target.value })}
-/>
+            <Col flex="auto">
+              <Input
+                placeholder= {t("Tokens.rechReq")}
+                style={{ flex:1, marginRight: '10px', background: '#ECF0F1' }}
+              />
             </Col>
             <Col>
-              <Button type="primary"  onClick={handleSearchSubmit} style={{ backgroundColor: '#2C3E50' }}>
-                {t("Tokens.Recherche")}
+              <Button type="primary" htmlType="submit"  style={{backgroundColor :'#2C3E50'}}>
+              {t("Tokens.Recherche")}
               </Button>
             </Col>
           </Row>
@@ -189,14 +199,13 @@ function Carte() {
         </div>
         
         <div style={{ width: '100%', height: '600px' }}>
-  <MapContainer center={[7.1881, 21.0938]} zoom={4} scrollWheelZoom={false} style={{ marginLeft: '10%', zIndex: '100', width: '80%', height: '100%' }}>
+  <MapContainer center={[7.1881, 21.0938]} zoom={3} scrollWheelZoom={false} style={{ marginLeft: '10%', zIndex: '100', width: '80%', height: '100%' }}>
     <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
     {data && data.monuments ? (
       data.monuments.map(monument => (
         selectedMonuments[monument.id] ? (
-          <Marker key={monument.id} position={[monument.attitude, monument.longitude]} >
+          <Marker key={monument.id} position={[monument.attitude, monument.longitude]}>
             <Popup>
-          
               {monument.title}
             </Popup>
           </Marker>
