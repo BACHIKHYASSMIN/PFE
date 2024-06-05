@@ -43,7 +43,7 @@ const Navbar = () => {
   };
   const handleDeconnect = () => {
     logout();// Mettre à jour l'état de connexion à false
-    navigate('/');
+    navigate('/accueil');
   };
 
   return (
