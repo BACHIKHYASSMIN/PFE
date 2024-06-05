@@ -14,7 +14,6 @@ const [pass, setPassword] = useState();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [showInscription, setShowInscription] = useState(false);
-  const navigate= useNavigate();
 // Après la connexion réussie
 const handleSuccessfulLogin = () => {
   // Récupérer l'URL stockée dans le localStorage
