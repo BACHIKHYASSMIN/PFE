@@ -29,15 +29,75 @@ import { useNavigate } from 'react-router-dom';
 function Graph() {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [data, setData] = useState([]);
+  const [Nodedata, setNodeData] = useState([]);
   const { t,i18n } = useTranslation();
   const [selectedMaterials, setSelectedMaterials] = useState([]);
+  // État pour stocker la liste des suggestions de recherche
+const [searchSuggestions, setSearchSuggestions] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+
   const toggleLang = (lang) => {
     i18n.changeLanguage(lang);
   }
   const navigate = useNavigate();
 
+  useEffect(() => {
+    // Vérifiez d'abord si les données des nœuds existent
+    if (Nodedata && Nodedata.nodes) {
+      // Générer la liste des suggestions de recherche à partir des titres des nœuds
+      const suggestions = Nodedata.nodes.map(node => node.title);
+      setSearchSuggestions(suggestions);
+    }
+  }, [Nodedata]);
 
- 
+  const handleSearch = () => {
+    if (searchTerm) {
+      const filteredNode = Nodedata.nodes.find((node) =>
+        node.title==searchTerm
+      );
+      if (filteredNode) {
+        console.log("ID de l'élément trouvé :", filteredNode.id);
+  navigate(`/graph?selectedMaterials=${filteredNode.id}`);
+      } else {
+        console.log("Aucun élément trouvé");
+      }
+    } else {
+      console.log("Aucun terme de recherche saisi");
+    }
+  };
+  
+
+  const handleMaterialSelect = (materialId) => {
+    setSelectedMaterials((prevSelected) => {
+      // Si le matériau est déjà sélectionné, le retirer de la liste
+      if (prevSelected.includes(materialId)) {
+        const updatedSelected = prevSelected.filter((id) => id !== materialId);
+        // Envoyer un identifiant vide si aucun matériau n'est sélectionné
+        const updatedQuery = updatedSelected.length === 0 ? '' : updatedSelected.join('&');
+        navigate(`/graph?selectedMaterials=${updatedQuery}`);
+        return updatedSelected;
+      } else {
+        // Ajouter le matériau à la liste des éléments sélectionnés
+        const updatedSelected = [...prevSelected, materialId];
+        navigate(`/graph?selectedMaterials=${updatedSelected.join('&')}`);
+        return updatedSelected;
+      }
+    });
+  };
+  
+// Créez un gestionnaire d'événements pour détecter les changements dans le champ de recherche
+const handleSearchInputChange = (input) => {
+  if (typeof input === 'string') {
+    const filteredSuggestions = searchSuggestions.filter(suggestion =>
+      suggestion && suggestion.toLowerCase().includes(input.toLowerCase())
+    );
+  
+    // Mettre à jour l'état searchSuggestions avec les suggestions filtrées
+    setSearchSuggestions(filteredSuggestions);
+  }
+}
+
+
   const handleMenuToggle = () => {
     setMenuOpen(!isMenuOpen);
   };
@@ -49,19 +109,12 @@ function Graph() {
     
   const handleCancel = () => {
     form.resetFields(); // Réinitialiser les champs du formulaire
+    setSelectedMaterials([]); // Réinitialiser les matériaux sélectionnés
+    navigate(`/graph?selectedMaterials=`); // Envoyer un identifiant vide
   };
-
   const handleSubmit = () => {
     const selectedMaterialsQuery = selectedMaterials.join('&');
-  
-    navigate(`/graph?materials=${selectedMaterialsQuery}`);
-    
-  };
-  const handleCheckboxChange = (materialId) => {
-    setSelectedMaterials((prevSelectedMaterials) => ({
-      ...prevSelectedMaterials,
-      [materialId]: !prevSelectedMaterials[materialId],
-    }));
+    navigate(`/graph?selectedMaterials=${selectedMaterialsQuery}`);
   };
   useEffect(() => {
     const fetchData = async () => {
@@ -78,8 +131,8 @@ function Graph() {
 
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:2000/api/data');
-        setData(response.data);
+        const response = await axios.get('http://localhost:2000/api/node');
+        setNodeData(response.data);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -88,8 +141,7 @@ function Graph() {
     fetchData();
   }, []);
 
-  
-   
+ 
   return (
       <div className='graph'>
     <Navbar isAuthenticated={true} /> 
@@ -114,10 +166,20 @@ function Graph() {
               <Input
                 placeholder={t("Tokens.rechReq")}
                 style={{ flex:1, marginRight: '10px', background: '#ECF0F1' }}
-              />
-            </Col>
+                value={searchTerm}
+                onChange={(e) => {
+                  setSearchTerm(e.target.value); // Mettre à jour le terme de recherche
+                  handleSearchInputChange(e.target.value); // Filtrer les suggestions en fonction de la saisie de l'utilisateur
+                }}  />
+                 {/* Suggestions de recherche affichées ici */}
+                 {searchSuggestions.map(suggestion => (
+  <div key={suggestion &&suggestion.id}>{suggestion && suggestion.title}</div>
+))}
+
+
+      </Col>
             <Col>
-              <Button type="primary" htmlType="submit"  style={{backgroundColor :'#2C3E50'}}>
+              <Button type="primary" htmlType="submit"  style={{backgroundColor :'#2C3E50'}} onClick={handleSearch}>
               {t("Tokens.Recherche")}
               </Button>
             </Col>
@@ -146,8 +208,8 @@ function Graph() {
     <div style={{ display: 'flex', flexDirection: 'column' }}>
     {data && data.materiaux ? (
             data.materiaux.map(materiau => (
-  <Checkbox  key={materiau.id} onChange={() =>handleCheckboxChange(materiau.id)} 
-  checked={selectedMaterials[materiau.id]} value="Matériau1">{materiau.title}</Checkbox>
+  <Checkbox  key={materiau.id} onChange={() => handleMaterialSelect(materiau.id)}
+  checked={selectedMaterials.includes(materiau.id)} value="Matériau1">{materiau.title}</Checkbox>
           ))
           ):(
             <li>{t("Messages.MatErr")}</li>
@@ -187,7 +249,7 @@ function Graph() {
     </div>
     {/* Répétez ce schéma pour les autres Form.Item */}
     <Form.Item>
-      <Button type="primary" htmlType="submit" style={{ marginRight: '10px', backgroundColor: '#27AE60', marginTop: '20px' }}>
+      <Button type="primary" htmlType="submit" style={{ marginRight: '10px', backgroundColor: '#27AE60', marginTop: '20px' }} onClick={handleSubmit}>
       {t("Btn.Valider")}
       </Button>
       <Button type="default" style={{ backgroundColor: '#d9d9d9', border: 'none' }} onClick={handleCancel}>
@@ -204,11 +266,13 @@ function Graph() {
         
         
        
-        <Neo4jGraph selectedMaterials={selectedMaterials} />
-
+        < Neo4jGraph />
   
       </div>
      
+    
+
+      
       {isMenuOpen && (
         
         <div className="side-menu">

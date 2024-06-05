@@ -185,6 +185,33 @@ app.get('/api/nodes', async (req, res) => {
   }
 });
 
+app.get('/api/node', async (req, res) => {
+  const URI = 'neo4j://localhost';
+  const USER = 'neo4j';
+  const PASSWORD = 'password';
+  let driver;
+
+  try {
+      // Connexion au driver Neo4j
+      driver = neo4j.driver(URI, neo4j.auth.basic(USER, PASSWORD));
+      const session = driver.session();
+  
+      // Récupération du schéma du graphe
+      const nodesresult = await session.run('MATCH (n) RETURN  n');
+      const nodes = nodesresult .records.map(record => ({
+        id: record._fields[0].identity.low,
+        title: record._fields[0].properties.designation
+    }));
+      res.json({ nodes });
+  
+  } catch (err) {
+      console.error(`Error fetching schema: ${err.message}`);
+      res.status(500).send('Error fetching schema');
+  } finally {
+      if (driver) await driver.close();
+  }
+});
+
 app.post('/api/register', async (req, res) => {
   const { nomComplet, email, motDePasse } = req.body;
 
@@ -245,7 +272,55 @@ app.post('/api/login', async (req, res) => {
     res.status(500).json({ message: 'Erreur lors de connexion' });
   }
 });
+
+app.get('/api/nodes/subgraph/:nodeId', async (req, res) => {
+  const URI = 'neo4j://localhost';
+  const USER = 'neo4j';
+  const PASSWORD = 'password';
+  let driver;
+  let session; // Déclarer la variable session en dehors du bloc try
+  const componentId = parseInt(req.params.nodeId, 10);
+  try {
+      // Connexion au driver Neo4j
+      driver = neo4j.driver(URI, neo4j.auth.basic(USER, PASSWORD));
+      const session = driver.session();
+  
+      // Récupération du schéma du graphe
+      const nodesresult = await session.run('MATCH (n)-[]-(connectedNode) WHERE ID(n) =$componentId RETURN n,connectedNode',{componentId});
+      let nodes = [];
+      // Traitement des données du schéma pour les rendre compatibles avec la bibliothèque frontale
+      nodesresult.records.forEach(record => {
+          // Extraire les propriétés du nœud de chaque enregistrement
+          const Nproperties = record.get('n');
+          nodes.push(Nproperties); // Ajouter les propriétés du nœud à votre tableau de nœuds
+          const properties = record.get('connectedNode');
+          nodes.push(properties); // Ajouter les propriétés du nœud à votre tableau de nœuds
+          
+      });
+
+
+      // Récupération du schéma du graphe
+      const edgesresult = await session.run('MATCH (n)-[r]-(connectedNode) WHERE ID(n) = $componentId RETURN  r',{componentId});
+      let edges = [];
+      // Traitement des données du schéma pour les rendre compatibles avec la bibliothèque frontale
+      edgesresult .records.forEach(record => {
+          // Extraire les propriétés du nœud de chaque enregistrement
+          const properties = record.get('r');
+          edges.push(properties); // Ajouter les propriétés du nœud à votre tableau de nœuds
+      });
+      res.json({ nodes,edges });
+  
+  } catch (err) {
+      console.error(`Error fetching schema: ${err.message}`);
+      res.status(500).send('Error fetching schema');
+  } finally {
+      if (driver) await driver.close();
+  }
+});
+
+
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
   });
 
+ 

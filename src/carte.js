@@ -16,6 +16,9 @@ import ChatBox from './Elements/ChatBox';
 import axios from 'axios';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import Monument from './Classes/Monument';
+import NavbarHome from './NavbarHome';
+
+import { useAuth } from './AuthContext';
 const { Option } = Select;
 
 function Carte() {
@@ -26,14 +29,9 @@ function Carte() {
   const [isFilterOpen, setFilterOpen ] = useState(false);
   const { t,i18n } = useTranslation();
   const navigate = useNavigate();
+  const { isConnected } = useAuth();
 
-  const handleSearch = () => {
-  
-    const filteredMonuments = data.monuments.filter((monument) =>
-    monument.title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setData({ ...data, monuments: filteredMonuments });
-  }
+
 
   const toggleLang = (lang) => {
     i18n.changeLanguage(lang);
@@ -94,6 +92,18 @@ function Carte() {
     setSelectedMonuments(updatedSelectedMonuments);
     
   };
+
+  const handleSearchSubmit = () => {
+    // Mettez à jour la liste des monuments en fonction du titre saisi
+    const filteredMonuments = monuments.filter(monument => {
+      return monument.title.toLowerCase().includes(searchData.title.toLowerCase());
+    });
+    // Mettez à jour les données affichées sur la carte
+    setData({
+      ...data,
+      monuments: filteredMonuments
+    });
+  };
   return (
     
     <div className='graph'>
@@ -105,8 +115,8 @@ function Carte() {
       <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
      crossOrigin=""></script>
-
-      <Navbar />
+  <Navbar /> 
+      
       <div className="material-head">
       <img className="menu" src={menuIcon} alt="Menu Icon"
           onClick={handleMenuToggle}  />

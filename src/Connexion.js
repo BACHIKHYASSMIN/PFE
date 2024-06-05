@@ -2,60 +2,45 @@ import './Connexion.css';
 import React, { useState } from 'react';
 import { Button, Form, Input } from 'antd';
 import Inscription from './Inscription';
-import { Link, useNavigate , useParams } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
 import { message } from 'antd';
-const Connexion = ({ onClose}) => { // Ajoutez history en tant que prop
-// Définir des états pour stocker les valeurs des champs de formulaire
-const [email, setEmail] = useState('');
-const [pass, setPassword] = useState();
+import { useAuth } from './AuthContext';
+
+const Connexion = ({ onClose }) => {
+  const [email, setEmail] = useState('');
+  const [pass, setPassword] = useState('');
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [showInscription, setShowInscription] = useState(false);
-// Après la connexion réussie
-const handleSuccessfulLogin = () => {
-  // Récupérer l'URL stockée dans le localStorage
-  const previousUrl = localStorage.getItem('previousUrl');
-  // Vérifier si une URL précédente existe
-  if (previousUrl) {
-    // Rediriger vers l'URL précédente
-    window.location.href = previousUrl;
-    // Supprimer l'URL précédente du localStorage
-    localStorage.removeItem('previousUrl');
-  } else {
-    // Si aucune URL précédente n'est trouvée, rediriger vers une page par défaut
-    window.location.href = '/'; // Par exemple, la page d'accueil
-  }
-};
+  const { login } = useAuth();
 
-  const handleSubmit = async () => { 
-    
-    try {
-      // Envoyer une requête POST avec les informations d'identification saisies par l'utilisateur
-      
-      const response = await axios.post('http://localhost:2000/api/login', {
-        email, 
-        pass
-      });
-    
-      const previousUrl = localStorage.getItem('previousUrl');
-      // Vérifier si une URL précédente existe
-      if (previousUrl) {
-        // Rediriger vers l'URL précédente
-        window.location.href = previousUrl;
-        // Supprimer l'URL précédente du localStorage
-        localStorage.removeItem('previousUrl');
-      } else {
-        // Si aucune URL précédente n'est trouvée, rediriger vers une page par défaut
-        window.location.href = '/userHome'; // Par exemple, la page d'accueil
-      }
-  
-    } catch (error) {
-        message.error(error.response.data.message); 
+  const handleSuccessfulLogin = (previousUrl) => {
+    login();
+    if (previousUrl) {
+      navigate(previousUrl);
+      localStorage.removeItem('previousUrl');
+    } else {
+      navigate('/');
+    }
   };
-  }
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.post('http://localhost:2000/api/login', {
+        email,
+        pass,
+      });
+      // Save any necessary token or state here
+      handleSuccessfulLogin(localStorage.getItem('previousUrl'));
+    } catch (error) {
+      message.error(error.response?.data?.message || "Erreur de connexion");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const toggleInscription = () => {
     setShowInscription(!showInscription);

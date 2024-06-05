@@ -41,8 +41,9 @@ function App() {
     <LangProvider>
     <div className="App">
         <Routes>
-        <Route path="/" exact element={<Home />} />
+        <Route path="/" exact element={<UserHome />} />
           <Route path="/material" element={<Material />} />
+          <Route path="/accueil" element={<Home />} />
           <Route path="/categorie1" element={<Categorie1 />} />
           <Route path="/categorie2" element={<Categorie2 />} />
           <Route path="/categorie3" element={<Categorie3 />} />
