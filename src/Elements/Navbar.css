@@ -86,7 +86,7 @@ left:50%;
     font-weight: 700;
   }
 
-  .navbar-btn {
+  .nav-btn {
   margin-left: 1%;
   margin-bottom: 1%;
   font-size: x-small;
@@ -98,19 +98,18 @@ left:50%;
     background-color:#FFFFFF;
   }
   
-  .navbar-btn:hover {
+  .nav-btn:hover {
     background-color: #2C3E50; /* Au survol, changer la couleur de fond en blanc */
     color: #FFFFFF; /* Au survol, changer la couleur du texte en bleu foncé */
   }
   .navbar-imgD{
-    margin-left: 2%;
     cursor: pointer;
-    width:20px;
+    width:17px;
   }
  
-  .navbar-button{
+  .nav-button{
     position: absolute;
-    right:-1%;
+    left:97%;
   }
 
  

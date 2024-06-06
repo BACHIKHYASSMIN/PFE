@@ -60,10 +60,12 @@ const Navbar = () => {
          </> )}
           {!isConnected && (
             <>
-          <li className="navbar-item"><Link to="/accueil">{t("navbar.accueil")}</Link></li>
+          <li className="navbar-item"><Link to="/">{t("navbar.accueil")}</Link></li>
           <li className="navbar-item"><Link to="/carte-geographique">{t("navbar.carteGeographique")}</Link></li>
           <li className="navbar-item"><Link to="/a-propos">{t("navbar.aPropos")}</Link></li>
           <li><button className="cnx-button" onClick={onConnexionClick}>{t("navbar.connexion")}</button></li>
+          
+         
           </>
           )}
           {isConnected && (
@@ -71,13 +73,14 @@ const Navbar = () => {
           <li className="navbar-item"><Link to="/recherche-avancee">{t("navbar.rechercheAvancee")}</Link></li>
           <li className="navbar-item"><Link to="/a-propos">{t("navbar.aPropos")}</Link></li>
          <img className="navbar-img" src={img} alt="Navbar Icon" onClick={handleProfil} />
-          
-          <LanguagePopup toggleLang={toggleLang} />
           <img className="navbar-imgD" src={deconIcon} alt="Decon Icon" onClick={handleDeconnect} />
           </>
           )}
         </ul>
-        
+        <div className="nav-button">
+        <button  className="nav-btn" onClick={()=>{toggleLang("en")}}>EN</button>
+          <button  className="nav-btn" onClick={()=>{toggleLang("fr")}}>FR</button>
+        </div>
       </div>
     </nav>
   );

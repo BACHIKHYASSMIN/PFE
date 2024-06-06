@@ -22,7 +22,7 @@ const Connexion = ({ onClose }) => {
       navigate(previousUrl);
       localStorage.removeItem('previousUrl');
     } else {
-      navigate('/');
+      navigate('/acceuil');
     }
   };
 

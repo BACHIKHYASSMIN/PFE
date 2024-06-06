@@ -8,7 +8,7 @@ import RechAvancée from './Assets/rechercheAvancée.PNG';
 import visualisation from './Assets/visualisation.png';
 import './Home.css';
 import React from 'react';
-import Navbar from './NavbarHome';
+import NavbarHome from './NavbarHome';
 import Footer from './Elements/Footer';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
@@ -96,7 +96,7 @@ const Home = () => {
    
     return (
       <div style={containerStyle}>
-       <Navbar isAuthenticated={false} />
+       <NavbarHome isAuthenticated={false} />
         <img src={matériautheque} alt="Description de l'image" style={{ width: '100%', height: '10%' }} />
   
         <div style={descriptionStyle} >
