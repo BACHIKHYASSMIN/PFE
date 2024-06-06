@@ -71,8 +71,6 @@ const Navbar = () => {
           )}
           {isConnected && (
              <>
-          <li className="navbar-item"><Link to="/recherche-avancee">{t("navbar.rechercheAvancee")}</Link></li>
-          <li className="navbar-item"><Link to="/a-propos">{t("navbar.aPropos")}</Link></li>
          <img className="navbar-img" src={img} alt="Navbar Icon" onClick={handleProfil} />
           <img className="navbar-imgD" src={deconIcon} alt="Decon Icon" onClick={handleDeconnect} />
           </>
