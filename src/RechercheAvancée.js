@@ -11,6 +11,7 @@ import whitemenuIcon from "./Assets/wmenu.png";
 import closeIcon from "./Assets/close.png";
 import menuIcon from "./Assets/icon.png";
 import './RechercheAvancée.css';
+import { ContinuousSizeLegend } from 'react-vis';
 
 const { Option } = Select;
 
@@ -29,7 +30,29 @@ const RechercheAvancée = () => {
   const [selectedColor, setSelectedColor] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(15); // Default number of items per page
+  const [selectedFilters, setSelectedFilters] = useState({
+    materiaux: [],
+    produits: [],
+    ouvrages: [],
+  });
 
+
+  const handleFilterSelect = (category, filter) => {
+    if (selectedFilters === filter) {
+      setSelectedFilters(false); // Désélectionne le filtre si déjà sélectionné
+    } else {
+      setSelectedFilters(filter); // Sélectionne le filtre
+    }
+  };
+  
+
+  const handleCategoriesChange = (value) => {
+    setSelectedCategories(value);
+    if (value.length > 0) {
+      handleFilterSelect(value[0]); // Suppose that the filter is the first selected category
+    }
+  };
+  
   const toggleLang = (lang) => {
     i18n.changeLanguage(lang);
   }
@@ -109,9 +132,7 @@ const RechercheAvancée = () => {
     setSelectedPlace(value);
   };
 
-  const handleCategoriesChange = (value) => {
-    setSelectedCategories(value);
-  };
+
 
   const handleColorChange = (value) => {
     setSelectedColor(value);
@@ -139,34 +160,33 @@ const RechercheAvancée = () => {
   };
 
   const getDetailLink = (category, itemId) => {
+    console.log(itemId)
     switch (category) {
-      case t("Header.Mat"):
-        return `/materiauDetails/${itemId}`;
-      
-    
-  case t("Header.Prod"):
-        return `/produitDetails/${itemId}`;
-      case t("Header.Monu"):
+      case "Matériaux":
+        navigate(`/materialdetails/${itemId}`);
+      case "Produits":
+        navigate(`/produitDetails/${itemId}`);
+      case "Monuments":
         return `/monumentDetails/${itemId}`;
-      case t("Header.Ouv"):
+      case "Ouvrages":
         return `/ouvrageDetails/${itemId}`;
-      case t("Header.Path"):
-        return `/details/${itemId}`;
-      default:
+      case "Pathologies":
         return `/details/${itemId}`;
     }
-  };
+};
 
 
 
-  const renderItems = (items) => {
+
+const renderItems = (items) => {
+  
+    // Sinon, afficher tous les éléments de la liste
     return items.map((item, index) => (
       <Card
         key={index}
         title={item.category}
-              extra={<Link to={getDetailLink(item.category, item.id)}>Voir plus</Link>}
-        style={{ width: '30%', marginRight: '10px', marginLeft: '20px', marginBottom: '20px', border: '1px solid #2C3E50' }}
-      >
+        extra={<Link to={getDetailLink(item.category, item.id)}>Voir plus</Link>}
+        style={{ width: '30%', marginRight: '10px', marginLeft: '20px', marginBottom: '20px', border: '1px solid #2C3E50' }}>
         <Row gutter={16} align="middle">
           <Col span={8}>
             <p>{item.title}</p>
@@ -179,7 +199,11 @@ const RechercheAvancée = () => {
         </Row>
       </Card>
     ));
-  };
+  
+};
+
+  
+  
   
   // Get current items based on pagination
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -326,7 +350,9 @@ const RechercheAvancée = () => {
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                       {data && data.materiaux ? (
                         data.materiaux.map(materiau => (
-                          <Checkbox key={materiau.id} value="Matériau1">{materiau.title}</Checkbox>
+                          <Checkbox  key={materiau.id}
+                          value={materiau.title}
+                          onChange={() => handleFilterSelect(materiau.category, materiau)}>{materiau.title}</Checkbox>
                         ))
                       ) : (
                         <li>{t("Messages.MatErr")}</li>
@@ -339,7 +365,9 @@ const RechercheAvancée = () => {
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
                       {data && data.produits ? (
                         data.produits.map(produit => (
-                          <Checkbox key={produit.id} value="">{produit.title}</Checkbox>
+                          <Checkbox key={produit.id} 
+                          value={produit.title}
+                            onChange={() => handleFilterSelect(produit.category,produit)}>{produit.title}</Checkbox>
                         ))
                       ) : (
                         <li>{t("Messages.ProdErr")}</li>
@@ -361,7 +389,7 @@ const RechercheAvancée = () => {
                   </Form.Item>
                 </div>
                 <Form.Item>
-                  <Button type="primary" htmlType="submit" style={{ marginRight: '10px', backgroundColor: '#27AE60', marginTop: '20px' }}>
+                  <Button type="primary" htmlType="submit" style={{ marginRight: '10px', backgroundColor: '#27AE60', marginTop: '20px' }} onClick={handleSelectFieldsChange}>
                     {t("Btn.Valider")}
                   </Button>
                   <Button type="default" style={{ backgroundColor: '#d9d9d9', border: 'none' }} onClick={handleCancel}>
