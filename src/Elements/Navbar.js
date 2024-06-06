@@ -61,8 +61,8 @@ const Navbar = () => {
           {!isConnected && (
             <>
           <li className="navbar-item"><Link to="/">{t("navbar.accueil")}</Link></li>
+          <li className="navbar-item"><Link to="/Graph">{t("navbar.graph")}</Link></li> 
           <li className="navbar-item"><Link to="/carte-geographique">{t("navbar.carteGeographique")}</Link></li>
-          <li className="navbar-item"><Link to="/a-propos">{t("navbar.aPropos")}</Link></li>
           <li className="navbar-item"><Link to="/recherche-avancee">{t("navbar.rechercheAvancee")}</Link></li>
           <li className="navbar-item"><Link to="/a-propos">{t("navbar.aPropos")}</Link></li>
          <img className="navbar-img" src={img} alt="Navbar Icon" onClick={handleProfil} />

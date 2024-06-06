@@ -67,10 +67,10 @@ function App() {
           <Route path="/autres" element={<Autres />} />
           <Route path= "/a-propos"element={<Apropos/>}/>
           <Route path="/interaction" element={<Interaction/>}/>
-          <Route path="/produitdetails/:productId"  element={<ProductDetails />}  />
-          <Route path="/materialdetails/:materialId"  element={<MaterialDetails />}  />
-          <Route path="/monumentdetails/:monumentId"  element={<MonumentDetails />}  />
-          <Route path="/ouvrageetails/:ouvrageId"  element={<OuvrageDetails />}  />
+          <Route path="/produitDetails/:productId"  element={<ProductDetails />}  />
+          <Route path="/materiauDetails/:materialId"  element={<MaterialDetails />}  />
+          <Route path="/monumentDetails/:monumentId"  element={<MonumentDetails />}  />
+          <Route path="/ouvrageDetails/:ouvrageId"  element={<OuvrageDetails />}  />
           <Route path="/connexion/:previousUrl"  element={<Connexion />}  />
           <Route path="/userHome" element={< UserHome />} />
           
