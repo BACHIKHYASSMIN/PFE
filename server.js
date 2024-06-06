@@ -30,7 +30,8 @@ app.get('/api/data', async (req, res) => {
       const materiauxResult = await session.run('MATCH (n:Materiau) RETURN n');
       const materiauxArr = materiauxResult.records.map(record => ({
           id: record._fields[0].identity.low,
-          title: record._fields[0].properties.designation
+          title: record._fields[0].properties.designation,
+          category:'Matériaux'
       }));
 
       if (!materiauxResult || materiauxResult.records.length === 0) {
@@ -41,8 +42,8 @@ app.get('/api/data', async (req, res) => {
     const produitsResult = await session.run('MATCH (n:Produit) RETURN n');
     const produitsArr = produitsResult.records.map(record => ({
         id: record._fields[0].identity.low,
-        
-        title: record._fields[0].properties.designation
+        title: record._fields[0].properties.designation,
+        category:'Produits'
     }));
 
     if (!produitsResult || produitsResult.records.length === 0) {
@@ -53,7 +54,8 @@ app.get('/api/data', async (req, res) => {
     const ouvragesResult = await session.run('MATCH (n:Ouvrage) RETURN n');
     const ouvragesArr = ouvragesResult.records.map(record => ({
         id: record._fields[0].identity.low,
-        title: record._fields[0].properties.designation
+        title: record._fields[0].properties.designation,
+        category:'Ouvrage'
     }));
 
     if (!ouvragesResult || ouvragesResult.records.length === 0) {
@@ -67,7 +69,8 @@ app.get('/api/data', async (req, res) => {
         id: record._fields[0].identity.low,
         title: record._fields[0].properties.designation,
         attitude: record._fields[0].properties.attitude,
-        longitude: record._fields[0].properties.longitude
+        longitude: record._fields[0].properties.longitude,
+        category:'Monument'
     }));
 
     if (!monumentsResult || monumentsResult.records.length === 0) {
@@ -78,7 +81,8 @@ app.get('/api/data', async (req, res) => {
     const placesResult = await session.run('MATCH (n:Place) RETURN n');
     const placesArr = placesResult.records.map(record => ({
         id: record._fields[0].identity,
-        title: record._fields[0].properties.designation
+        title: record._fields[0].properties.designation,
+        category:'Place'
     }));
     if (!placesResult || placesResult.records.length === 0) {
         // Aucune donnée de places trouvée, renvoyer une réponse d'erreur
@@ -89,7 +93,8 @@ app.get('/api/data', async (req, res) => {
      const periodesResult = await session.run('MATCH (n:Periode) RETURN n');
      const periodesArr = periodesResult.records.map(record => ({
          id: record._fields[0].identity,
-         title: record._fields[0].properties.designation
+         title: record._fields[0].properties.designation,
+         category:'Periode'
      }));
 
      if (!periodesResult || periodesResult.records.length === 0) {
@@ -100,7 +105,8 @@ app.get('/api/data', async (req, res) => {
        const couleursResult = await session.run('MATCH (m:Materiau) UNWIND m.couleur AS couleur RETURN  DISTINCT couleur AS couleur');
        const couleursArr = couleursResult.records.map(record => ({
            id: record._fields[0].identity,
-           title: record._fields[0]
+           title: record._fields[0],
+           category:'Couleur'
        }));
 
        if (!couleursResult || couleursResult.records.length === 0) {

@@ -57,24 +57,21 @@ const Navbar = () => {
           <li className="navbar-item"><Link to="/userHome">{t("navbar.accueil")}</Link></li>
          <li className="navbar-item"><Link to="/Graph">{t("navbar.graph")}</Link></li> 
          <li className="navbar-item"><Link to="/carte-geographique">{t("navbar.carteGeographique")}</Link></li>
+         <li className="navbar-item"><Link to="/recherche-avancee">{t("navbar.rechercheAvancee")}</Link></li>
+          <li className="navbar-item"><Link to="/a-propos">{t("navbar.aPropos")}</Link></li>
          </> )}
           {!isConnected && (
             <>
           <li className="navbar-item"><Link to="/">{t("navbar.accueil")}</Link></li>
           <li className="navbar-item"><Link to="/Graph">{t("navbar.graph")}</Link></li> 
           <li className="navbar-item"><Link to="/carte-geographique">{t("navbar.carteGeographique")}</Link></li>
-          <li className="navbar-item"><Link to="/recherche-avancee">{t("navbar.rechercheAvancee")}</Link></li>
           <li className="navbar-item"><Link to="/a-propos">{t("navbar.aPropos")}</Link></li>
-         <img className="navbar-img" src={img} alt="Navbar Icon" onClick={handleProfil} />
-          <img className="navbar-imgD" src={deconIcon} alt="Decon Icon" onClick={handleDeconnect} />
-          
+          <li><button className="connect-button" onClick={onConnexionClick}>{t("navbar.connexion")}</button></li>
          
           </>
           )}
           {isConnected && (
              <>
-          <li className="navbar-item"><Link to="/recherche-avancee">{t("navbar.rechercheAvancee")}</Link></li>
-          <li className="navbar-item"><Link to="/a-propos">{t("navbar.aPropos")}</Link></li>
          <img className="navbar-img" src={img} alt="Navbar Icon" onClick={handleProfil} />
           <img className="navbar-imgD" src={deconIcon} alt="Decon Icon" onClick={handleDeconnect} />
           </>
