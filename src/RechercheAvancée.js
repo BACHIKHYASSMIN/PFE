@@ -30,21 +30,12 @@ const RechercheAvancée = () => {
   const [selectedColor, setSelectedColor] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(15); // Default number of items per page
-  const [selectedFilters, setSelectedFilters] = useState({
-    materiaux: [],
-    produits: [],
-    ouvrages: [],
-  });
+  const [selectedFilters, setSelectedFilters] = useState(null);
 
 
-  const handleFilterSelect = (category, filter) => {
-    if (selectedFilters === filter) {
-      setSelectedFilters(false); // Désélectionne le filtre si déjà sélectionné
-    } else {
-      setSelectedFilters(filter); // Sélectionne le filtre
-    }
+  const handleFilterSelect = (item) => {
+   setSelectedFilters(item)
   };
-  
 
   const handleCategoriesChange = (value) => {
     setSelectedCategories(value);
@@ -159,49 +150,83 @@ const RechercheAvancée = () => {
     navigate(`/details/${id}`);
   };
 
+  
   const getDetailLink = (category, itemId) => {
     console.log(itemId)
     switch (category) {
-      case "Matériaux":
-        navigate(`/materialdetails/${itemId}`);
-      case "Produits":
+      case t("Header.Mat"):
+        console.log(category)
+        return `/materialdetails/${itemId}`;
+      case t("Header.Prod"):
         navigate(`/produitDetails/${itemId}`);
-      case "Monuments":
+      case t("Header.Monu"):
         return `/monumentDetails/${itemId}`;
-      case "Ouvrages":
+      case t("Header.Ouv"):
         return `/ouvrageDetails/${itemId}`;
-      case "Pathologies":
+      case t("Header.Path"):
         return `/details/${itemId}`;
     }
-};
+  };
 
 
 
-
-const renderItems = (items) => {
+  const renderItems = (items) => {
+    if (selectedFilters) {
+      // Afficher seulement l'élément sélectionné
+      return items
+        .map((item, index) => (
+          <Card
+            key={index}
+            title={item.category}
+           extra={<Link onClick={() => getDetailLink(item.category, item.id)}>Voir plus</Link>}
+            style={{
+              width: '30%',
+              marginRight: '10px',
+              marginLeft: '20px',
+              marginBottom: '20px',
+              border: '1px solid #2C3E50',
+            }}>
+            <Row gutter={16} align="middle">
+              <Col span={8}>
+                <p>{item.title}</p>
+              </Col>
+              <Col span={16}>
+                <div>
+                  <img src={item.image} alt={item.title} style={{ maxWidth: '100%' }} />
+                </div>
+              </Col>
+            </Row>
+          </Card>
+        ));
+    } else {
+      // Afficher tous les éléments de la liste
+      return items.map((item, index) => (
+        <Card
+          key={index}
+          title={item.category}
+         extra={<Link onClick={() => getDetailLink(item.category, item.id)}>Voir plus</Link>}
+          style={{
+            width: '30%',
+            marginRight: '10px',
+            marginLeft: '20px',
+            marginBottom: '20px',
+            border: '1px solid #2C3E50',
+          }}>
+          <Row gutter={16} align="middle">
+            <Col span={8}>
+              <p>{item.title}</p>
+            </Col>
+            <Col span={16}>
+              <div>
+                <img src={item.image} alt={item.title} style={{ maxWidth: '100%' }} />
+              </div>
+            </Col>
+          </Row>
+        </Card>
+      ));
+    }
+  };
   
-    // Sinon, afficher tous les éléments de la liste
-    return items.map((item, index) => (
-      <Card
-        key={index}
-        title={item.category}
-        extra={<Link to={getDetailLink(item.category, item.id)}>Voir plus</Link>}
-        style={{ width: '30%', marginRight: '10px', marginLeft: '20px', marginBottom: '20px', border: '1px solid #2C3E50' }}>
-        <Row gutter={16} align="middle">
-          <Col span={8}>
-            <p>{item.title}</p>
-          </Col>
-          <Col span={16}>
-            <div>
-              <img src={item.image} alt={item.title} style={{ maxWidth: '100%' }} />
-            </div>
-          </Col>
-        </Row>
-      </Card>
-    ));
-  
-};
-
   
   
   
@@ -352,7 +377,7 @@ const renderItems = (items) => {
                         data.materiaux.map(materiau => (
                           <Checkbox  key={materiau.id}
                           value={materiau.title}
-                          onChange={() => handleFilterSelect(materiau.category, materiau)}>{materiau.title}</Checkbox>
+                          onChange={() => handleFilterSelect(materiau)}>{materiau.title}</Checkbox>
                         ))
                       ) : (
                         <li>{t("Messages.MatErr")}</li>
@@ -367,7 +392,7 @@ const renderItems = (items) => {
                         data.produits.map(produit => (
                           <Checkbox key={produit.id} 
                           value={produit.title}
-                            onChange={() => handleFilterSelect(produit.category,produit)}>{produit.title}</Checkbox>
+                            onChange={() => handleFilterSelect(produit)}>{produit.title}</Checkbox>
                         ))
                       ) : (
                         <li>{t("Messages.ProdErr")}</li>
@@ -402,7 +427,7 @@ const renderItems = (items) => {
         </div>
         <div style={{ flex: 3, marginLeft: '10px', marginRight: '10px' }}>
           <Row gutter={[16, 16]}>
-            {currentItems && renderItems(currentItems)}
+            { renderItems(currentItems)}
           </Row>
           <div style={{ textAlign: 'center', marginTop: '20px' }}>
            
