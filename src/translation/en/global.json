@@ -1,6 +1,6 @@
 {
     
-    "navbar": {
+    "navbar":{
       "accueil": "Home",
       "graph": "Graph",
       "carteGeographique": "Geographical Map",
@@ -64,7 +64,9 @@
        "ObjPlc":"Message subject",
        "DesPlc":"Recipient's e-mail address",
        "RechercherUn":"Search for ",
-       "FamilleMat":"Materials family"
+       "FamilleMat":"Materials family",
+       "TapeMess":"Tape a meessage",
+       "Reply": "Reply"
     },
     "Footer":{
       "localosation":"El harrach,Algiers,Algeria",
