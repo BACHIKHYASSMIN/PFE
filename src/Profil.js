@@ -68,14 +68,15 @@ const handleSubmit = async () => {
 const fetchUserInfo = async () => {
   try {
     const response = await axios.get(`http://localhost:2000/userInfo/${userId}`);
-    const userData = response.data;
+    const userData = response.data.data;
     setUserInfo(userData);
   } catch (error) {
     console.error('Erreur lors de la récupération des informations utilisateur :', error);
   }
 };
 
-useEffect(() => {
+
+useEffect(async() => {
     fetchUserInfo();
   
 }, []);
@@ -165,17 +166,17 @@ useEffect(() => {
               <img src={MessageIcon} alt="Message Icon" onClick={handleMessageIconClick} />
             </div>
           )}
-          <h3>{userInfo.data["Username"]}</h3>
+          <h3>{userInfo["Username"]}</h3>
         </div>
         <input type="file" ref={inputRef} style={{ display: 'none' }} onChange={handleFileSelect} />
         <div className='ProfilData'>
           <div className='Output'>
             <h4>{t("Tokens.fullName")}:</h4>
-            <div className='MailOutput'>{userInfo.data["full name"]}</div>
+            <div className='MailOutput'>{userInfo["full name"]}</div>
           </div>
           <div className='Output'>
             <h4>Email :</h4>
-            <div className='MailOutput'>{userInfo.data["email"]}</div>
+            <div className='MailOutput'>{userInfo["email"]}</div>
           </div>
         </div>
         <Button className='Edit' onClick={toggleEditing}>

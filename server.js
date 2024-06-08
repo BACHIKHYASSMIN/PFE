@@ -396,6 +396,7 @@ try {
 });
 
 app.get('/userInfo/:id', async (req, res) => {
+  const userid=parseInt(req.params.id, 10);
   console.log(req.params.id)
   const connection = mysql.createConnection({
     host: 'localhost',
@@ -403,7 +404,7 @@ app.get('/userInfo/:id', async (req, res) => {
     password: '',
     database: 'materiautheque'
   });
-  const userid=parseInt(req.params.id, 10);
+  
  
 
 try {
