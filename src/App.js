@@ -35,9 +35,12 @@ import MaterialDetails from './MaterialDetails';
 import MonumentDetails from './MonumentDetails';
 import OuvrageDetails from './OuvrageDetails'
 import UserHome from './Elements/userHome';
+import { AuthProvider } from './AuthContext';
 import Neo4jGraph from './test.js'
 function App() {
   return (
+    <AuthProvider>
+
     <LangProvider>
     <div className="App">
         <Routes>
@@ -82,6 +85,7 @@ function App() {
   
     </div>
     </LangProvider>
+    </AuthProvider>
   );
 }
 

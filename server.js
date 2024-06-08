@@ -1,5 +1,8 @@
 const express = require('express');
 const neo4j = require('neo4j-driver');
+const nodemailer = require('nodemailer');
+const bodyParser = require('body-parser');
+const cors = require('cors');
 const router = express.Router();
 const mysql = require('mysql');
 const app = express();
@@ -7,8 +10,9 @@ const port = 2000;
 app.set('view engine', 'ejs');
 // Middleware pour activer CORS
 app.use(express.json());
+app.use(bodyParser.json());
 app.use((req, res, next) => {
-
+app.use(cors());
     res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000'); // Autoriser les requêtes depuis le domaine de votre application cliente
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE'); // Méthodes HTTP autorisées
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization'); // En-têtes autorisés
@@ -16,6 +20,14 @@ app.use((req, res, next) => {
     next();
   });
   
+// Configuration du transporteur d'e-mails
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'jy_bachikh@esi.dz',
+    pass: 'nsna oteg xmgv htzm',
+  },
+});
 app.get('/api/data', async (req, res) => {
   const URI = 'neo4j://localhost';
   const USER = 'neo4j';
@@ -55,7 +67,7 @@ app.get('/api/data', async (req, res) => {
     const ouvragesArr = ouvragesResult.records.map(record => ({
         id: record._fields[0].identity.low,
         title: record._fields[0].properties.designation,
-        category:'Ouvrage'
+        category:'Ouvrages'
     }));
 
     if (!ouvragesResult || ouvragesResult.records.length === 0) {
@@ -70,7 +82,7 @@ app.get('/api/data', async (req, res) => {
         title: record._fields[0].properties.designation,
         attitude: record._fields[0].properties.attitude,
         longitude: record._fields[0].properties.longitude,
-        category:'Monument'
+        category:'Monuments'
     }));
 
     if (!monumentsResult || monumentsResult.records.length === 0) {
@@ -82,7 +94,7 @@ app.get('/api/data', async (req, res) => {
     const placesArr = placesResult.records.map(record => ({
         id: record._fields[0].identity,
         title: record._fields[0].properties.designation,
-        category:'Place'
+        category:'Places'
     }));
     if (!placesResult || placesResult.records.length === 0) {
         // Aucune donnée de places trouvée, renvoyer une réponse d'erreur
@@ -94,7 +106,7 @@ app.get('/api/data', async (req, res) => {
      const periodesArr = periodesResult.records.map(record => ({
          id: record._fields[0].identity,
          title: record._fields[0].properties.designation,
-         category:'Periode'
+         category:'Périodes'
      }));
 
      if (!periodesResult || periodesResult.records.length === 0) {
@@ -106,7 +118,7 @@ app.get('/api/data', async (req, res) => {
        const couleursArr = couleursResult.records.map(record => ({
            id: record._fields[0].identity,
            title: record._fields[0],
-           category:'Couleur'
+           category:'Couleurs'
        }));
 
        if (!couleursResult || couleursResult.records.length === 0) {
@@ -259,14 +271,15 @@ app.post('/api/login', async (req, res) => {
   
   try {
   // Recherche de l'utilisateur dans la base de données
-  connection.query('SELECT * FROM logging WHERE `email` = ? AND `password` = ?', [email, pass], (error, results) => {
+  connection.query('SELECT `id` FROM logging WHERE `email` = ? AND `password` = ?', [email, pass], (error, results) => {
       if (error) {
           console.error('Erreur lors de la connexion :', error);
           res.status(500).json({ message: 'Erreur lors de la connexion' });
       } else {
           if (results.length > 0) {
               // L'utilisateur est trouvé, authentification réussie
-              res.status(200).json({ message: 'Authentification réussie' });
+              const userId = results[0].id;
+              res.status(200).json({ message: 'Authentification réussie', userId: userId });
           } else {
               // Aucun utilisateur correspondant trouvé
               res.status(401).json({ message: 'Email ou mot de passe incorrect' });
@@ -324,6 +337,99 @@ app.get('/api/nodes/subgraph/:nodeId', async (req, res) => {
   }
 });
 
+
+app.post('/send-email', (req, res) => {
+  const { recipientEmail, subject, message } = req.body;
+
+  const mailOptions = {
+    from: recipientEmail,
+    to: 'jy_bachikh@esi.dz',
+    subject: subject,
+    text: message,
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log(error);
+      res.status(500).send('Error sending email');
+    } else {
+      console.log('Email sent: ' + info.response);
+      res.status(200).send('Email sent');
+    }
+  });
+});
+
+
+app.post('/update-user', async (req, res) => {
+  const {userId,editedName,editedFullName, editedEmail, editedPassword} = req.body;
+  // Connexion à la base de données MySQL
+  const connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'materiautheque'
+  });
+try {
+  // Requête SQL pour mettre à jour les informations de l'utilisateur
+  connection.query('UPDATE logging SET `full name` = ?, `email` = ?, `password` = ?,`Username`=? WHERE `id` = ?', [editedFullName, editedEmail, editedPassword,editedName, userId], (error, results) => {
+    if (error) {
+      console.error('Erreur lors de la mise à jour des informations de l\'utilisateur :', error);
+      res.status(500).json({ message: 'Erreur lors de la mise à jour des informations de l\'utilisateur' });
+    } else {
+      // Vérifier si des lignes ont été affectées par la mise à jour
+      if (results.affectedRows > 0) {
+        // Mise à jour réussie
+        res.status(200).json({ message: 'Informations de l\'utilisateur mises à jour avec succès' });
+      } else {
+        // Aucune ligne n'a été affectée (utilisateur introuvable)
+        res.status(404).json({ message: 'Utilisateur non trouvé' });
+      }
+    }
+  });
+} catch (error) {
+  console.error('Erreur lors de la connexion à la base de données :', error);
+  res.status(500).json({ message: 'Erreur lors de la connexion à la base de données' });
+}finally {
+  // Fermer la connexion à la base de données
+  connection.end();
+}
+});
+
+app.get('/userInfo/:id', async (req, res) => {
+  console.log(req.params.id)
+  const connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '',
+    database: 'materiautheque'
+  });
+  const userid=parseInt(req.params.id, 10);
+ 
+
+try {
+  // Requête SQL pour mettre à jour les informations de l'utilisateur
+  connection.query('SELECT * from logging WHERE `id` =? ', [userid], (error, results) => {
+    if (error) {
+      console.error('Erreur lors de la mise à jour des informations de l\'utilisateur :', error);
+      res.status(500).json({ message: 'Erreur lors de recuperations des informations de l\'utilisateur' });
+    } else {
+      if (results.length > 0) {
+        // Renvoyer les informations de l'utilisateur
+        res.status(200).json({ message: 'rahou shih', data:results[0] });
+      } else {
+        // Aucune ligne n'a été affectée (utilisateur introuvable)
+        res.status(404).json({ message: 'Utilisateur non trouvé' });
+      }
+    }
+  });
+} catch (error) {
+  console.error('Erreur lors de la connexion à la base de données :', error);
+  res.status(500).json({ message: 'Erreur lors de la connexion à la base de données' });
+}finally {
+  // Fermer la connexion à la base de données
+  connection.end();
+}
+});
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
