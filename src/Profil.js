@@ -31,6 +31,7 @@ function Profil() {
   const { TextArea } = Input;
   const { userId } = useAuth();
   const [userInfo, setUserInfo] = useState({});
+  const [selectedFile, setSelectedFile] = useState(null);
   const handleRecipientEmailChange = (e) => {
     setRecipientEmail(e.target.value);
   };
@@ -75,8 +76,51 @@ const fetchUserInfo = async () => {
   }
 };
 
+const handleSavePhoto = async () => {
+  if (selectedFile) {
+    const formData = new FormData();
+    formData.append('profileImage', selectedFile);
 
-useEffect(async() => {
+    try {
+      const response = await axios.post('http://localhost:2000/upload-photo', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      if (response.status === 200) {
+        console.log('Photo uploaded successfully');
+        const newPhotoUrl = response.data.photoUrl; // Assurez-vous d'obtenir l'URL de la nouvelle photo depuis la réponse
+
+        // Sauvegarde de l'URL de la nouvelle photo dans le stockage local
+        localStorage.setItem('profileImage', newPhotoUrl);
+
+        // Mettre à jour l'interface utilisateur pour refléter le changement
+        setUserInfo(prevUserInfo => ({
+          ...prevUserInfo,
+          profileImage: newPhotoUrl // Mettez à jour l'URL de la photo dans l'état de userInfo
+        }));
+      }
+    } catch (error) {
+      console.error('Error uploading photo:', error);
+    }
+  }
+};
+
+// Charger l'image de profil depuis le stockage local lors du chargement de la page
+useEffect(() => {
+  const storedProfileImage = localStorage.getItem('profileImage');
+  if (storedProfileImage) {
+    // Mettre à jour l'interface utilisateur avec l'image stockée localement
+    setUserInfo(prevUserInfo => ({
+      ...prevUserInfo,
+      profileImage: storedProfileImage
+    }));
+  }
+}, []);
+
+
+useEffect(() => {
     fetchUserInfo();
   
 }, []);
@@ -118,7 +162,7 @@ useEffect(async() => {
   };
 
   const handleFileSelect = (event) => {
-    const file = event.target.files[0];
+    setSelectedFile(event.target.files[0]);
   };
 
   const toggleLang = (lang) => {
