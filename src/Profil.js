@@ -60,6 +60,7 @@ const handleSubmit = async () => {
       setSubject('');
       setMessage('');
       setIsSendingMessage(false);
+     
     }
   } catch (error) {
     console.error('Error sending email:', error);
@@ -182,6 +183,7 @@ useEffect(() => {
 
       if (response.status === 200) {
         console.log('User information updated successfully');
+        await fetchUserInfo();
         setIsEditing(false);
       }
     } catch (error) {
