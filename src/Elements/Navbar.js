@@ -16,9 +16,8 @@ import LanguagePopup from './LangSwitch';
 
 const Navbar = () => {
   const [isClassMenuOpen, setClassMenuOpen] = useState(false);
-  const { logout } = useAuth(); 
   const { t,i18n } = useTranslation();
-  const { isConnected } = useAuth();
+  const { isConnected, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
 
@@ -45,7 +44,6 @@ const Navbar = () => {
     logout();// Mettre à jour l'état de connexion à false
     navigate('/');
   };
-
   return (
     <nav className="navbar">
       <div className="navbar-container">
