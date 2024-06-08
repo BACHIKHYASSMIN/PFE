@@ -169,7 +169,7 @@ const RechercheAvancée = () => {
   const getDetailLink = (category, itemId) => {
     switch (category) {
       case t("Header.Mat"):
-        navigate(`/materialdetails/${itemId}`);
+        navigate(`/materiauDetails/${itemId}`);
         break;
       case t("Header.Prod"):
         navigate(`/produitDetails/${itemId}`);
