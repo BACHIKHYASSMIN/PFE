@@ -16,8 +16,9 @@ const Connexion = ({ onClose }) => {
   const [showInscription, setShowInscription] = useState(false);
   const { login } = useAuth();
 
-  const handleSuccessfulLogin = (previousUrl) => {
-    login();
+  const handleSuccessfulLogin = (previousUrl, userId) => {
+    console.log(userId)
+    login(userId);
     if (previousUrl) {
       navigate(previousUrl);
       localStorage.removeItem('previousUrl');
@@ -33,8 +34,9 @@ const Connexion = ({ onClose }) => {
         email,
         pass,
       });
-      // Save any necessary token or state here
-      handleSuccessfulLogin(localStorage.getItem('previousUrl'));
+      // Assumez que response.data contient l'ID de l'utilisateur
+    const userId = response.data.userId;      // Save any necessary token or state here
+      handleSuccessfulLogin(localStorage.getItem('previousUrl'),userId);
     } catch (error) {
       message.error(error.response?.data?.message || "Erreur de connexion");
     } finally {

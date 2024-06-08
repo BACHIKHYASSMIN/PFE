@@ -16,13 +16,15 @@ import axios from 'axios';
 import { Form, Select, Button, Input, Card, Row, Col , Typography } from 'antd';
 import ChatBox from '../Elements/ChatBox';
 import { useTranslation } from 'react-i18next';
-
+import { useAuth } from '../AuthContext';
 const Material = () => {
   const [isMenuOpen, setMenuOpen ] = useState(false);
   const [data, setData] = useState([]);
   const { t,i18n } = useTranslation();
   const [produits, setProduits] = useState([]);
+  const { isConnected: authIsConnected } = useAuth();
   const navigate = useNavigate();
+  const isConnected=true
   const handleDeconnect = () => {
     navigate('/');
   };
@@ -46,7 +48,8 @@ const Material = () => {
   
   return (
     <na className="material">
-      <Navbar  /> 
+      {console.log(isConnected)}
+      <Navbar isConnected={isConnected} />
       <div className="material-head">
           <img className="menu" src={menuIcon} alt="Menu Icon"
           onClick={handleMenuToggle}  />
