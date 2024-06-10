@@ -1,6 +1,7 @@
 const express = require('express');
 const neo4j = require('neo4j-driver');
 const nodemailer = require('nodemailer');
+const multer = require('multer');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const router = express.Router();
@@ -360,40 +361,33 @@ app.post('/send-email', (req, res) => {
 });
 
 
-app.post('/update-user', async (req, res) => {
-  const {userId,editedName,editedFullName, editedEmail, editedPassword} = req.body;
-  // Connexion à la base de données MySQL
+app.post('/update-user',(req, res) => {
+  const { userId, editedName, editedFullName, editedEmail, editedPassword,profileImage } = req.body;
+  const profileImageBuffer = req.file ? req.file.buffer : null;
   const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: '',
     database: 'materiautheque'
   });
-try {
-  // Requête SQL pour mettre à jour les informations de l'utilisateur
-  connection.query('UPDATE logging SET `full name` = ?, `email` = ?, `password` = ?,`Username`=? WHERE `id` = ?', [editedFullName, editedEmail, editedPassword,editedName, userId], (error, results) => {
-    if (error) {
-      console.error('Erreur lors de la mise à jour des informations de l\'utilisateur :', error);
-      res.status(500).json({ message: 'Erreur lors de la mise à jour des informations de l\'utilisateur' });
-    } else {
-      // Vérifier si des lignes ont été affectées par la mise à jour
-      if (results.affectedRows > 0) {
-        // Mise à jour réussie
-        res.status(200).json({ message: 'Informations de l\'utilisateur mises à jour avec succès' });
-      } else {
-        // Aucune ligne n'a été affectée (utilisateur introuvable)
-        res.status(404).json({ message: 'Utilisateur non trouvé' });
+  const query = 'UPDATE logging SET  `Username` = ?, `full name` = ?, `email`= ?,`password` = ?,`image` = ? WHERE `id` = ?';
+
+    const params = [editedName, editedFullName, editedEmail, editedPassword, profileImage, userId];
+
+    connection.query(query, params, (error, results) => {
+      if (error) {
+        console.error('Error updating user information:', error);
+        return res.status(500).json({ error: 'Error updating user information' });
       }
-    }
+  
+      res.status(200).json({ message: 'User information updated successfully' });
+    });
+    // Fermer la connexion à la base de données
+    connection.end();
   });
-} catch (error) {
-  console.error('Erreur lors de la connexion à la base de données :', error);
-  res.status(500).json({ message: 'Erreur lors de la connexion à la base de données' });
-}finally {
-  // Fermer la connexion à la base de données
-  connection.end();
-}
-});
+
+      
+    
 
 app.get('/userInfo/:id', async (req, res) => {
   const userid=parseInt(req.params.id, 10);
@@ -431,6 +425,9 @@ try {
   connection.end();
 }
 });
+
+
+
 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);

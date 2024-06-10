@@ -32,6 +32,7 @@ function Profil() {
   const { userId } = useAuth();
   const [userInfo, setUserInfo] = useState({});
   const [selectedFile, setSelectedFile] = useState(null);
+  const [image,setImage]=useState(null);
   const handleRecipientEmailChange = (e) => {
     setRecipientEmail(e.target.value);
   };
@@ -72,53 +73,18 @@ const fetchUserInfo = async () => {
     const response = await axios.get(`http://localhost:2000/userInfo/${userId}`);
     const userData = response.data.data;
     setUserInfo(userData);
+    const userImage=response.data.data.image.data
+    const buffer = new Uint8Array(userImage);
+    const blob = new Blob([buffer], { type: 'image/jpeg' }); // Changez le type si nécessaire
+    const imageUrl = URL.createObjectURL(blob);
+    setImage(imageUrl)
   } catch (error) {
     console.error('Erreur lors de la récupération des informations utilisateur :', error);
   }
 };
 
-const handleSavePhoto = async () => {
-  if (selectedFile) {
-    const formData = new FormData();
-    formData.append('profileImage', selectedFile);
 
-    try {
-      const response = await axios.post('http://localhost:2000/upload-photo', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      });
 
-      if (response.status === 200) {
-        console.log('Photo uploaded successfully');
-        const newPhotoUrl = response.data.photoUrl; // Assurez-vous d'obtenir l'URL de la nouvelle photo depuis la réponse
-
-        // Sauvegarde de l'URL de la nouvelle photo dans le stockage local
-        localStorage.setItem('profileImage', newPhotoUrl);
-
-        // Mettre à jour l'interface utilisateur pour refléter le changement
-        setUserInfo(prevUserInfo => ({
-          ...prevUserInfo,
-          profileImage: newPhotoUrl // Mettez à jour l'URL de la photo dans l'état de userInfo
-        }));
-      }
-    } catch (error) {
-      console.error('Error uploading photo:', error);
-    }
-  }
-};
-
-// Charger l'image de profil depuis le stockage local lors du chargement de la page
-useEffect(() => {
-  const storedProfileImage = localStorage.getItem('profileImage');
-  if (storedProfileImage) {
-    // Mettre à jour l'interface utilisateur avec l'image stockée localement
-    setUserInfo(prevUserInfo => ({
-      ...prevUserInfo,
-      profileImage: storedProfileImage
-    }));
-  }
-}, []);
 
 
 useEffect(() => {
@@ -171,16 +137,22 @@ useEffect(() => {
   };
 
   const handleSave = async () => {
-    console.log(userId)
+    console.log(userId);
+    let requestData = {
+      userId,
+      editedName,
+      editedFullName,
+      editedEmail,
+      editedPassword,
+      profilImg:selectedFile
+    };
+  
+  
+   
+  
+    // Envoyer les données utilisateur mises à jour avec ou sans l'image
     try {
-      const response = await axios.post('http://localhost:2000/update-user', {
-        userId,
-        editedName,
-        editedFullName,
-        editedEmail,
-        editedPassword,
-      });
-
+      const response = await axios.post('http://localhost:2000/update-user', requestData);
       if (response.status === 200) {
         console.log('User information updated successfully');
         await fetchUserInfo();
@@ -190,6 +162,21 @@ useEffect(() => {
       console.error('Error updating user information:', error);
     }
   };
+  
+  // Fonction pour convertir le fichier en Blob
+  const convertToBlob = async (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        resolve(new Blob([reader.result], { type: file.type }));
+      };
+      reader.onerror = reject;
+      reader.readAsArrayBuffer(file);
+    });
+  };
+  
+  
+
 
   return (
     <div className='profil'>
@@ -201,7 +188,7 @@ useEffect(() => {
       </div>
       <div className={`ProfilCard ${isEditing ? 'editing' : ''} ${isSendingMessage ? 'sending-message' : ''}`}>
         <div className='ProfilImage'>
-          <img src={profilImg} alt="Profile" />
+        {image && <img src={image} alt="Profile" />}
           {isEditing && (
             <div className="EditIcon">
               <img src={ImgEdit} alt="Edit Icon" onClick={handleEditClick} />
@@ -299,7 +286,7 @@ useEffect(() => {
           </ul>
           <div className='lineBar'></div>
           <h3 className='rub' style={{ textAlign: 'center' }}>{t("Menu.Pages")}</h3>
-          <Link className="pageLink" to="/">{t("navbar.accueil")}</Link>
+          <Link className="pageLink" to="/acceuil">{t("navbar.accueil")}</Link>
           <Link className="pageLink" to="/Graph">{t("navbar.graph")}</Link>
           <Link className="pageLink" to="/carte-geographique">{t("navbar.carteGeographique")}</Link>
           <Link className="pageLink" to="/recherche-avancee">{t("navbar.rechercheAvancee")}</Link>
