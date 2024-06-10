@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import './MaterialDetails.css';  
 import  matImg from "./Assets/bois.png"
 import dwn from "./Assets/download.png"
+import { jsPDF } from 'jspdf';
+import html2canvas from 'html2canvas';
 import Footer from './Elements/Footer';
 import Navbar from './Elements/Navbar';
 import { Link, useParams } from 'react-router-dom';
@@ -29,14 +31,45 @@ function OuvrageDetails() {
   const handleMenuToggle = () => {
     setMenuOpen(!isMenuOpen);
   };
-
+  const handleDownloadPdf = async () => {
+    const pdf = new jsPDF();
+    const divs = document.querySelectorAll('#pdfContent > div');
+  
+    let yOffset = 10; // Décalage vertical initial
+  
+    for (let i = 0; i < divs.length; i++) {
+      const div = divs[i];
+      const otherElements = Array.from(div.childNodes)
+        .map(node => node.innerText)
+        .join('\n');
+  
+      const textLines = pdf.splitTextToSize(otherElements, pdf.internal.pageSize.getWidth() - 20); // -20 pour laisser une marge
+  
+      if (yOffset + pdf.getTextDimensions(textLines).h > pdf.internal.pageSize.getHeight() - 10) {
+        pdf.addPage();
+        yOffset = 10;
+      }
+  
+      pdf.text(textLines, 10, yOffset);
+      yOffset += pdf.getTextDimensions(textLines).h + 10; // Ajouter la hauteur du texte et un espacement de 10
+  
+      if (i < divs.length - 1) {
+        pdf.setDrawColor(0); // Couleur de la ligne de séparation
+        pdf.setLineWidth(0.5); // Épaisseur de la ligne de séparation
+        pdf.line(10, yOffset, pdf.internal.pageSize.getWidth() - 10, yOffset); // Dessiner une ligne de séparation
+        yOffset += 10; // Ajouter un espacement après la ligne de séparation
+      }
+    }
+  
+    pdf.save('download.pdf');
+  };
 
   return (
     
   
     <nav className="details">
        <Navbar/>
-       <img className="dwnload" src={ dwn}  />
+       <img className="dwnload" src={ dwn} alt="Download" onClick={handleDownloadPdf} />
        <img className="menuList" src={menuIcon} alt="Menu Icon"  onClick={handleMenuToggle}  />
        
       <div className="materials">

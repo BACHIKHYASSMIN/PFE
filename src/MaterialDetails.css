@@ -73,6 +73,7 @@ margin-bottom: 5%;
 .dwnload{
     width: 45px;
   margin-left: 95%;
+  cursor: pointer;
 }
 
 .menuList {

@@ -166,11 +166,10 @@ const RechercheAvancée = () => {
     navigate(`/details/${id}`);
   };
 
-  
   const getDetailLink = (category, itemId) => {
     switch (category) {
       case t("Header.Mat"):
-        navigate(`/materialdetails/${itemId}`);
+        navigate(`/materiauDetails/${itemId}`);
         break;
       case t("Header.Prod"):
         navigate(`/produitDetails/${itemId}`);
@@ -240,9 +239,6 @@ const RechercheAvancée = () => {
       ));
     }
   };
-  
-  
-  
   
   // Get current items based on pagination
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -430,7 +426,7 @@ const RechercheAvancée = () => {
                   </Form.Item>
                 </div>
                 <Form.Item>
-                  <Button type="primary" htmlType="submit" style={{ marginRight: '10px', backgroundColor: '#27AE60', marginTop: '20px' }} onClick={handleSelectFieldsChange}>
+                  <Button type="primary" htmlType="submit" style={{ marginRight: '10px', backgroundColor: '#27AE60', marginTop: '20px' }}>
                     {t("Btn.Valider")}
                   </Button>
                   <Button type="default" style={{ backgroundColor: '#d9d9d9', border: 'none' }} onClick={handleCancel}>
@@ -443,7 +439,7 @@ const RechercheAvancée = () => {
         </div>
         <div style={{ flex: 3, marginLeft: '10px', marginRight: '10px' }}>
           <Row gutter={[16, 16]}>
-            { renderItems(currentItems)}
+            {currentItems && renderItems(currentItems)}
           </Row>
           <div style={{ textAlign: 'center', marginTop: '20px' }}>
            
