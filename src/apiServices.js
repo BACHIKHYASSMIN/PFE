@@ -14,6 +14,17 @@ const getMonuments = async () => {
 };
  export { getMonuments};
 
+ const getPlaces = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/PlaceData`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    throw error;
+  }
+};
+ export { getPlaces};
+
 const getProducts = async () => {
   try {
     const response = await axios.get(`${API_URL}/ProductData`);
@@ -80,3 +91,26 @@ const getAllData = async () => {
   }
 };
 export {getAllData};
+
+const getPeriodes = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/PeriodeData`);
+    return  response.data;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    throw error;
+  }
+};
+export {getPeriodes};
+
+const getColors = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/ColorsData`);
+    return  response.data;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    throw error;
+  }
+};
+export {getColors };
+
