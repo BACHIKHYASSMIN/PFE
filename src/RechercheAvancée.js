@@ -14,10 +14,11 @@ import './RechercheAvancée.css';
 import { ContinuousSizeLegend } from 'react-vis';
 import { filter } from 'd3';
 import { getAllData } from './apiServices';
+import { configConsumerProps } from 'antd/es/config-provider';
 
 const { Option } = Select;
 
-const RechercheAvancée = ({products,materials,buildings,monuments}) => {
+const RechercheAvancée = ({products,materials,buildings,monuments,places,periodes,colors}) => {
   const [form] = Form.useForm();
   const [isMenuOpen, setMenuOpen] = useState(false);
   const { t, i18n } = useTranslation();
@@ -41,6 +42,8 @@ const RechercheAvancée = ({products,materials,buildings,monuments}) => {
   const [selectedFilters, setSelectedFilters] = useState([]);
   const [searchTerm, setSearchTerm] = useState();
   const [filtredData,setFiltredData]=useState([]);
+
+
   const handleFilterSelect = (category,filter) => {
     filter.category=category
       // Vérifier si le filtre est déjà sélectionné
@@ -123,7 +126,6 @@ const RechercheAvancée = ({products,materials,buildings,monuments}) => {
   };
 
  
-
 
   useEffect(() => {
     if (materials && products && buildings) {
@@ -401,10 +403,9 @@ const renderItems = (items) => {
       style={{ width: '100%' }}
       onChange={(value) => handlePeriodChange(value)}
       onDeselect={() =>setPeriodesSelected(false)}
-      >
-        
-      {data && data.periodes ? (
-        data.periodes.map(periode => (
+      > 
+      {periodes ? (
+        periodes.map(periode => (
           <Option key={periode.id} value={periode.title}>
             {periode.title}
           </Option>
@@ -423,8 +424,8 @@ const renderItems = (items) => {
                      onDeselect={() =>setPlacesSelecetd(false)}
                     style={{ width: '100%' }}
                   >
-                    {data && data.places ? (
-                      data.places.map(place => (
+                    {places ? (
+                      places.map(place => (
                         <Option key={place.id} value={place.title} >
                           {place.title}
                         </Option>
@@ -455,8 +456,8 @@ const renderItems = (items) => {
                     onChange={(value) =>handleColorChange(value)}
                     style={{ width: '100%' }}
                   >
-                    {data && data.couleurs ? (
-                      data.couleurs.map(couleur => (
+                    {colors ? (
+                      colors.map(couleur => (
                         <Option key={couleur.id} value={couleur.title}>
                           {couleur.title}
                         </Option>
