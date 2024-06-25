@@ -3,3 +3,7 @@ ul {
     padding: 0;
     margin: 0;
   }
+  p{
+    margin-left: 15%;
+  text-align: justify;
+  }
