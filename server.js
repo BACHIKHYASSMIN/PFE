@@ -156,7 +156,7 @@ app.get('/api/MaterialData', async (req, res) => {
     // Récupération des Places
     const placesResult = await session.run('MATCH (n:Place) RETURN n');
     const placesArr = placesResult.records.map(record => ({
-        id: record._fields[0].identity,
+        id: record._fields[0].identity.low,
         title: record._fields[0].properties.designation,
         category:'Places'
     }));
@@ -203,6 +203,32 @@ app.get('/api/MaterialData', async (req, res) => {
     await session.close();
   }
 });
+
+app.get('/api/ColorsData', async (req, res) => {
+  const session = driver.session();
+  try {
+
+    const couleursResult = await session.run('MATCH (m) UNWIND m.couleur AS couleur RETURN  DISTINCT couleur AS couleur');
+    const couleursArr = couleursResult.records.map(record => ({
+        id: record._fields[0].identity,
+        title: record._fields[0],
+        category:'Couleur'
+    }));
+
+    if (!couleursResult || couleursResult.records.length === 0) {
+     // Aucune donnée de couleurs trouvée, renvoyer une réponse d'erreur
+     return res.status(404).json({ message: "Aucun couleur trouvé" });
+   }
+ // Envoi de la réponse avec les deux listes
+ res.json({couleurs:couleursArr});
+} catch (err) {
+ console.error(`Error executing query: ${err.message}`);
+ res.status(500).send('Error executing query');
+} finally {
+  await session.close();
+}
+});
+
 
 
 app.get('/api/all', async (req, res) => {
