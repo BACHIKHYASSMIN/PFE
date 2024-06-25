@@ -37,7 +37,7 @@ import OuvrageDetails from './OuvrageDetails'
 import UserHome from './Elements/userHome';
 import { AuthProvider } from './AuthContext';
 import Neo4jGraph from './test.js'
-import { getGraph, getMonuments } from './apiServices.js';
+import { getColors, getGraph, getMonuments, getPeriodes, getPlaces } from './apiServices.js';
 import { getProducts } from './apiServices.js';
 import { getBuildings } from './apiServices.js';
 import { getMaterials } from './apiServices.js';
@@ -49,6 +49,9 @@ function App() {
   const [buildings,setBuildings]=useState([]);
   const [nodes,setNodes]=useState([]);
   const [graph,setGraph]=useState();
+  const [places,setPlaces]=useState([]);
+  const [periodes,setPeriodes]=useState([]);
+  const [colors,setColors]=useState([]);
 
   useEffect(() => {
     const fetchMonuments = async () => {
@@ -59,7 +62,14 @@ function App() {
         console.error('Error fetching monuments:', error);
       } 
     };
-
+    const fetchColors = async () => {
+      try {
+        const colorsData = await getColors();
+        setColors(colorsData.couleurs);
+      } catch (error) {
+        console.error('Error fetching monuments:', error);
+      } 
+    };
     const fetchProducts = async () => {
       try {
         const productsData = await getProducts();
@@ -101,7 +111,28 @@ function App() {
         console.error('Error fetching products:', error);
       } 
     };
+
+    const fetchPlaces = async () => {
+      try {
+        const PlacesData = await getPlaces();
+        setPlaces(PlacesData.places);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      } 
+    };
+
+    const fetchPeriodes = async () => {
+      try {
+        const PeriodesData = await getPeriodes();
+        setPeriodes(PeriodesData.periodes);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      } 
+    };
+    fetchColors();
+    fetchPeriodes();
     fetchGraph();
+    fetchPlaces();
     fetchNodes();
     fetchMonuments();
     fetchProducts();
@@ -132,7 +163,7 @@ function App() {
           <Route path="/ouvrage" element={<Ouvrage buildings={buildings} />} />
           <Route path="/connexion" element={<Connexion />} />
           <Route path="/inscription" element={<Inscription/>} />
-          <Route path="/recherche-avancee" element={<RechercheAvancée products={products} materials={materials} buildings={buildings} monuments={monuments}/>} />
+          <Route path="/recherche-avancee" element={<RechercheAvancée products={products} materials={materials} buildings={buildings} monuments={monuments} places={places} periodes={periodes} colors={colors}/>} />
           <Route path="/biologique" element={<Biologique/>} />
           <Route path="/chromatique-dépot" element={<ChromatiqueDépot />} />
           <Route path="/déformation" element={<Déformation />} />
