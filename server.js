@@ -8,19 +8,14 @@ const router = express.Router();
 const mysql = require('mysql');
 const app = express();
 const port = 2000;
+const upload = multer();
 app.set('view engine', 'ejs');
+
 // Middleware pour activer CORS
+app.use(cors());
 app.use(express.json());
 app.use(bodyParser.json());
-app.use((req, res, next) => {
-app.use(cors());
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000'); // Autoriser les requêtes depuis le domaine de votre application cliente
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE'); // Méthodes HTTP autorisées
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization'); // En-têtes autorisés
-    res.setHeader('Access-Control-Allow-Credentials', 'true'); // Autoriser l'envoi de cookies depuis le navigateur
-    next();
-  });
-  
+
 // Configuration du transporteur d'e-mails
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -29,46 +24,83 @@ const transporter = nodemailer.createTransport({
     pass: 'nsna oteg xmgv htzm',
   },
 });
-app.get('/api/data', async (req, res) => {
-  const URI = 'neo4j://localhost';
-  const USER = 'neo4j';
-  const PASSWORD = 'password';
-  let driver;
 
+// Détails de connexion
+const uri = "neo4j://localhost:7687"; // Assurez-vous d'utiliser le bon port, généralement 7687 pour Bolt
+const user = "neo4j";
+const password = "password";
+const driver = neo4j.driver(uri, neo4j.auth.basic(user, password));
+
+app.get('/api/MaterialData', async (req, res) => {
+  const session = driver.session();
   try {
     // Connexion au driver Neo4j
-    driver = neo4j.driver(URI, neo4j.auth.basic(USER, PASSWORD));
-    const session = driver.session();
       // Récupération des materiaux
       const materiauxResult = await session.run('MATCH (n:Materiau) RETURN n');
       const materiauxArr = materiauxResult.records.map(record => ({
           id: record._fields[0].identity.low,
           title: record._fields[0].properties.designation,
-          category:'Matériaux'
+          category:'Matériaux',
+          image:record._fields[0].properties.images,
+          famille:record._fields[0].properties.famille
       }));
 
       if (!materiauxResult || materiauxResult.records.length === 0) {
         // Aucune donnée de matériaux trouvée, renvoyer une réponse d'erreur
         return res.status(404).json({ message: "Aucun matériau trouvé" });
       }
-    // Récupération des produits
-    const produitsResult = await session.run('MATCH (n:Produit) RETURN n');
-    const produitsArr = produitsResult.records.map(record => ({
-        id: record._fields[0].identity.low,
-        title: record._fields[0].properties.designation,
-        category:'Produits'
-    }));
 
-    if (!produitsResult || produitsResult.records.length === 0) {
-        // Aucune donnée de produits trouvée, renvoyer une réponse d'erreur
-        return res.status(404).json({ message: "Aucun produit trouvé" });
+      res.json({ materiaux:materiauxArr});
+
+     } catch (err) {
+        console.error(`Error executing query: ${err.message}`);
+        res.status(500).send('Error executing query');
+    } 
+      finally {
+        await session.close();
       }
+    });
+
+
+    app.get('/api/ProductData', async (req, res) => {
+      const session = driver.session();
+      try {
+  
+          // Récupération des produits depuis Neo4j
+          const produitsResult = await session.run('MATCH (n:Produit) RETURN n ');
+          const produitsArr = produitsResult.records.map(record => ({
+              id: record._fields[0].identity.low,
+              title: record._fields[0].properties.designation,
+              category: 'Produits',
+              image: record._fields[0].properties.images
+          }));
+  
+          if (!produitsResult || produitsResult.records.length === 0) {
+              return res.status(404).json({ message: "Aucun produit trouvé" });
+          }
+  
+  
+          res.json({ produits: produitsArr });
+      } catch (err) {
+          console.error(`Error executing query: ${err.message}`);
+          res.status(500).send('Error executing query');
+      } finally {
+          await session.close();
+      }
+  });
+ 
+   
+   app.get('/api/BuildingData', async (req, res) => {
+    const session = driver.session();
+    try {
+
     // Récupération des ouvrages
     const ouvragesResult = await session.run('MATCH (n:Ouvrage) RETURN n');
     const ouvragesArr = ouvragesResult.records.map(record => ({
         id: record._fields[0].identity.low,
         title: record._fields[0].properties.designation,
-        category:'Ouvrages'
+        category:'Ouvrages',
+        image:record._fields[0].properties.images
     }));
 
     if (!ouvragesResult || ouvragesResult.records.length === 0) {
@@ -76,20 +108,51 @@ app.get('/api/data', async (req, res) => {
         return res.status(404).json({ message: "Aucun ouvrage trouvé" });
       }
 
+      res.json({ouvrages: ouvragesArr});
+
+    } catch (err) {
+       console.error(`Error executing query: ${err.message}`);
+       res.status(500).send('Error executing query');
+   } 
+     finally {
+       await session.close();
+     }
+   });
+
+   app.get('/api/MonumentData', async (req, res) => {
+    const session = driver.session();
+    try {
+
     // Récupération des Monuments
     const monumentsResult = await session.run('MATCH (n:Monument) RETURN n');
     const monumentArr = monumentsResult.records.map(record => ({
         id: record._fields[0].identity.low,
         title: record._fields[0].properties.designation,
-        attitude: record._fields[0].properties.attitude,
+        attitude: record._fields[0].properties.latitude,
         longitude: record._fields[0].properties.longitude,
-        category:'Monuments'
+        category:'Monuments',
+        //image:record._fields[0].properties.images
     }));
 
     if (!monumentsResult || monumentsResult.records.length === 0) {
         // Aucune donnée de monuments trouvée, renvoyer une réponse d'erreur
         return res.status(404).json({ message: "Aucun monument trouvé" });
       }
+      res.json({monuments:monumentArr});
+
+    } catch (err) {
+       console.error(`Error executing query: ${err.message}`);
+       res.status(500).send('Error executing query');
+   } 
+     finally {
+       await session.close();
+     }
+   });
+
+   app.get('/api/PlaceData', async (req, res) => {
+    const session = driver.session();
+    try {
+
     // Récupération des Places
     const placesResult = await session.run('MATCH (n:Place) RETURN n');
     const placesArr = placesResult.records.map(record => ({
@@ -101,6 +164,20 @@ app.get('/api/data', async (req, res) => {
         // Aucune donnée de places trouvée, renvoyer une réponse d'erreur
         return res.status(404).json({ message: "Aucun place trouvé" });
       }
+      res.json({places:placesArr});
+
+    } catch (err) {
+       console.error(`Error executing query: ${err.message}`);
+       res.status(500).send('Error executing query');
+   } 
+     finally {
+       await session.close();
+     }
+   });
+
+   app.get('/api/PeriodeData', async (req, res) => {
+    const session = driver.session();
+    try {
 
      // Récupération des Periodes
      const periodesResult = await session.run('MATCH (n:Periode) RETURN n');
@@ -114,44 +191,55 @@ app.get('/api/data', async (req, res) => {
         // Aucune donnée de periodes trouvée, renvoyer une réponse d'erreur
         return res.status(404).json({ message: "Aucun periodee trouvé" });
       }
-       // Récupération des Couleurs
-       const couleursResult = await session.run('MATCH (m:Materiau) UNWIND m.couleur AS couleur RETURN  DISTINCT couleur AS couleur');
-       const couleursArr = couleursResult.records.map(record => ({
-           id: record._fields[0].identity,
-           title: record._fields[0],
-           category:'Couleurs'
-       }));
-
-       if (!couleursResult || couleursResult.records.length === 0) {
-        // Aucune donnée de couleurs trouvée, renvoyer une réponse d'erreur
-        return res.status(404).json({ message: "Aucun couleur trouvé" });
-      }
+      
     // Envoi de la réponse avec les deux listes
-    res.json({ materiaux:materiauxArr ,produits: produitsArr, ouvrages: ouvragesArr,monuments:monumentArr, places:placesArr,couleurs:couleursArr , periodes:periodesArr});
+    res.json({periodes:periodesArr});
+
+  } catch (err) {
+    console.error(`Error executing query: ${err.message}`);
+    res.status(500).send('Error executing query');
+} 
+  finally {
+    await session.close();
+  }
+});
+
+
+app.get('/api/all', async (req, res) => {
+  const session = driver.session();
+
+  try {
+  
+      // Récupération des materiaux
+      const Results = await session.run('MATCH (n) RETURN n');
+      const Arr = Results.records.map(record => ({
+          id: record._fields[0].identity.low,
+          title: record._fields[0].properties.designation,
+          category:record._fields[0].labels
+      }));
+
+      if (!Results ||Results.records.length === 0) {
+        // Aucune donnée de matériaux trouvée, renvoyer une réponse d'erreur
+        return res.status(404).json({ message: "Aucun entuté trouvé" });
+      }
+    // Récupération des produits
+   
+    res.json({entity:Arr});
 
 } catch (err) {
     console.error(`Error executing query: ${err.message}`);
     res.status(500).send('Error executing query');
-} finally {
-    if (driver) await driver.close();
+}  finally {
+  await session.close();
 }
 });
 
-
 app.get('/api/componentsId/:id', async (req, res) => {
-
-  const URI = 'neo4j://localhost';
-  const USER = 'neo4j';
-  const PASSWORD = 'password';
-  let driver;
-  let session; // Déclarer la variable session en dehors du bloc try
+const session = driver.session(); // Assigner la session ici
   const componentId = parseInt(req.params.id, 10);
-
-
   try {
-    // Connexion au driver Neo4j
-    driver = neo4j.driver(URI, neo4j.auth.basic(USER, PASSWORD));
-    session = driver.session(); // Assigner la session ici
+   
+    
     const componentsresult = await session.run('MATCH (p) WHERE ID(p)=$componentId RETURN p',{componentId});
     const componentsArr = componentsresult.records[0].get('p').properties;
     res.json({component:componentsArr});
@@ -159,20 +247,14 @@ app.get('/api/componentsId/:id', async (req, res) => {
     console.error('Error fetching components details',error);
     res.status(500).send('Internal Server Error');
   } finally {
-    if (session) await session.close(); // Vérifier si la session est définie avant de la fermer
+    await session.close();
   }
 });
 
 app.get('/api/nodes', async (req, res) => {
-  const URI = 'neo4j://localhost';
-  const USER = 'neo4j';
-  const PASSWORD = 'password';
-  let driver;
-
+  const session = driver.session();
   try {
-      // Connexion au driver Neo4j
-      driver = neo4j.driver(URI, neo4j.auth.basic(USER, PASSWORD));
-      const session = driver.session();
+      
   
       // Récupération du schéma du graphe
       const nodesresult = await session.run('MATCH (n) RETURN  n');
@@ -199,22 +281,16 @@ app.get('/api/nodes', async (req, res) => {
   } catch (err) {
       console.error(`Error fetching schema: ${err.message}`);
       res.status(500).send('Error fetching schema');
-  } finally {
-      if (driver) await driver.close();
+  }  finally {
+    await session.close();
   }
 });
 
 app.get('/api/node', async (req, res) => {
-  const URI = 'neo4j://localhost';
-  const USER = 'neo4j';
-  const PASSWORD = 'password';
-  let driver;
-
-  try {
-      // Connexion au driver Neo4j
-      driver = neo4j.driver(URI, neo4j.auth.basic(USER, PASSWORD));
-      const session = driver.session();
+  const session = driver.session();
   
+  try {
+    
       // Récupération du schéma du graphe
       const nodesresult = await session.run('MATCH (n) RETURN  n');
       const nodes = nodesresult .records.map(record => ({
@@ -226,8 +302,8 @@ app.get('/api/node', async (req, res) => {
   } catch (err) {
       console.error(`Error fetching schema: ${err.message}`);
       res.status(500).send('Error fetching schema');
-  } finally {
-      if (driver) await driver.close();
+  }  finally {
+    await session.close();
   }
 });
 
@@ -258,6 +334,7 @@ app.post('/api/register', async (req, res) => {
     console.error('Erreur lors de l\'inscription :', error);
     res.status(500).json({ message: 'Erreur lors de l\'inscription' });
   }
+  connection.end();
 });
 
 app.post('/api/login', async (req, res) => {
@@ -291,19 +368,15 @@ app.post('/api/login', async (req, res) => {
     console.error('Erreur lors de la connexion :', error);
     res.status(500).json({ message: 'Erreur lors de connexion' });
   }
+  connection.end();
 });
 
 app.get('/api/nodes/subgraph/:nodeId', async (req, res) => {
-  const URI = 'neo4j://localhost';
-  const USER = 'neo4j';
-  const PASSWORD = 'password';
-  let driver;
-  let session; // Déclarer la variable session en dehors du bloc try
+  const session = driver.session();
   const componentId = parseInt(req.params.nodeId, 10);
   try {
-      // Connexion au driver Neo4j
-      driver = neo4j.driver(URI, neo4j.auth.basic(USER, PASSWORD));
-      const session = driver.session();
+     
+     
   
       // Récupération du schéma du graphe
       const nodesresult = await session.run('MATCH (n)-[]-(connectedNode) WHERE ID(n) =$componentId RETURN n,connectedNode',{componentId});
@@ -334,10 +407,97 @@ app.get('/api/nodes/subgraph/:nodeId', async (req, res) => {
       console.error(`Error fetching schema: ${err.message}`);
       res.status(500).send('Error fetching schema');
   } finally {
-      if (driver) await driver.close();
+    await session.close();
   }
 });
 
+app.get('/api/nodes/advancedSearch/:searchTerm', async (req, res) => {
+  const Term = req.params.searchTerm;
+  const session = driver.session();
+  console.log(Term)
+  try {
+    
+      
+      // Récupération du schéma du graphe
+      const nodesresult = await session.run('MATCH (n)-[]-(connectedNode) WHERE n.designation = $Term  RETURN connectedNode' ,{Term});
+     let nodes=[]
+     nodesresult.records.forEach(record => {
+     const connectedNodes = record.get('connectedNode');
+     nodes.push({
+      id: connectedNodes.identity.low,
+      title: connectedNodes.properties.designation,
+      category:connectedNodes.labels,
+      couleur:connectedNodes.properties.couleur
+
+     })
+  
+  
+
+/*
+
+
+  })  
+    nodes.push({
+      id: connectedNode.identity,
+      title: connectedNode.designation,
+      category: connectedNode.labels
+    })
+*/
+  });
+    
+  res.json({nodes});
+ 
+  } catch (err) {
+      console.error(`Error fetching schema: ${err.message}`);
+      res.status(500).send('Error fetching schema');
+  }  finally {
+    await session.close();
+  }
+});
+
+app.get('/api/nodes/Search/:search', async (req, res) => {
+  const Term = req.params.search;
+  const session = driver.session();
+  console.log(Term)
+  try {
+  
+      
+      // Récupération du schéma du graphe
+      const nodesresult = await session.run('MATCH (n) WHERE n.designation = $Term  RETURN n' ,{Term});
+     let nodes=[]
+     nodesresult.records.forEach(record => {
+     const connectedNodes = record.get('n');
+     nodes.push({
+      id: connectedNodes.identity.low,
+      title: connectedNodes.properties.designation,
+      category:connectedNodes.labels,
+      couleur:connectedNodes.properties.couleur
+
+     })
+  
+  
+
+/*
+
+
+  })  
+    nodes.push({
+      id: connectedNode.identity,
+      title: connectedNode.designation,
+      category: connectedNode.labels
+    })
+*/
+  });
+    
+  res.json({nodes});
+ 
+  } catch (err) {
+      console.error(`Error fetching schema: ${err.message}`);
+      res.status(500).send('Error fetching schema');
+  }  finally {
+    await session.close();
+  }
+});
 
 app.post('/send-email', (req, res) => {
   const { recipientEmail, subject, message } = req.body;
@@ -361,32 +521,30 @@ app.post('/send-email', (req, res) => {
 });
 
 
-app.post('/update-user',(req, res) => {
-  const { userId, editedName, editedFullName, editedEmail, editedPassword,profileImage } = req.body;
+app.post('/update-user', upload.single('profileImage'), (req, res) => {
+  const { userId, editedName, editedFullName, editedEmail, editedPassword } = req.body;
   const profileImageBuffer = req.file ? req.file.buffer : null;
+  
   const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: '',
     database: 'materiautheque'
   });
-  const query = 'UPDATE logging SET  `Username` = ?, `full name` = ?, `email`= ?,`password` = ?,`image` = ? WHERE `id` = ?';
 
-    const params = [editedName, editedFullName, editedEmail, editedPassword, profileImage, userId];
-
-    connection.query(query, params, (error, results) => {
-      if (error) {
-        console.error('Error updating user information:', error);
-        return res.status(500).json({ error: 'Error updating user information' });
-      }
-  
-      res.status(200).json({ message: 'User information updated successfully' });
-    });
-    // Fermer la connexion à la base de données
-    connection.end();
+  const query = 'UPDATE logging SET  `Username` = ?, `full name` = ?, `email`= ?,`password` = ? , `image` = ? WHERE `id` = ?';
+  const params = [editedName, editedFullName, editedEmail, editedPassword, profileImageBuffer, userId];
+ console.log(query)
+  connection.query(query, params, (error, results) => {
+    if (error) {
+      console.error('Error updating user information:', error);
+      return res.status(500).json({ error: 'Error updating user information' });
+    }
+    res.status(200).json({ message: 'User information updated successfully' });
   });
 
-      
+  connection.end();
+});
     
 
 app.get('/userInfo/:id', async (req, res) => {

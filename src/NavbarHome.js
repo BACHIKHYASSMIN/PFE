@@ -19,7 +19,6 @@ const NavbarHome = ({ }) => {
           <h1>NumeriqueMaterials</h1>
           <ul>
             <li><Link to="/">{t("navbar.accueil")}</Link></li>
-            <li><Link to="/carte-geographique">{t("navbar.carteGeographique")}</Link></li>
             <li><Link to="/a-propos">{t("navbar.aPropos")}</Link></li>
             {/* Appelle la fonction onConnexionClick lorsque le bouton est cliqué */}
             <li><button className="connect-button" onClick={onConnexionClick}>{t("navbar.connexion")}</button></li>

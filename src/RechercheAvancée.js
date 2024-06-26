@@ -5,7 +5,7 @@ import Footer from './Elements/Footer';
 import ChatBox from './Elements/ChatBox';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import axios from 'axios';
+import axios, { all } from 'axios';
 import deconIcon from "./Assets/decon.png";
 import whitemenuIcon from "./Assets/wmenu.png";
 import closeIcon from "./Assets/close.png";
@@ -13,18 +13,25 @@ import menuIcon from "./Assets/icon.png";
 import './RechercheAvancée.css';
 import { ContinuousSizeLegend } from 'react-vis';
 import { filter } from 'd3';
+import { getAllData } from './apiServices';
 
 const { Option } = Select;
 
-const RechercheAvancée = () => {
+const RechercheAvancée = ({products,materials,buildings,monuments}) => {
   const [form] = Form.useForm();
   const [isMenuOpen, setMenuOpen] = useState(false);
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [data, setData] = useState([]);
+  const [alldata,setAllData]= useState([])
   const [combinedData, setCombinedData] = useState([]);
   const [selectedFields, setSelectedFields] = useState([]);
   const [isAdvancedSearchOpen, setAdvancedSearchOpen] = useState(false);
+  const [isCategorySelected,setCategorySelected]=useState(false);
+  const [isPlaceSelected,setPlacesSelecetd]=useState(false);
+  const [isColorSelected,setColorsSeleceted]=useState(false);
+  const [isPeriodeSelceted,setPeriodesSelected]=useState(false);
+  const [isSearchBar, setSearchBar] = useState(false);
   const [selectedPeriod, setSelectedPeriod] = useState([]);
   const [selectedPlace, setSelectedPlace] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
@@ -32,8 +39,8 @@ const RechercheAvancée = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(15); // Default number of items per page
   const [selectedFilters, setSelectedFilters] = useState([]);
-
-
+  const [searchTerm, setSearchTerm] = useState();
+  const [filtredData,setFiltredData]=useState([]);
   const handleFilterSelect = (category,filter) => {
     filter.category=category
       // Vérifier si le filtre est déjà sélectionné
@@ -49,8 +56,46 @@ const RechercheAvancée = () => {
   };
   
   // Ensuite, pour afficher les filtres sélectionnés, vous devez utiliser selectedFilters dans votre JSX :
-  
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data= await getAllData();
+        setAllData(data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
 
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    handleSearch()
+  })
+  const handleSearch = async () => {
+    try {
+     // setFiltredData([]); 
+      let response;
+  
+      
+       if (isPlaceSelected) {
+        response = await axios.get(`http://localhost:2000/api/nodes/advancedSearch/${selectedPlace}`);
+        setFiltredData(response.data.nodes);
+      }
+      if (isPeriodeSelceted) {
+        response = await axios.get(`http://localhost:2000/api/nodes/advancedSearch/${selectedPeriod}`);
+        setFiltredData(response.data.nodes);
+      }
+      else if (isSearchBar) {
+        response = await axios.get(`http://localhost:2000/api/nodes/Search/${searchTerm}`);
+      }
+      
+  
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+    
+  };
   
 
  
@@ -77,27 +122,17 @@ const RechercheAvancée = () => {
     console.log('Received values of form: ', values);
   };
 
-  const fetchData = async () => {
-    try {
-      const response = await axios.get('http://localhost:2000/api/data');
-      setData(response.data);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
+ 
+
 
   useEffect(() => {
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    if (data) {
+    if (materials && products && buildings) {
       const combined = [
-        ...(data.materiaux || []).map(item => ({ ...item, category: t("Header.Mat") })),
-        ...(data.produits || []).map(item => ({ ...item, category: t("Header.Prod") })),
-        ...(data.ouvrages || []).map(item => ({ ...item, category: t("Header.Ouv") })),
-        ...(data.pathologies || []).map(item => ({ ...item, category: t("Header.Path") })),
-        ...(data.monuments || []).map(item => ({ ...item, category: t("Header.Monu") }))
+        ...(materials || []).map(item => ({ ...item, category: t("Header.Mat") })),
+        ...(products || []).map(item => ({ ...item, category: t("Header.Prod") })),
+        ...(buildings || []).map(item => ({ ...item, category: t("Header.Ouv") })),
+       // ...(data.pathologies || []).map(item => ({ ...item, category: t("Header.Path") })),
+        ...(monuments || []).map(item => ({ ...item, category: t("Header.Monu") }))
       ];
       setCombinedData(shuffleArray(combined));
     }
@@ -133,16 +168,26 @@ const RechercheAvancée = () => {
   };
 
   const handlePeriodChange = (value) => {
+    setPeriodesSelected(true);
     setSelectedPeriod(value);
+    // handleSearch()
+      
   };
+  
 
   const handlePlaceChange = (value) => {
+    setPlacesSelecetd(true)
     setSelectedPlace(value);
+  //  handleSearch()
+
   };
 
 
   const handleColorChange = (value) => {
+    setColorsSeleceted(true)
     setSelectedColor(value);
+  //  handleSearch()
+   
   };
 
   const handleApplyAdvancedSearch = () => {
@@ -168,8 +213,14 @@ const RechercheAvancée = () => {
 
   const getDetailLink = (category, itemId) => {
     switch (category) {
-      case t("Header.Mat"):
+      case t("Header.Mat")  :
         navigate(`/materiauDetails/${itemId}`);
+        break;
+      case "Materiau" :
+        navigate(`/materiauDetails/${itemId}`);
+        break;
+      case "Produit" :
+        navigate(`/produitDetails/${itemId}`);
         break;
       case t("Header.Prod"):
         navigate(`/produitDetails/${itemId}`);
@@ -177,10 +228,19 @@ const RechercheAvancée = () => {
       case t("Header.Monu"):
         navigate(`/monumentDetails/${itemId}`);
         break;
+      case "Monument":
+        navigate(`/monumentDetails/${itemId}`);
+        break;
       case t("Header.Ouv"):
         navigate(`/ouvrageDetails/${itemId}`);
         break;
+      case "Ouvrage":
+        navigate(`/ouvrageDetails/${itemId}`);
+        break;
       case t("Header.Path"):
+        navigate(`/details/${itemId}`);
+        break;
+      case "Pathologie":
         navigate(`/details/${itemId}`);
         break;
       default:
@@ -190,28 +250,52 @@ const RechercheAvancée = () => {
 };
 
 
-  const renderItems = (items) => {
-    if (selectedFilters && selectedFilters.length > 0) {
-      return selectedFilters.map((filter, index) => (
+const renderItems = (items) => {
+  if (selectedFilters && selectedFilters.length > 0) {
+    return selectedFilters.map((filter, index) => (
+      <Card
+        key={index}
+        title={filter.title}
+        extra={<a onClick={() => getDetailLink(filter.category[0], filter.id)}>Voir plus</a>}
+        style={{ width: '30%', marginRight: '10px', marginLeft: '20px', marginBottom: '20px', border: '1px solid #2C3E50' }}
+      >
+        <Row gutter={16} align="middle">
+          <Col span={8}>
+            <p>{filter.title}</p>
+          </Col>
+          <Col span={16}>
+            <div>
+              <img src={filter.image} alt={filter.title} style={{ maxWidth: '100%' }} />
+            </div>
+          </Col>
+        </Row>
+      </Card>
+    ));
+  } else if(filtredData && filtredData.length >0 && isPlaceSelected ){
+    return  filtredData.map((filter, index) =>
+      (
         <Card
-          key={index}
-          title={filter.category}
-          extra={<a onClick={() => getDetailLink(filter.category, filter.id)}>Voir plus</a>}
-          style={{ width: '30%', marginRight: '10px', marginLeft: '20px', marginBottom: '20px', border: '1px solid #2C3E50' }}
-        >
-          <Row gutter={16} align="middle">
-            <Col span={8}>
-              <p>{filter.title}</p>
-            </Col>
-            <Col span={16}>
-              <div>
-                <img src={filter.image} alt={filter.title} style={{ maxWidth: '100%' }} />
-              </div>
-            </Col>
-          </Row>
-        </Card>
-      ));
-    } else {
+        key={index}
+        title={filter.title}
+        extra={<a onClick={() => getDetailLink(filter.category[0],filter.id)}>Voir plus</a>}
+        style={{ width: '30%', marginRight: '10px', marginLeft: '20px', marginBottom: '20px', border: '1px solid #2C3E50' }}
+      >
+        <Row gutter={16} align="middle">
+          <Col span={8}>
+            <p>{filter.title}</p>
+          </Col>
+          <Col span={16}>
+            <div>
+              <img src={filter.image} alt={filter.title} style={{ maxWidth: '100%' }} />
+            </div>
+          </Col>
+        </Row>
+      </Card>
+    ));
+    setFiltredData([]);
+    setSearchBar(false)
+  } 
+    else {
       // Afficher tous les éléments de la liste
       return items.map((item, index) => (
         <Card
@@ -278,6 +362,14 @@ const RechercheAvancée = () => {
                 <Input
                   placeholder={t("Tokens.rechReq")}
                   style={{ flex: 1, marginRight: '10px', background: '#ECF0F1', color: '#2C3E50' }}
+                  value={searchTerm}
+                  onChange={(e) => { 
+                    setSearchTerm(e.target.value);
+                    setSearchBar(true);
+                   }
+
+                  }
+                  onCancel={()=> setSearchBar(false)}
                 />
               </Col>
               <Col>
@@ -295,41 +387,45 @@ const RechercheAvancée = () => {
                   <Button style={{ marginRight: '10px' }} onClick={handleCancelAdvancedSearch}>
                     {t("Btn.Annuler")}
                   </Button>
-                  <Button type="primary" onClick={handleApplyAdvancedSearch}>
+                  <Button type="primary" onClick={handleSearch}>
                     {t("Btn.Valider")}
                   </Button>
                 </div>
               }
             >
               <Form layout="vertical">
-                <Form.Item label={t("Header.Periode")}>
-                  <Select
-                    mode="multiple"
-                    value={selectedPeriod}
-                    onChange={handlePeriodChange}
-                    style={{ width: '100%' }}
-                  >
-                    {data && data.periodes ? (
-                      data.periodes.map(periode => (
-                        <Option key={periode.id} value={periode.title}>
-                          {periode.title}
-                        </Option>
-                      ))
-                    ) : (
-                      <Option value="">{t("Messages.PeriodeErr")}</Option>
-                    )}
-                  </Select>
-                </Form.Item>
+              <Form.Item label={t("Header.Periode")}>
+    <Select
+      mode="multiple"
+      value={selectedPeriod}
+      style={{ width: '100%' }}
+      onChange={(value) => handlePeriodChange(value)}
+      onDeselect={() =>setPeriodesSelected(false)}
+      >
+        
+      {data && data.periodes ? (
+        data.periodes.map(periode => (
+          <Option key={periode.id} value={periode.title}>
+            {periode.title}
+          </Option>
+        ))
+      ) : (
+        <Option value="">{t("Messages.PeriodeErr")}</Option>
+      )}
+    </Select>
+  </Form.Item>
                 <Form.Item label={t("Header.Place")}>
                   <Select
                     mode="multiple"
                     value={selectedPlace}
-                    onChange={handlePlaceChange}
+                    onChange={(value) => handlePlaceChange
+                      (value)}
+                     onDeselect={() =>setPlacesSelecetd(false)}
                     style={{ width: '100%' }}
                   >
                     {data && data.places ? (
                       data.places.map(place => (
-                        <Option key={place.id} value={place.title}>
+                        <Option key={place.id} value={place.title} >
                           {place.title}
                         </Option>
                       ))
@@ -342,7 +438,7 @@ const RechercheAvancée = () => {
                   <Select
                     mode="multiple"
                     value={selectedCategories}
-                    onChange={handleCategoriesChange}
+                    onChange={(value) => handleCategoriesChange(value)}
                     style={{ width: '100%' }}
                   >
                     <Option value="materiau">{t("Header.Mat")}</Option>
@@ -356,7 +452,7 @@ const RechercheAvancée = () => {
                   <Select
                     mode="multiple"
                     value={selectedColor}
-                    onChange={handleColorChange}
+                    onChange={(value) =>handleColorChange(value)}
                     style={{ width: '100%' }}
                   >
                     {data && data.couleurs ? (
@@ -383,8 +479,8 @@ const RechercheAvancée = () => {
                 <div style={{ marginBottom: '10px' }}>
                   <Form.Item name="Matériaux" label={t("Header.Mat")}>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
-                      {data && data.materiaux ? (
-                        data.materiaux.map(materiau => (
+                      {materials  ? (
+                        materials.map(materiau => (
                           <Checkbox  key={materiau.id}
                           value={materiau.title}
                           onChange={() => handleFilterSelect(t("Header.Mat"),materiau)}>{materiau.title}</Checkbox>
@@ -398,8 +494,8 @@ const RechercheAvancée = () => {
                 <div style={{ marginBottom: '10px' }}>
                   <Form.Item name="produit" label={t("Header.Prod")}>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
-                      {data && data.produits ? (
-                        data.produits.map(produit => (
+                      {products  ? (
+                        products.map(produit => (
                           <Checkbox key={produit.id} 
                           value={produit.title}
   
@@ -414,8 +510,8 @@ const RechercheAvancée = () => {
                 <div style={{ marginBottom: '10px' }}>
                   <Form.Item name="ouvrage" label={t("Header.Ouv")}>
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
-                      {data && data.ouvrages ? (
-                        data.ouvrages.map(ouvrage => (
+                      {buildings ? (
+                        buildings.map(ouvrage => (
                           <Checkbox key={ouvrage.id} value={ouvrage.title}
                           onChange={() => handleFilterSelect(t("Header.Ouv"),ouvrage)}>{ouvrage.title}</Checkbox>
                         ))
@@ -426,7 +522,7 @@ const RechercheAvancée = () => {
                   </Form.Item>
                 </div>
                 <Form.Item>
-                  <Button type="primary" htmlType="submit" style={{ marginRight: '10px', backgroundColor: '#27AE60', marginTop: '20px' }}>
+                  <Button type="primary" htmlType="submit"  style={{ marginRight: '10px', backgroundColor: '#27AE60', marginTop: '20px' }}>
                     {t("Btn.Valider")}
                   </Button>
                   <Button type="default" style={{ backgroundColor: '#d9d9d9', border: 'none' }} onClick={handleCancel}>

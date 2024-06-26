@@ -6,10 +6,11 @@ import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import queryString from 'query-string';
 
-const Neo4jGraph = () => {
+const Neo4jGraph = ({graph}) => {
   const [elements, setElements] = useState([]);
   const location = useLocation();
   const navigate = useNavigate();
+  console.log(graph)
 const [matId,setMatId]=useState(0);
   const formatElements = (nodes, edges) => {
     const formattedNodes = nodes.map((item, index) => {
@@ -85,8 +86,8 @@ const [matId,setMatId]=useState(0);
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:2000/api/nodes');
-        const responseData = response.data;
+        
+        const responseData = graph
         const { nodes, edges } = formatElements(responseData.nodes, responseData.edges);
         setElements([...nodes, ...edges]);
       } catch (error) {

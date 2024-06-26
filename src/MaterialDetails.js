@@ -70,15 +70,17 @@ function MaterialDetails() {
        <img className="dwnload" src={ dwn} alt="Download" onClick={handleDownloadPdf} />
        <img className="menuList" src={menuIcon} alt="Menu Icon"  onClick={handleMenuToggle}  />
        <div id="pdfContent">
-      <div className="materials">
-      <img className="mat-img"   />
-      {material && material.component ? (
-              <p className='mat-name'>{material.component.designation}</p>
-          ):(
-            <p>Aucun matériau trouvé</p>
-          )
-          }
-      </div>
+       <div className="materials">
+  {material && material.component ? (
+    <div>
+      <img className="mat-img" src={`data:image/jpg;base64, ${material.component.image}`} alt="Material Image" />
+      <p className='mat-name'>{material.component.designation}</p>
+    </div>
+  ) : (
+    <p>Aucun matériau trouvé</p>
+  )}
+</div>
+
 
       <div className="Description">
       <h3 >Description</h3>

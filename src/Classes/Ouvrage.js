@@ -23,7 +23,7 @@ import Footer from '../Elements/Footer';
 import ChatBox from '../Elements/ChatBox';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
-const Ouvrage = () => {
+const Ouvrage = ({buildings}) => {
  
 
   const [isMenuOpen, setMenuOpen] = useState(false);
@@ -38,11 +38,29 @@ const Ouvrage = () => {
   const [data, setData] = useState([]);
   const { t,i18n } = useTranslation();
   const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const buildingsPerPage = 10;
+  const indexOfLastBuilding = currentPage * buildingsPerPage;
+  const indexOfFirstBuilding = indexOfLastBuilding - buildingsPerPage;
+  const currentBuildings = buildings.slice(indexOfFirstBuilding, indexOfLastBuilding);
+    
+  const handleNextPage = () => {
+    if (currentPage < Math.ceil(buildings.length / buildingsPerPage)) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+  
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
   const handleSearch = () => {
-    const filteredOuvrages = data.ouvrages.filter((ouvrage) =>
+    const filteredOuvrages = data.filter((ouvrage) =>
       ouvrage.title.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    setData({ ...data, ouvrages: filteredOuvrages });
+    setData({ ...data,  filteredOuvrages });
   };
 
 
@@ -67,8 +85,7 @@ const Ouvrage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:2000/api/data');
-        setData(response.data);
+        setData(buildings);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -130,7 +147,7 @@ const Ouvrage = () => {
           </div>
           <div className='MaterialCat'>
   <img className="home" src={homeIcon}  />
-  <Link to="/" style={{ marginLeft:'10px',color: 'blue', textDecoration: 'none' }}>{t("navbar.accueil")}</Link> {/* Lien vers la page d'accueil */}
+  <Link to="/acceuil" style={{ marginLeft:'10px',color: 'blue', textDecoration: 'none' }}>{t("navbar.accueil")}</Link> {/* Lien vers la page d'accueil */}
   <span className='Path' style={{ color: 'blue' }}>&gt;</span> {/* Utilisation de span pour le symbole ">" */}
   <Link to="/ouvrage" style={{ marginLeft:'10px', color: 'blue', textDecoration: 'none' }}>{t("Header.Ouv")}</Link> {/* Lien vers la page Monument */}
 </div>
@@ -162,25 +179,23 @@ const Ouvrage = () => {
         </Col>
       </Row>
           <div className='catElements'>
-          {data && data.ouvrages ? (
-            data.ouvrages.map(ouvrage => (
-            <div className='catItem'>
-              <p >{ouvrage.title}</p>
-              <img key={ouvrage.id} src='' onClick={() => handleImageClick(ouvrage.id)}/>
-            </div>
-          ))
-          ):(
-            <li>{t("Messages.OuvErr")}</li>
-          )
-      }  
+          {currentBuildings ? (
+  currentBuildings.map(ouvrage => (
+    <div className='catItem'>
+      <p>{ouvrage.title}</p>
+      <img key={ouvrage.id} src={`data:image/jpg;base64, ${ouvrage.image}`} onClick={() => handleImageClick(ouvrage.id)} />
+    </div>
+  ))
+) : (
+  <li>{t("Messages.OuvErr")}</li>
+)}
               
               </div>
               <div className='Links'>
-              <a >1</a>
-              <a >2</a>
-              <a >3</a>
-              <a >&gt;</a>
-              </div>  
+              <Link onClick={handlePreviousPage}>Précedente</Link>
+              <div ></div>
+              <Link  onClick={handleNextPage}>Suivante</Link>
+                   </div>
 
         {/* Afficher le menu latéral s'il est ouvert */}
       {isFilterMenuOpen && (
@@ -218,7 +233,7 @@ const Ouvrage = () => {
           </div>
           <div className='catboxList'>
           <ul>
-          { data.produits.map(produit => (
+          { data.map(produit => (
         <div key={produit.id}>
           <input
             type="checkbox"
@@ -244,7 +259,7 @@ const Ouvrage = () => {
           </div>
           <div className='catboxList'>
           <ul>
-          { data.monuments.map(monument => (
+          { data.map(monument => (
         <div key={monument.id}>
           <input
             type="checkbox"

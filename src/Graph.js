@@ -23,12 +23,16 @@ import GraphComponent from './Elements/KnowledgeGraph'
 import Neo4jGraph from './test';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+import { getNodes } from './apiServices';
 
 
 
-function Graph() {
+function Graph({products,materials,buildings,nodes,graph}) {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [data, setData] = useState([]);
+  const [materialsData, setMaterialsData] = useState([]);
+  const [productsData, setProductsData] = useState([]);
+  const [buildingsData, setBuildingsData] = useState([]);
   const [Nodedata, setNodeData] = useState([]);
   const { t,i18n } = useTranslation();
   const [selectedMaterials, setSelectedMaterials] = useState([]);
@@ -43,16 +47,16 @@ const [searchSuggestions, setSearchSuggestions] = useState([]);
 
   useEffect(() => {
     // Vérifiez d'abord si les données des nœuds existent
-    if (Nodedata && Nodedata.nodes) {
+    if (nodes ) {
       // Générer la liste des suggestions de recherche à partir des titres des nœuds
-      const suggestions = Nodedata.nodes.map(node => node.title);
+      const suggestions = nodes.map(node => node.title);
       setSearchSuggestions(suggestions);
     }
-  }, [Nodedata]);
+  }, [nodes]);
 
-  const handleSearch = () => {
+  const handleSearch= () => {
     if (searchTerm) {
-      const filteredNode = Nodedata.nodes.find((node) =>
+      const filteredNode = nodes.find((node) =>
         node.title==searchTerm
       );
       if (filteredNode) {
@@ -119,8 +123,9 @@ const handleSearchInputChange = (input) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:2000/api/data');
-        setData(response.data);
+        setBuildingsData(buildings.ouvrages);
+       // setMaterialsData(materials.materiaux);
+        setProductsData(products.produits);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -131,8 +136,8 @@ const handleSearchInputChange = (input) => {
 
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:2000/api/node');
-        setNodeData(response.data);
+       //const data= await getNodes();
+        //setNodeData(nodes);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -206,8 +211,8 @@ const handleSearchInputChange = (input) => {
     <div style={{ marginBottom: '10px' }}>
     <Form.Item name="Matériaux" label={t("Header.Mat")}>
     <div style={{ display: 'flex', flexDirection: 'column' }}>
-    {data && data.materiaux ? (
-            data.materiaux.map(materiau => (
+    { materials   ? (
+           materials.map(materiau => (
   <Checkbox  key={materiau.id} onChange={() => handleMaterialSelect(materiau.id)}
   checked={selectedMaterials.includes(materiau.id)} value="Matériau1">{materiau.title}</Checkbox>
           ))
@@ -222,8 +227,8 @@ const handleSearchInputChange = (input) => {
     <div style={{ marginBottom: '10px' }}>
     <Form.Item name="produit" label={t("Header.Prod")}>
     <div style={{ display: 'flex', flexDirection: 'column' }}>
-    {data && data.produits ? (
-            data.produits .map(produit => (
+    {products ? (
+            products.map(produit => (
   <Checkbox  key={produit.id} value="">{produit.title}</Checkbox>
           ))
           ):(
@@ -236,8 +241,8 @@ const handleSearchInputChange = (input) => {
     <div style={{ marginBottom: '10px' }}>
     <Form.Item name="ouvrage" label={t("Header.Ouv")}>
     <div style={{ display: 'flex', flexDirection: 'column' }}>
-    {data && data.ouvrages ? (
-            data.ouvrages .map(ouvrage=> (
+    {buildings ? (
+            buildings.map(ouvrage=> (
   <Checkbox  key={ouvrage.id} value="">{ouvrage.title}</Checkbox>
           ))
           ):(
@@ -266,7 +271,7 @@ const handleSearchInputChange = (input) => {
         
         
        
-        < Neo4jGraph />
+        < Neo4jGraph  graph={graph} />
   
       </div>
      

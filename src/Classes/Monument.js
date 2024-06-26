@@ -16,9 +16,10 @@ import { Form, Select, Button, Input, Card, Row, Col , Typography } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import Footer from '../Elements/Footer';
 import ChatBox from '../Elements/ChatBox';
+import { useAuth } from '../AuthContext';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
-const Monument = () => {
+const Monument = ({monuments}) => {
  
 
   const [isMenuOpen, setMenuOpen] = useState(false);
@@ -31,13 +32,32 @@ const Monument = () => {
   const [selectedPlaces, setSelectedPlaces] = useState([]);
   const [selectedPeriods, setSelectedPeriods] = useState([]);
   const { t,i18n } = useTranslation();
+  const [Monumentsdata, setMonumentsData] = useState([]);
   const [data, setData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const { logout } = useAuth();
+  const [currentPage, setCurrentPage] = useState(1);
+  const monumentsPerPage = 10;
+  const indexOfLastMonuement = currentPage * monumentsPerPage;
+  const indexOfFirstMonuement = indexOfLastMonuement - monumentsPerPage;
+  const currentMonuments = monuments.slice(indexOfFirstMonuement, indexOfLastMonuement);
+    
+  const handleNextPage = () => {
+    if (currentPage < Math.ceil(monuments.length / monumentsPerPage)) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+  
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
   const handleSearch = () => {
-    const filteredMonuments = data.monuments.filter((monument) =>
+    const filteredMonuments = Monumentsdata.filter((monument) =>
       monument.title.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    setData({ ...data, monuments: filteredMonuments });
+    setData({ ...Monumentsdata,filteredMonuments });
   };
 
 
@@ -46,25 +66,16 @@ const Monument = () => {
     const integerId = parseInt(monumentId, 10);
     navigate(`/monumentDetails/${integerId}`);
   };
+
   const handleDeconnect = () => {
-    navigate('/');
+    logout(); // Déconnexion de l'utilisateur
+    navigate('/'); // Redirection vers la page d'accueil
   };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:2000/api/data');
-        setData(response.data);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-
-    fetchData();
-  }, []);useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('http://localhost:2000/api/data');
-        setData(response.data);
+        setMonumentsData(monuments);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -144,7 +155,7 @@ const Monument = () => {
           </div>
           <div className='MaterialCat'>
   <img className="home" src={homeIcon}  />
-  <Link to="/" style={{marginLeft:'10px', color: 'blue', textDecoration: 'none' }}>{t("navbar.accueil")}</Link> {/* Lien vers la page d'accueil */}
+  <Link to="/acceuil" style={{marginLeft:'10px', color: 'blue', textDecoration: 'none' }}>{t("navbar.accueil")}</Link> {/* Lien vers la page d'accueil */}
   <span className='Path' style={{ color: 'blue' }}>&gt;</span> {/* Utilisation de span pour le symbole ">" */}
   <Link to="/monument" style={{ marginLeft:'10px',color: 'blue', textDecoration: 'none' }}>{t("Header.Monu")}</Link> {/* Lien vers la page Monument */}
 </div>
@@ -178,11 +189,11 @@ const Monument = () => {
         </Col>
       </Row>
           <div className='catElements'>
-          {data && data.monuments ? (
-            data.monuments.map(monument => (
+          {currentMonuments  ? (
+            currentMonuments.map(monument => (
             <div className='catItem'>
               <p >{monument.title}</p>
-              <img key={monument.id} src='' onClick={() => handleImageClick(monument.id)}/>
+              <img key={monument.id} src={`data:image/jpg;base64, ${monument.image}`} onClick={() => handleImageClick(monument.id)}/>
             </div>
           ))
           ):(
@@ -190,12 +201,11 @@ const Monument = () => {
           )
       }  
               </div>
-              <div className='Links'>
-              <a >1</a>
-              <a >2</a>
-              <a >3</a>
-              <a >&gt;</a>
-              </div>  
+               <div className='Links'>
+              <Link onClick={handlePreviousPage}>Précedente</Link>
+              <div ></div>
+              <Link  onClick={handleNextPage}>Suivante</Link>
+                   </div> 
 
         {/* Afficher le menu latéral s'il est ouvert */}
       {isFilterMenuOpen && (
@@ -380,7 +390,7 @@ const Monument = () => {
   <div className='lineDecBar'></div>
   <div className='Decon'>
     <img className="dec" src={deconIcon} alt="Decon Icon" onClick={handleDeconnect} />
-    <a className='decLink' href="/lien2">{t("Menu.Deconnexion")}</a>
+    <a className='decLink' >{t("Menu.Deconnexion")}</a>
   </div>
 </div>
 

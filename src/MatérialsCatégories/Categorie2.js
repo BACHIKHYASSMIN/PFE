@@ -15,8 +15,9 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '../Elements/Navbar';
 import { Form, Select, Button, Input, Card, Row, Col , Typography } from 'antd';
 import Footer from '../Elements/Footer';
+import { useTranslation } from 'react-i18next';
 import axios from 'axios';
-function Categorie2() {
+function Categorie2({products,materials,buildings,monuments}) {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isFilterMenuOpen, setFilterMenuOpen] = useState(false);
   const [isChecked1, setChecked1] = useState(false);
@@ -27,14 +28,34 @@ function Categorie2() {
   const [isCheckedMonument, setCheckedMonument] = useState({});
   const [isCheckedOuvrage, setCheckedOuvrage] = useState({});
   const [selectedColors, setSelectedColors] = useState([]);
-
+  const [filteredMaterials, setFilteredMaterials] = useState(materials);
+  const { t,i18n } = useTranslation();
   const [data, setData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const materialsPerPage = 10;
+  const indexOfLastMaterial = currentPage * materialsPerPage;
+  const indexOfFirstMaterial = indexOfLastMaterial - materialsPerPage;
+  console.log(materials)
+  const currentMaterials = filteredMaterials.slice(indexOfFirstMaterial, indexOfLastMaterial);
+    
+  const handleNextPage = () => {
+    if (currentPage < Math.ceil(filteredMaterials.length / materialsPerPage)) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+  
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
   const handleSearch = () => {
-    const filteredMateriaux = data.materiaux.filter((materiau) =>
+    const filteredMateriaux = filteredMaterials.filter((materiau) =>
       materiau.title.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    setData({ ...data, materiaux: filteredMateriaux });
+    setFilteredMaterials(filteredMateriaux);
+    setCurrentPage(1); // Réinitialiser à la première page après la recherche
   };
   const navigate = useNavigate();
   const handleImageClick = (materialId) => {
@@ -46,8 +67,8 @@ function Categorie2() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:2000/api/data');
-        setData(response.data);
+      
+        setFilteredMaterials(materials);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -119,7 +140,7 @@ function Categorie2() {
          <div className="categorie-head">
   <img className="menu" src={menuIcon} onClick={handleMenuToggle} />
   <Typography.Title level={1} style={{ fontWeight: 'bold', marginBottom: '10px', textAlign: 'center', marginLeft: '5%', display: 'inline' }}>
-    Matériaux
+  {t("Menu.MER")}
   </Typography.Title>
 
 </div>
@@ -127,11 +148,11 @@ function Categorie2() {
 
           <div className='MaterialCat'>
   <img className="home" src={homeIcon}  />
-  <Link to="/userHome" style={{ color: 'blue', textDecoration: 'none' }}>Accueil</Link> {/* Lien vers la page d'accueil */}
+  <Link to="/acceuil" style={{ marginLeft:'10px',color: 'blue', textDecoration: 'none' }}>{t("navbar.accueil")}</Link> {/* Lien vers la page d'accueil */}
   <span className='Path' style={{ color: 'blue' }}>&gt;</span> {/* Utilisation de span pour le symbole ">" */}
-  <Link to="/material" style={{ color: 'blue', textDecoration: 'none' }}>Matériaux</Link> {/* Lien vers la page Monument */}
+  <Link to="/material" style={{marginLeft:'10px', color: 'blue', textDecoration: 'none' }}>{t("Header.Mat")}</Link> {/* Lien vers la page Monument */}
   <span className='Path' style={{ color: 'blue' }}>&gt;</span> {/* Utilisation de span pour le symbole ">" */}
-  <Link to="/categorie2" style={{ color: 'blue', textDecoration: 'none' }}>Minéraux et Roches</Link> {/* Lien vers la page Monument */}
+  <Link to="/categorie2" style={{marginLeft:'10px', color: 'blue', textDecoration: 'none' }}>{t("Menu.MER")}</Link> {/* Lien vers la page Monument */}
 </div>
 
 
@@ -158,33 +179,37 @@ function Categorie2() {
             </Col>
             <Col>
               <Button type="primary" htmlType="submit"  style={{backgroundColor :'#2C3E50'}} onClick={handleSearch}>
-                Valider
+              {t("Btn.Valider")}
               </Button>
             </Col>
           </Row>
         </Col>
       </Row>
           
-          <div className='catElements'>
-          {data && data.materiaux ? (
-            data.materiaux.map(materiau => (
-            <div className='catItem'>
-              <p >{materiau.title}</p>
-              <img key={materiau.id} src='' onClick={() => handleImageClick(materiau.id)}/>
-            </div>
-          ))
-          ):(
-            <li>Aucun produit trouvé</li>
-          )
-      }  
+      <div className='catElements'>
+  {currentMaterials  ? (
+    currentMaterials 
+    .filter(materiau => materiau.famille === "Minérale et roche")
+      .map(materiau => (
+        <div className='catItem' key={materiau.id}>
+          <p>{materiau.title}</p>
+          <img src={`data:image/jpg;base64, ${materiau.image}`} onClick={() => handleImageClick(materiau.id)}/>
+        </div>
+      ))
+  ) : (
+    <li>{t("Messages.MatErr")}</li>
+  )}
+</div>
+
+<div className='Links'>
+  {currentPage > 1 && currentMaterials.length > 0 && (
+    <Link onClick={handlePreviousPage}>Précédente</Link>
+  )}
+  {currentMaterials.length === materialsPerPage && (
+    <Link onClick={handleNextPage}>Suivante</Link>
+  )}
+</div>
               
-              </div>
-              <div className='Links'>
-              <a >1</a>
-              <a >2</a>
-              <a >3</a>
-              <a >&gt;</a>
-              </div>  
               
          {/* Afficher le menu latéral s'il est ouvert */}
       {isFilterMenuOpen && (

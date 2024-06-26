@@ -85,8 +85,10 @@ const handleDownloadPdf = async () => {
       <div className="materials">
       <img className="mat-img"   />
       {product && product.component ? (
+         <div>
+          <img className="mat-img" src={`data:image/jpg;base64, ${product.component.images}`}  />
               <p className='mat-name'>{product.component.designation}</p>
-          
+              </div>
           ):(
             <p>Aucun produit trouvé</p>
           )

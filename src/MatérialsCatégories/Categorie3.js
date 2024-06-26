@@ -18,7 +18,7 @@ import { Form, Select, Button, Input, Card, Row, Col , Typography } from 'antd';
 import Footer from '../Elements/Footer';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
-function Categorie3() {
+function Categorie3({products,materials,buildings,monuments}) {
   const { t,i18n } = useTranslation();
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isFilterMenuOpen, setFilterMenuOpen] = useState(false);
@@ -30,15 +30,36 @@ function Categorie3() {
   const [isCheckedMonument, setCheckedMonument] = useState({});
   const [isCheckedOuvrage, setCheckedOuvrage] = useState({});
   const [selectedPlaces, setSelectedPlaces] = useState([]);
+  const [filteredMaterials, setFilteredMaterials] = useState(materials);
   const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const materialsPerPage = 10;
+  const indexOfLastMaterial = currentPage * materialsPerPage;
+  const indexOfFirstMaterial = indexOfLastMaterial - materialsPerPage;
+  console.log(materials)
+  const currentMaterials = filteredMaterials.slice(indexOfFirstMaterial, indexOfLastMaterial);
+    
+  const handleNextPage = () => {
+    if (currentPage < Math.ceil(filteredMaterials.length / materialsPerPage)) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+  
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
   const handleSearch = () => {
-    const filteredMateriaux = data.materiaux.filter((materiau) =>
+    const filteredMateriaux = filteredMaterials.filter((materiau) =>
       materiau.title.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    setData({ ...data, materiaux: filteredMateriaux });
+    setFilteredMaterials(filteredMateriaux);
+    setCurrentPage(1); // Réinitialiser à la première page après la recherche
   };
+  
   const handleImageClick = (materialId) => {
     const integerMaterialId = parseInt(materialId, 10);
     navigate(`/materiauDetails/${integerMaterialId}`);
@@ -48,11 +69,12 @@ function Categorie3() {
   const handleDeconnect = () => {
     navigate('/');
   };
+ 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:2000/api/data');
-        setData(response.data);
+      
+        setFilteredMaterials(materials);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -117,7 +139,7 @@ function Categorie3() {
           
           <div className='MaterialCat'>
           <img className="home" src={homeIcon}  />
-  <Link to="/userHome" style={{ marginLeft:'10px',color: 'blue', textDecoration: 'none' }}>{t("navbar.accueil")}</Link> {/* Lien vers la page d'accueil */}
+  <Link to="/acceuil" style={{ marginLeft:'10px',color: 'blue', textDecoration: 'none' }}>{t("navbar.accueil")}</Link> {/* Lien vers la page d'accueil */}
   <span className='Path' style={{ color: 'blue' }}>&gt;</span> {/* Utilisation de span pour le symbole ">" */}
   <Link to="/material" style={{  marginLeft:'10px', color: 'blue', textDecoration: 'none' }}>{t("Header.Mat")}</Link> {/* Lien vers la page Monument */}
   <span className='Path' style={{ color: 'blue' }}>&gt;</span> {/* Utilisation de span pour le symbole ">" */}
@@ -153,26 +175,29 @@ function Categorie3() {
         </Col>
       </Row>
           
-          <div className='catElements'>
-          {data && data.materiaux ? (
-            data.materiaux.map(materiau => (
-            <div className='catItem'>
-              <p >{materiau.title}</p>
-              <img key={materiau.id} src='' onClick={() => handleImageClick(materiau.id)}/>
-            </div>
-          ))
-          ):(
-            <li>{t("Messages.MatErr")}</li>
-          )
-      }  
-              
-              </div>
-              <div className='Links'>
-              <a >1</a>
-              <a >2</a>
-              <a >3</a>
-              <a >&gt;</a>
-              </div>  
+      <div className='catElements'>
+  {currentMaterials  ? (
+    currentMaterials 
+    .filter(materiau => materiau.famille === "Bois")
+      .map(materiau => (
+        <div className='catItem' key={materiau.id}>
+          <p>{materiau.title}</p>
+          <img src={`data:image/jpg;base64, ${materiau.image}`} onClick={() => handleImageClick(materiau.id)}/>
+        </div>
+      ))
+  ) : (
+    <li>{t("Messages.MatErr")}</li>
+  )}
+</div>
+
+<div className='Links'>
+  {currentPage > 1 && currentMaterials.length > 0 && (
+    <Link onClick={handlePreviousPage}>Précédente</Link>
+  )}
+  {currentMaterials.length === materialsPerPage && (
+    <Link onClick={handleNextPage}>Suivante</Link>
+  )}
+</div>
               
          {/* Afficher le menu latéral s'il est ouvert */}
       {isFilterMenuOpen && (
@@ -210,7 +235,7 @@ function Categorie3() {
           </div>
           <div className='catboxList'>
           <ul>
-          { data.produits.map(produit => (
+          { products.produits.map(produit => (
         <div key={produit.id}>
           <input
             type="checkbox"
@@ -235,7 +260,7 @@ function Categorie3() {
           </div>
           <div className='catboxList'>
           <ul>
-          { data.ouvrages.map(ouvrage => (
+          { buildings.ouvrages.map(ouvrage => (
         <div key={ouvrage.id}>
           <input
             type="checkbox"
@@ -262,7 +287,7 @@ function Categorie3() {
           </div>
           <div className='catboxList'>
           <ul>
-          { data.monuments.map(monument => (
+          { materials.monuments.map(monument => (
         <div key={monument.id}>
           <input
             type="checkbox"

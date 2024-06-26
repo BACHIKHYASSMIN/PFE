@@ -11,13 +11,23 @@ import localisation from '../Assets/localisation.jpg';
 import RechAvancée from '../Assets/rechercheAvancée.PNG';
 import visualisation from '../Assets/visualisation.png';
 import { useTranslation } from 'react-i18next';
-
+import { useAuth } from '../AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 const UserHome = () => {
   const { t,i18n } = useTranslation();
+  const navigate = useNavigate();
+  const { isConnected } = useAuth();
   const toggleLang = (lang) => {
     i18n.changeLanguage(lang);
   }
   
+  
+  const handleMaterialLinkClick = (url) => {
+    if (isConnected) {
+      navigate(url);
+    }else {console.log("is not connected")}
+  };
   const containerStyle = {
     position: 'relative',
     width: '100%',   // 100% de la largeur de la vue
@@ -100,7 +110,7 @@ const UserHome = () => {
         <div style={textColumnStyle}>
           <h2>{t("Header.Mat")}</h2>
           <p>{t("intro.MaterialP")}</p>
-          <a href="/material" style={linkStyle}>{t("Tokens.suivre")}{t("Header.Mat")}...</a>
+          <div onClick={() => handleMaterialLinkClick('/material')} style={linkStyle}>Consulter tous les Matériaux ...</div>
         </div>
       </div>
 
@@ -111,7 +121,7 @@ const UserHome = () => {
         <div style={textColumnStyle}>
         <h2>{t("Header.Prod")}</h2>
           <p>{t("intro.ProductP")}</p>
-          <a href="/produit" style={linkStyle}>{t("Tokens.suivre")}{t("Header.Prod")}...</a>
+          <div onClick={() => handleMaterialLinkClick('/produit')} style={linkStyle}>Consulter tout les Produits ...</div>
         </div>
         <img src={ProduitPhoto} alt="Image des produits" style={{ width: '35%', height: '35%' }} />
       </div>
@@ -123,7 +133,7 @@ const UserHome = () => {
         <div style={textColumnStyle}>
         <h2>{t("Header.Ouv")}</h2>
           <p>{t("intro.BuildingP")}</p>
-          <a href="/ouvrage" style={linkStyle}>{t("Tokens.suivre")}{t("Header.Ouv")}...</a>
+          <div  onClick={() => handleMaterialLinkClick('/ouvrage')} style={linkStyle}>Consulter tout les Ouvrages ...</div>
         </div>
       </div>
   </li>
@@ -133,7 +143,7 @@ const UserHome = () => {
         <div style={textColumnStyle}>
         <h2>{t("Header.Path")}</h2>
         <p>{t("intro.PathP")} </p>
-          <a href="/pathologie" style={linkStyle}>{t("Tokens.suivre")}{t("Header.Path")}...</a>
+        <div onClick={ () => handleMaterialLinkClick('/pathologie')} style={linkStyle}>Consulter tout les Pathologies ...</div>
         </div>
         <img src={MonumentPhoto} alt="Image des monuments"  style={{ width: '35%', height: '35%' }} />
       </div>
@@ -147,7 +157,7 @@ const UserHome = () => {
         <div style={textColumnStyle}>
         <h2>{t("Header.Monu")}</h2>
         <p>{t("intro.MonumP")}</p>
-          <a href="/monument" style={linkStyle}>{t("Tokens.suivre")}{t("Header.Monu")}...</a>
+        <div onClick={() => handleMaterialLinkClick('/monument')} style={linkStyle}>Consulter tout les Monuments ...</div>
         </div>
       </div>
 

@@ -15,6 +15,7 @@ import { useTranslation } from 'react-i18next';
 import LanguagePopup from './Elements/LangSwitch';
 import { useAuth } from './AuthContext';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 function Profil() {
   const [isEditing, setIsEditing] = useState(false);
   const [editedName, setEditedName] = useState('');
@@ -33,6 +34,7 @@ function Profil() {
   const [userInfo, setUserInfo] = useState({});
   const [selectedFile, setSelectedFile] = useState(null);
   const [image,setImage]=useState(null);
+  const { logout } = useAuth();
   const handleRecipientEmailChange = (e) => {
     setRecipientEmail(e.target.value);
   };
@@ -122,7 +124,7 @@ useEffect(() => {
     setIsSendingMessage(false);
   };
 
- 
+  const navigate = useNavigate();
 
   const handleEditClick = () => {
     inputRef.current.click();
@@ -136,23 +138,29 @@ useEffect(() => {
     i18n.changeLanguage(lang);
   };
 
+  
+  const handleDeconnect = () => {
+    logout(); // Déconnexion de l'utilisateur
+    navigate('/'); // Redirection vers la page d'accueil
+  };
+  
   const handleSave = async () => {
-    console.log(userId);
-    let requestData = {
-      userId,
-      editedName,
-      editedFullName,
-      editedEmail,
-      editedPassword,
-      profilImg:selectedFile
-    };
+    const formData = new FormData();
+    formData.append('userId', userId);
+    formData.append('editedName', editedName);
+    formData.append('editedFullName', editedFullName);
+    formData.append('editedEmail', editedEmail);
+    formData.append('editedPassword', editedPassword);
+    if (selectedFile) {
+      formData.append('profileImage', selectedFile);
+    }
   
-  
-   
-  
-    // Envoyer les données utilisateur mises à jour avec ou sans l'image
     try {
-      const response = await axios.post('http://localhost:2000/update-user', requestData);
+      const response = await axios.post('http://localhost:2000/update-user', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
       if (response.status === 200) {
         console.log('User information updated successfully');
         await fetchUserInfo();
@@ -163,17 +171,6 @@ useEffect(() => {
     }
   };
   
-  // Fonction pour convertir le fichier en Blob
-  const convertToBlob = async (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => {
-        resolve(new Blob([reader.result], { type: file.type }));
-      };
-      reader.onerror = reject;
-      reader.readAsArrayBuffer(file);
-    });
-  };
   
   
 
@@ -202,6 +199,7 @@ useEffect(() => {
           <h3>{userInfo["Username"]}</h3>
         </div>
         <input type="file" ref={inputRef} style={{ display: 'none' }} onChange={handleFileSelect} />
+
         <div className='ProfilData'>
           <div className='Output'>
             <h4>{t("Tokens.fullName")}:</h4>
@@ -293,8 +291,10 @@ useEffect(() => {
           <Link className="pageLink" to="/a-propos">{t("navbar.aPropos")}</Link>
           <div className='lineDecBar'></div>
           <div className='Decon'>
-            <img className="dec" src={deconIcon} alt="Decon Icon" onClick={handleMenuToggle} />
-            <a className='decLink' href="/lien2">{t("Menu.Deconnexion")}</a>
+          <div className='Decon'>
+    <img className="dec" src={deconIcon} alt="Decon Icon" onClick={handleDeconnect} />
+    <a className='decLink' onClick={handleDeconnect} >{t("Menu.Deconnexion")}</a>
+  </div>
           </div>
         </div>
       )}

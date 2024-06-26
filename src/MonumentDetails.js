@@ -72,9 +72,11 @@ function MonumentDetails() {
        <img className="menuList" src={menuIcon} alt="Menu Icon"  onClick={handleMenuToggle}  />
        
       <div className="materials">
-      <img className="mat-img"   />
       {monument && monument.component ? (
+        <div>
+          <img className="mat-img" src={`data:image/jpg;base64, ${monument.component.images}`}  />
               <p className='mat-name'>{monument.component.designation}</p>
+              </div>
           ):(
             <p>Aucun monument trouvé</p>
           )

@@ -14,15 +14,16 @@ import { Link } from 'react-router-dom';
 import { Form, Select, Button, Input, Card, Row, Col ,Checkbox, Typography } from 'antd';
 import ChatBox from './Elements/ChatBox';
 import axios from 'axios';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMap} from 'react-leaflet';
 import Monument from './Classes/Monument';
 import NavbarHome from './NavbarHome';
+import { getMonuments } from './apiServices';
 
 import { useAuth } from './AuthContext';
 const { Option } = Select;
 
-function Carte() {
-  const [monuments, setMonuments] = useState([]);
+function Carte({ monuments }) {
+  const [monumentts, setMonuments] = useState([]);
   const [selectedMonuments, setSelectedMonuments] = useState({});
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [data, setData] = useState([]);
@@ -56,14 +57,12 @@ function Carte() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:2000/api/data');
-        const initialSelectedMonuments = response.data.monuments.reduce((acc, monument) => {
+        const initialSelectedMonuments = monuments.reduce((acc, monument) => {
           acc[monument.id] = false;
           return acc;
         }, {});
         setSelectedMonuments(initialSelectedMonuments);
-        setData(response.data);
-        setMonuments(response.data.monuments);
+        setData(monuments);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -163,8 +162,8 @@ function Carte() {
 <div style={{ marginBottom: '10px' }}>
 <Form.Item name="Matériaux" label="Monuments">
 <div style={{ display: 'flex', flexDirection: 'column' }}>
-          {data && data.monuments ? (
-            data.monuments.map(monument => (
+          {data ? (
+            data.map(monument => (
            <Checkbox checked={selectedMonuments[monument.id]}
            onChange={e => {
              setSelectedMonuments(prevState => ({
@@ -201,14 +200,10 @@ function Carte() {
         <div style={{ width: '100%', height: '600px' }}>
   <MapContainer center={[7.1881, 21.0938]} zoom={3} scrollWheelZoom={false} style={{ marginLeft: '10%', zIndex: '100', width: '80%', height: '100%' }}>
     <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-    {data && data.monuments ? (
-      data.monuments.map(monument => (
+    {data  ? (
+      data.map(monument => (
         selectedMonuments[monument.id] ? (
-          <Marker key={monument.id} position={[monument.attitude, monument.longitude]}>
-            <Popup>
-              {monument.title}
-            </Popup>
-          </Marker>
+          <ZoomToMonument key={monument.id} monument={monument} />
         ) : null
       ))
     ) : (
@@ -292,5 +287,23 @@ function Carte() {
 
   );
   
+}
+
+// Composant ZoomToMonument pour zoomer automatiquement sur un monument sélectionné
+function ZoomToMonument({ monument }) {
+  const map = useMap();
+  
+  // Utilisez map.flyTo pour zoomer et centrer la carte sur le monument sélectionné
+  useEffect(() => {
+    if (map && monument) {
+      map.flyTo([monument.attitude, monument.longitude], 16);
+    }
+  }, [map, monument]);
+
+  return (
+    <Marker position={[monument.attitude, monument.longitude]}>
+      <Popup>{monument.title}</Popup>
+    </Marker>
+  );
 }
 export default Carte;

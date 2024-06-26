@@ -1,5 +1,5 @@
 // Class.js
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import Navbar from './Elements/Navbar';
 import Footer from './Elements/Footer';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
@@ -37,29 +37,102 @@ import OuvrageDetails from './OuvrageDetails'
 import UserHome from './Elements/userHome';
 import { AuthProvider } from './AuthContext';
 import Neo4jGraph from './test.js'
+import { getGraph, getMonuments } from './apiServices.js';
+import { getProducts } from './apiServices.js';
+import { getBuildings } from './apiServices.js';
+import { getMaterials } from './apiServices.js';
+import { getNodes } from './apiServices.js';
 function App() {
+  const [materials,setMaterials]=useState([]);
+  const [monuments, setMonuments] = useState([]);
+  const [products,setProducts]=useState([]);
+  const [buildings,setBuildings]=useState([]);
+  const [nodes,setNodes]=useState([]);
+  const [graph,setGraph]=useState();
+
+  useEffect(() => {
+    const fetchMonuments = async () => {
+      try {
+        const monumentsData = await getMonuments();
+        setMonuments(monumentsData.monuments);
+      } catch (error) {
+        console.error('Error fetching monuments:', error);
+      } 
+    };
+
+    const fetchProducts = async () => {
+      try {
+        const productsData = await getProducts();
+        setProducts(productsData.produits);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      } 
+    };
+
+    const fetchBuildings = async () => {
+      try {
+        const buildingsData = await getBuildings();
+        setBuildings(buildingsData.ouvrages);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      } 
+    };
+    const fetchMaterials = async () => {
+      try {
+        const MaterialsData = await getMaterials();
+        setMaterials(MaterialsData.materiaux);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      } 
+    };
+    const fetchNodes = async () => {
+      try {
+        const NodesData = await getNodes();
+        setNodes(NodesData.nodes);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      } 
+    };
+    const fetchGraph = async () => {
+      try {
+        const NodesData = await getGraph();
+        setGraph(NodesData);
+      } catch (error) {
+        console.error('Error fetching products:', error);
+      } 
+    };
+    fetchGraph();
+    fetchNodes();
+    fetchMonuments();
+    fetchProducts();
+    fetchBuildings();
+    fetchMaterials();
+    
+  }, []);
+
+
+
   return (
     <AuthProvider>
-
     <LangProvider>
     <div className="App">
         <Routes>
         <Route path="/acceuil" exact element={<UserHome />} />
           <Route path="/material" element={<Material />} />
           <Route path="/" element={<Home />} />
-          <Route path="/categorie1" element={<Categorie1 />} />
-          <Route path="/categorie2" element={<Categorie2 />} />
-          <Route path="/categorie3" element={<Categorie3 />} />
-          <Route path="/Graph" element={<Graph />} />
-          <Route path="/carte-geographique" element={<CarteGeographique />} />
-          <Route path="/produit" element={<Produit />} />
+          <Route path="/categorie1" element={<Categorie1 products={products} materials={materials}buildings={buildings} monuments={monuments} />} />
+          <Route path="/categorie2" element={<Categorie2 products={products} materials={materials} buildings={buildings} monuments={monuments}/>} />
+          <Route path="/categorie3" element={<Categorie3 products={products} materials={materials} buildings={buildings} monuments={monuments}/>} />
+          <Route path="/Graph" element={<Graph  products={products} materials={materials} buildings={buildings} nodes={nodes} graph={graph}/>} />
+          <Route path="/carte-geographique" element={<CarteGeographique   monuments={monuments}/>} />
+          <Route path="/produit" element={<Produit products={products}/>} />
           <Route path="/details" element={<Details />} />
-          <Route path="/monument" element={<Monument />} />
+          <Route path="/monument" element={<Monument monuments={monuments} />} />
           <Route path="/pathologie" element={<Pathologie />} />
-          <Route path="/ouvrage" element={<Ouvrage />} />
+          <Route path="/ouvrage" element={<Ouvrage buildings={buildings} />} />
           <Route path="/connexion" element={<Connexion />} />
           <Route path="/inscription" element={<Inscription/>} />
-          <Route path="/recherche-avancee" element={<RechercheAvancée />} />
+          <Route path="/recherche-avancee" element={<RechercheAvancée products={products} materials={materials} buildings={buildings} monuments={monuments}/>} />
           <Route path="/biologique" element={<Biologique/>} />
           <Route path="/chromatique-dépot" element={<ChromatiqueDépot />} />
           <Route path="/déformation" element={<Déformation />} />
@@ -76,6 +149,7 @@ function App() {
           <Route path="/ouvrageDetails/:ouvrageId"  element={<OuvrageDetails />}  />
           <Route path="/connexion/:previousUrl"  element={<Connexion />}  />
           <Route path="/userHome" element={< UserHome />} />
+         
           
           
          

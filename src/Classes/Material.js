@@ -17,17 +17,21 @@ import { Form, Select, Button, Input, Card, Row, Col , Typography } from 'antd';
 import ChatBox from '../Elements/ChatBox';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../AuthContext';
+
 const Material = () => {
   const [isMenuOpen, setMenuOpen ] = useState(false);
   const [data, setData] = useState([]);
   const { t,i18n } = useTranslation();
   const [produits, setProduits] = useState([]);
-  const { isConnected: authIsConnected } = useAuth();
+ const {logout}=useAuth();
+
   const navigate = useNavigate();
-  const isConnected=true
+
   const handleDeconnect = () => {
-    navigate('/');
+    logout(); // Déconnexion de l'utilisateur
+    navigate('/'); // Redirection vers la page d'accueil
   };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -48,8 +52,7 @@ const Material = () => {
   
   return (
     <na className="material">
-      {console.log(isConnected)}
-      <Navbar isConnected={isConnected} />
+      <Navbar  />
       <div className="material-head">
           <img className="menu" src={menuIcon} alt="Menu Icon"
           onClick={handleMenuToggle}  />
@@ -59,7 +62,7 @@ const Material = () => {
           </div>
           <div className='MaterialCat'>
   <img className="home" src={homeIcon}  />
-  <Link to="/" style={{ marginLeft:'10px',color: 'blue', textDecoration: 'none' }}>{t("navbar.accueil")}</Link> 
+  <Link to="/acceuil" style={{ marginLeft:'10px',color: 'blue', textDecoration: 'none' }}>{t("navbar.accueil")}</Link> 
   <span className='Path' style={{ color: 'blue' }}  >&gt;</span> 
   <Link to="/material" style={{ marginLeft:'10px', color: 'blue', textDecoration: 'none' }}>{t("Header.Mat")}</Link>
 </div>
@@ -125,7 +128,7 @@ const Material = () => {
   <div className='lineDecBar'></div>
   <div className='Decon'>
     <img className="dec" src={deconIcon} alt="Decon Icon" onClick={handleDeconnect} />
-    <a className='decLink' href="/lien2">{t("Menu.Deconnexion")}</a>
+    <a className='decLink' onClick={handleDeconnect}>{t("Menu.Deconnexion")}</a>
   </div>
 </div>
 
@@ -149,7 +152,7 @@ const Categories = (props) => {
   let categoryContent;
   let categoryUrl;
 
-  if (CatName === "Matériaux à base de terre") {
+  if (CatName === t("Menu.MAT")) {
     categoryContent = (
       <div className='CategorieList'>
         <div className='CardMatItem'>
@@ -165,7 +168,7 @@ const Categories = (props) => {
       </div>
     );
     categoryUrl = "/categorie1";
-  } else if (CatName === "Minéraux et Roches") {
+  } else if (CatName === t("Menu.MER")) {
     categoryContent = (
       <div className='CategorieList'>
         <div className='CardMatItem'>

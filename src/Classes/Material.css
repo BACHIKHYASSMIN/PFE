@@ -196,6 +196,9 @@ margin-left: 25%;
 
 .Links{
   text-align: center;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-around;
 }
 .Links a{
   font-size: 100%;

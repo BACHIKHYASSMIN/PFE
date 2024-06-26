@@ -5,7 +5,7 @@ const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [isConnected, setIsConnected] = useState(false);
-  const [userId, setUserId] = useState(null); 
+  const [userId, setUserId] = useState(); 
 
   useEffect(() => {
     // Vérifiez si l'utilisateur est connecté en vérifiant le stockage local
@@ -29,7 +29,7 @@ export const AuthProvider = ({ children }) => {
     // Supprimez le token du stockage local
     localStorage.removeItem('authToken');
     setIsConnected(false);
-    setUserId(null); // Réinitialiser userId après la déconnexion
+    setUserId(); // Réinitialiser userId après la déconnexion
   };
 
   return (

@@ -22,7 +22,7 @@ import Footer from '../Elements/Footer';
 import ChatBox from '../Elements/ChatBox';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
-const Produit = () => {
+const Produit = ({products}) => {
  
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isFilterMenuOpen, setFilterMenuOpen] = useState(false);
@@ -32,17 +32,34 @@ const Produit = () => {
   const [isCheckedOuvrage, setCheckedOuvrage] = useState({});
   const [isCheckedMonument, setCheckedMonument] = useState({});
   const [selectedPlaces, setSelectedPlaces] = useState([]);
-  
+  const [Productsdata, setProductsData] = useState([]);
   const [data, setData] = useState([]);
   const { t,i18n } = useTranslation();
   const [searchTerm, setSearchTerm] = useState("");
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 10;
+  const indexOfLastProduct = currentPage * productsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+  const currentProducts = Productsdata.slice(indexOfFirstProduct, indexOfLastProduct);
+    
+  const handleNextPage = () => {
+    if (currentPage < Math.ceil(Productsdata.length / productsPerPage)) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+  
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+  
 const handleSearch = () => {
   
-    const filteredProduits = data.produits.filter((produit) =>
+    const filteredProduits = Productsdata.filter((produit) =>
       produit.title.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    setData({ ...data, produits: filteredProduits });
+    setData({ ...Productsdata, filteredProduits });
   }
 
 
@@ -64,8 +81,7 @@ const handleSearch = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:2000/api/data');
-        setData(response.data);
+        setProductsData(products);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -126,7 +142,7 @@ const handleSearch = () => {
 
           <div className='MaterialCat'>
   <img className="home" src={homeIcon}  />
-  <Link to="/" style={{marginLeft:'10px', color: 'blue', textDecoration: 'none' }}>{t("navbar.accueil")}</Link> {/* Lien vers la page d'accueil */}
+  <Link to="/acceuil" style={{marginLeft:'10px', color: 'blue', textDecoration: 'none' }}>{t("navbar.accueil")}</Link> {/* Lien vers la page d'accueil */}
   <span className='Path' style={{ color: 'blue' }}>&gt;</span> {/* Utilisation de span pour le symbole ">" */}
   <Link to="/produit" style={{marginLeft:'10px', color: 'blue', textDecoration: 'none' }}>  {t("Header.Prod")}</Link> {/* Lien vers la page Monument */}
 </div>
@@ -160,25 +176,25 @@ const handleSearch = () => {
         </Col>
       </Row>
           <div className='catElements'>
-           {data && data.produits ? (
-            data.produits.map(produit => (
-            <div className='catItem'>
-              <p >{produit.title}</p>
-              <img key={produit.id} src='' onClick={() => handleImageClick(produit.id)}/>
-            </div>
-          ))
-          ):(
-            <li>{t("Messages.ProdErr")}</li>
-          )
-      }  
+          {currentProducts ? (
+  currentProducts.map(produit => (
+    <div className='catItem'>
+      <p>{produit.title}</p>
+      <img key={produit.id} src={`data:image/jpg;base64, ${produit.image}`} onClick={() => handleImageClick(produit.id)} />
+    </div>
+  ))
+) : (
+  <li>{t("Messages.ProdErr")}</li>
+)}
+
       </div>
 
               <div className='Links'>
-              <a >1</a>
-              <a >2</a>
-              <a >3</a>
-              <a >&gt;</a>
-              </div>  
+              <Link onClick={handlePreviousPage}>Précedente</Link>
+              <div ></div>
+              <Link  onClick={handleNextPage}>Suivante</Link>
+                   </div>
+
 
         {/* Afficher le menu latéral s'il est ouvert */}
       {isFilterMenuOpen && (
