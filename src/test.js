@@ -21,7 +21,7 @@ const [matId,setMatId]=useState(0);
 
       if (item.labels[0].includes('Produit')) {
         backgroundColor = 'orange';
-        label = item.properties.designation;
+        label = item.designation;
       } else if (item.labels[0].includes('Restauration')) {
         backgroundColor = '';
       } else if (item.labels[0].includes('Technique')) {
@@ -30,29 +30,29 @@ const [matId,setMatId]=useState(0);
         backgroundColor = '';
       } else if (item.labels[0].includes('Ouvrage')) {
         backgroundColor = 'gold';
-        label = item.properties.designation;
+        label = item.designation;
       } else if (item.labels[0].includes('Monument')) {
         backgroundColor = 'crimson';
-        label = item.properties.designation;
+        label = item.designation;
       } else if (item.labels[0].includes('ConstruirRelation')) {
         backgroundColor = 'aquamarine';
-        label = item.properties.designation;
+        label = item.designation;
       } else if (item.labels[0].includes('Materiau')) {
         backgroundColor = 'blue';
-        label = item.properties.designation;
+        label = item.designation;
       } else if (item.labels[0].includes('Periode')) {
         backgroundColor = 'green';
-        label = item.properties.designation;
+        label = item.designation;
       } else if (item.labels[0].includes('Place')) {
         backgroundColor = 'red';
-        label = item.properties.designation;
+        label = item.designation;
       } else {
-        label = item.properties.designation;
+        label = item.designation;
       }
 
       return {
         data: {
-          id: item.elementId,
+          id: item.id,
           label: label,
           type: item.labels[0],
         },
@@ -66,7 +66,7 @@ const [matId,setMatId]=useState(0);
 
     const formattedEdges = edges.map(edge => ({
       data: {
-        id: edge.elementId,
+        id: edge.elementId-300,
         source: edge.startNodeElementId,
         target: edge.endNodeElementId,
         label: edge.type,
@@ -86,7 +86,7 @@ const [matId,setMatId]=useState(0);
   useEffect(() => {
     const fetchData = async () => {
       try {
-        
+        console.log(graph)
         const responseData = graph
         const { nodes, edges } = formatElements(responseData.nodes, responseData.edges);
         setElements([...nodes, ...edges]);

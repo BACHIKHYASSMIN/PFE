@@ -5,7 +5,7 @@ const multer = require('multer');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const router = express.Router();
-const mysql = require('mysql');
+const mysql = require('mysql2');
 const app = express();
 const port = 2000;
 const upload = multer();
@@ -31,6 +31,23 @@ const user = "neo4j";
 const password = "password";
 const driver = neo4j.driver(uri, neo4j.auth.basic(user, password));
 
+// Promesse pour exécuter une requête SQL avec le pool de connexions
+const query = (sql, values) => {
+  return new Promise((resolve, reject) => {
+    pool.query(sql, values, (err, results) => {
+      if (err) reject(err);
+      else resolve(results);
+    });
+  });
+};
+// Création d'un pool de connexions MySQL
+const pool = mysql.createPool({
+  connectionLimit: 10,
+  host: 'localhost',
+  user: 'root',
+  password: '',
+  database: 'materiautheque'
+});
 app.get('/api/MaterialData', async (req, res) => {
   const session = driver.session();
   try {
@@ -280,34 +297,28 @@ const session = driver.session(); // Assigner la session ici
 app.get('/api/nodes', async (req, res) => {
   const session = driver.session();
   try {
-      
-  
-      // Récupération du schéma du graphe
-      const nodesresult = await session.run('MATCH (n) RETURN  n');
-      let nodes = [];
-      // Traitement des données du schéma pour les rendre compatibles avec la bibliothèque frontale
-      nodesresult.records.forEach(record => {
-          // Extraire les propriétés du nœud de chaque enregistrement
-          const properties = record.get('n');
-          nodes.push(properties); // Ajouter les propriétés du nœud à votre tableau de nœuds
-      });
+    // Récupération des nœuds avec les propriétés spécifiques
+    const nodesResult = await session.run('MATCH (n) RETURN id(n) AS id, n.designation AS designation, labels(n) AS labels');
+    const nodes = nodesResult.records.map(record => ({
+      id: record.get('id').low,
+      designation: record.get('designation'),
+      labels: record.get('labels')
+    }));
 
-
-      // Récupération du schéma du graphe
-      const edgesresult = await session.run('MATCH ()-[r]->() RETURN r');
-      let edges = [];
-      // Traitement des données du schéma pour les rendre compatibles avec la bibliothèque frontale
-      edgesresult .records.forEach(record => {
-          // Extraire les propriétés du nœud de chaque enregistrement
-          const properties = record.get('r');
-          edges.push(properties); // Ajouter les propriétés du nœud à votre tableau de nœuds
-      });
-      res.json({ nodes,edges });
-  
+    // Récupération des relations avec les propriétés spécifiques
+    const edgesResult = await session.run('MATCH ()-[r]->() RETURN r');
+    const edges = edgesResult.records.map(record => ({
+      elementId:record._fields[0].elementId,
+      startNodeElementId: record._fields[0].startNodeElementId,
+      endNodeElementId: record._fields[0].endNodeElementId,
+      labels: record._fields[0].type
+    }));
+    
+    res.json({ nodes, edges });
   } catch (err) {
-      console.error(`Error fetching schema: ${err.message}`);
-      res.status(500).send('Error fetching schema');
-  }  finally {
+    console.error(`Error fetching schema: ${err.message}`);
+    res.status(500).send('Error fetching schema');
+  } finally {
     await session.close();
   }
 });
@@ -363,39 +374,29 @@ app.post('/api/register', async (req, res) => {
   connection.end();
 });
 
+// Endpoint pour gérer la connexion
 app.post('/api/login', async (req, res) => {
   const { email, pass } = req.body;
 
-  const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'materiautheque'
-  });
-  
   try {
-  // Recherche de l'utilisateur dans la base de données
-  connection.query('SELECT `id` FROM logging WHERE `email` = ? AND `password` = ?', [email, pass], (error, results) => {
-      if (error) {
-          console.error('Erreur lors de la connexion :', error);
-          res.status(500).json({ message: 'Erreur lors de la connexion' });
-      } else {
-          if (results.length > 0) {
-              // L'utilisateur est trouvé, authentification réussie
-              const userId = results[0].id;
-              res.status(200).json({ message: 'Authentification réussie', userId: userId });
-          } else {
-              // Aucun utilisateur correspondant trouvé
-              res.status(401).json({ message: 'Email ou mot de passe incorrect' });
-          }
-      }
-  });
-  }catch (error) {
+    // Requête SQL pour chercher l'utilisateur par email et mot de passe
+    const results = await query('SELECT `id` FROM logging WHERE `email` = ? AND `password` = ?', [email, pass]);
+
+    if (results.length > 0) {
+      // L'utilisateur est trouvé, authentification réussie
+      const userId = results[0].id;
+      res.status(200).json({ message: 'Authentification réussie', userId });
+    } else {
+      // Aucun utilisateur correspondant trouvé
+      res.status(401).json({ message: 'Email ou mot de passe incorrect' });
+    }
+  } catch (error) {
+    // Gestion des erreurs
     console.error('Erreur lors de la connexion :', error);
-    res.status(500).json({ message: 'Erreur lors de connexion' });
+    res.status(500).json({ message: 'Erreur lors de la connexion' });
   }
-  connection.end();
 });
+
 
 app.get('/api/nodes/subgraph/:nodeId', async (req, res) => {
   const session = driver.session();
@@ -438,48 +439,31 @@ app.get('/api/nodes/subgraph/:nodeId', async (req, res) => {
 });
 
 app.get('/api/nodes/advancedSearch/:searchTerm', async (req, res) => {
-  const Term = req.params.searchTerm;
   const session = driver.session();
-  console.log(Term)
+  const Term = req.params.searchTerm;
   try {
-    
-      
-      // Récupération du schéma du graphe
-      const nodesresult = await session.run('MATCH (n)-[]-(connectedNode) WHERE n.designation = $Term  RETURN connectedNode' ,{Term});
-     let nodes=[]
-     nodesresult.records.forEach(record => {
-     const connectedNodes = record.get('connectedNode');
-     nodes.push({
-      id: connectedNodes.identity.low,
-      title: connectedNodes.properties.designation,
-      category:connectedNodes.labels,
-      couleur:connectedNodes.properties.couleur
+    const nodesResult = await session.run(
+      'MATCH (n)-[]-(connectedNode) WHERE n.designation = $Term RETURN connectedNode',
+      { Term }
+    );
 
-     })
-  
-  
+    const nodes = nodesResult.records.map(record => ({
+      id: record.get('connectedNode').identity.low,
+      title: record.get('connectedNode').properties.designation,
+      category: record.get('connectedNode').labels,
+      couleur: record.get('connectedNode').properties.couleur
+    }));
 
-/*
-
-
-  })  
-    nodes.push({
-      id: connectedNode.identity,
-      title: connectedNode.designation,
-      category: connectedNode.labels
-    })
-*/
-  });
-    
-  res.json({nodes});
- 
+    res.json({ nodes });
   } catch (err) {
-      console.error(`Error fetching schema: ${err.message}`);
-      res.status(500).send('Error fetching schema');
-  }  finally {
-    await session.close();
+    console.error(`Error fetching advanced search results: ${err.message}`);
+    res.status(500).send('Error fetching advanced search results');
+  } finally {
+    session.close();
   }
 });
+
+
 
 app.get('/api/nodes/Search/:search', async (req, res) => {
   const Term = req.params.search;
