@@ -17,7 +17,7 @@ import { Form, Select, Button, Input, Card, Row, Col , Typography } from 'antd';
 import Footer from '../Elements/Footer';
 import ChatBox from '../Elements/ChatBox';
 import { useTranslation } from 'react-i18next';
-const Pathologie = () => {
+const Pathologie = ({pathologies}) => {
   const [isMenuOpen, setMenuOpen ,setGraph ,isGraph] = useState(false);
   const { t,i18n } = useTranslation();
   const navigate = useNavigate();
@@ -41,18 +41,18 @@ const Pathologie = () => {
           </div>
           <div className='MaterialCat'>
   <img className="home" src={homeIcon}  />
-  <Link to="/" style={{marginLeft:'10px', color: 'blue', textDecoration: 'none' }}>{t("navbar.accueil")}</Link> {/* Lien vers la page d'accueil */}
+  <Link to="/acceuil" style={{marginLeft:'10px', color: 'blue', textDecoration: 'none' }}>{t("navbar.accueil")}</Link> {/* Lien vers la page d'accueil */}
   <span className='Path' style={{ color: 'blue' }}>&gt;</span> {/* Utilisation de span pour le symbole ">" */}
   <Link to="/pathologie" style={{ marginLeft:'10px',color: 'blue', textDecoration: 'none' }}> {t("Header.Path")}</Link> {/* Lien vers la page Monument */}
   
 </div>
-          <Categories  categorieName={t("Menu.MAT")}/>
-          <Categories  categorieName={t("Menu.Chd")}/>
-          <Categories  categorieName={t("Menu.Déformation")}/>
-          <Categories  categorieName={t("Menu.Détachement")}/>
-          <Categories  categorieName={t("Menu.Fissure")}/>
-          <Categories  categorieName={t("Menu.PDM")}/>
-          <Categories  categorieName={t("Menu.Autres")}/>
+          <Categories pathologies={pathologies} categorieName= {t("Menu.Biologique")}/>
+          <Categories pathologies={pathologies} categorieName={t("Menu.Chd")}/>
+          <Categories pathologies={pathologies} categorieName={t("Menu.Déformation")}/>
+          <Categories pathologies={pathologies} categorieName={t("Menu.Détachement")}/>
+          <Categories pathologies={pathologies} categorieName={t("Menu.Fissure")}/>
+          <Categories pathologies={pathologies} categorieName={t("Menu.PDM")}/>
+          <Categories pathologies={pathologies} categorieName={t("Menu.Autres")}/>
 
         {/* Afficher le menu latéral s'il est ouvert */}
         {isMenuOpen && (
@@ -104,7 +104,7 @@ const Pathologie = () => {
   <div className='lineBar'></div>
   <h3 className='rub'  style={{textAlign: 'center' }} >{t("Menu.Pages")}</h3>
   {/* Ajoutez vos liens du menu ici */}
-  <Link className="pageLink" to="/userHome">{t("navbar.accueil")}</Link>
+  <Link className="pageLink" to="/acceuil">{t("navbar.accueil")}</Link>
   <Link className="pageLink" to="/Graph">{t("navbar.graph")}</Link>
   <Link className="pageLink" to="/carte-geographique">{t("navbar.carteGeographique")}</Link>
   <Link className="pageLink" to="/recherche-avancee">{t("navbar.rechercheAvancee")}</Link>
@@ -112,7 +112,7 @@ const Pathologie = () => {
   <div className='lineDecBar'></div>
   <div className='Decon'>
     <img className="dec" src={deconIcon} alt="Decon Icon" onClick={handleDeconnect} />
-    <a className='decLink' href="/lien2">{t("Menu.Deconnexion")}</a>
+    <a className='decLink' onClick={handleDeconnect} >{t("Menu.Deconnexion")}</a>
   </div>
 </div>
 
@@ -127,6 +127,7 @@ const Pathologie = () => {
 
 const Categories = (props) => {
   const CatName = props.categorieName;
+  const pathologies=props.pathologies
   const { t,i18n } = useTranslation();
   const navigate = useNavigate();
   const handleImageClick = () => {
@@ -137,138 +138,118 @@ const Categories = (props) => {
   let categoryContent;
   let categoryUrl;
 
-  if (CatName === t("Menu.MAT")) {
+  if (CatName === t("Menu.Biologique")) {
     categoryContent = (
       <div className='CategorieList'>
-        <div className='CardMatItem'>
-          <p >Pathologie 1</p>
-          <img  onClick={handleImageClick} />
-        </div>
-        <div className='CardMatItem'>
-          <p >Pathologie 2</p>
-          <img  onClick={handleImageClick} />
-        </div>
-        <div className='CardMatItem'>
-          <p >Pathologie 3</p>
-          <img  onClick={handleImageClick} />
-        </div>
-        {/* Ajoutez d'autres éléments spécifiques à cette catégorie si nécessaire */}
+        { pathologies
+          .filter(pathologie => pathologie.category === "BIOLOGIQUE")
+          .slice(0, 3)
+          .map((pathologie, index) => (
+            <div className='CardMatItem' key={index} style={{marginTop:'3%', marginBottom:'-3%', width:'200px',height: '180px',border: '1px solid dimgrey ',marginRight:'3%'}}>
+
+              <p style={{marginLeft:'35%', marginTop:'25%', fontSize:'17px'}}>{pathologie.title}</p>
+              
+            </div>
+          ))}
       </div>
     );
     categoryUrl = "/biologique";
-  } else if (CatName === t("Menu.Chd")) {
+  }
+  else if (CatName === t("Menu.Chd")) {
     categoryContent = (
       <div className='CategorieList'>
-        <div className='CardMatItem'>
-          <p >Pathologie 1</p>
-          <img  onClick={handleImageClick} />
-        </div>
-        <div className='CardMatItem'>
-          <p >Pathologie 2</p>
-          <img  onClick={handleImageClick} />
-        </div>
-        <div className='CardMatItem'>
-          <p >Pathologie 3</p>
-          <img  onClick={handleImageClick} />
-        </div>
-        {/* Ajoutez d'autres éléments spécifiques à cette catégorie si nécessaire */}
+        { pathologies
+          .filter(pathologie => pathologie.category === "CHROMATIQUE")
+          .slice(0, 3)
+          .map((pathologie, index) => (
+            <div className='CardMatItem' key={index} style={{marginTop:'3%', marginBottom:'-3%', width:'200px',height: '180px',border: '1px solid dimgrey ',marginRight:'3%'}}>
+
+            <p style={{marginLeft:'35%', marginTop:'25%', fontSize:'17px'}}>{pathologie.title}</p>
+            
+          </div>
+          ))}
       </div>
     );
     categoryUrl = "/chromatique-dépot";
   } else if (CatName ===t("Menu.Déformation")) {
     categoryContent = (
       <div className='CategorieList'>
-        <div className='CardMatItem'>
-          <p >Pathologie 1</p>
-          <img  onClick={handleImageClick} />
-        </div>
-        <div className='CardMatItem'>
-          <p >Pathologie 2</p>
-          <img  onClick={handleImageClick} />
-        </div>
-        <div className='CardMatItem'>
-          <p >Pathologie 3</p>
-          <img  onClick={handleImageClick} />
-        </div>
-        {/* Ajoutez d'autres éléments génériques si nécessaire */}
+        { pathologies
+          .filter(pathologie => pathologie.category === "DEFORMATION")
+          .slice(0, 3)
+          .map((pathologie, index) => (
+            <div className='CardMatItem' key={index} style={{marginTop:'3%', marginBottom:'-3%', width:'200px',height: '180px',border: '1px solid dimgrey ',marginRight:'3%'}}>
+
+            <p style={{marginLeft:'35%', marginTop:'25%', fontSize:'17px'}}>{pathologie.title}</p>
+            
+          </div>
+          ))}
       </div>
     );
     categoryUrl = "/déformation";
   } else if (CatName === t("Menu.Détachement")) {
     categoryContent = (
       <div className='CategorieList'>
-        <div className='CardMatItem'>
-          <p >Pathologie 1</p>
-          <img  onClick={handleImageClick} />
-        </div>
-        <div className='CardMatItem'>
-          <p >Pathologie 2</p>
-          <img  onClick={handleImageClick} />
-        </div>
-        <div className='CardMatItem'>
-          <p >Pathologie 3</p>
-          <img  onClick={handleImageClick} />
-        </div>
-        {/* Ajoutez d'autres éléments spécifiques à cette catégorie si nécessaire */}
+        { pathologies
+          .filter(pathologie => pathologie.category === "DETACHEMENT")
+          .slice(0, 3)
+          .map((pathologie, index) => (
+            <div className='CardMatItem' key={index} style={{marginTop:'3%', marginBottom:'-3%', width:'200px',height: '180px',border: '1px solid dimgrey ',marginRight:'3%'}}>
+
+            <p style={{marginLeft:'35%', marginTop:'25%', fontSize:'17px'}}>{pathologie.title}</p>
+            
+          </div>
+          ))}
       </div>
     );
     categoryUrl = "/détachement";
   } else if (CatName === t("Menu.Fissure")) {
     categoryContent = (
       <div className='CategorieList'>
-        <div className='CardMatItem'>
-          <p >Pathologie 1</p>
-          <img  onClick={handleImageClick} />
-        </div>
-        <div className='CardMatItem'>
-          <p >Pathologie 2</p>
-          <img  onClick={handleImageClick} />
-        </div>
-        <div className='CardMatItem'>
-          <p >Pathologie 3</p>
-          <img  onClick={handleImageClick} />
-        </div>
-        {/* Ajoutez d'autres éléments spécifiques à cette catégorie si nécessaire */}
+        { pathologies
+          .filter(pathologie => pathologie.category === "FISSURE")
+          .slice(0, 3)
+          .map((pathologie, index) => (
+            <div className='CardMatItem' key={index} style={{marginTop:'3%', marginBottom:'-3%', width:'200px',height: '180px',border: '1px solid dimgrey ',marginRight:'3%'}}>
+
+            <p style={{marginLeft:'35%', marginTop:'25%', fontSize:'17px'}}>{pathologie.title}</p>
+            
+          </div>
+          ))}
       </div>
     );
     categoryUrl = "/fissure";
     }else if (CatName === t("Menu.PDM")) {
       categoryContent = (
         <div className='CategorieList'>
-          <div className='CardMatItem'>
-            <p >Pathologie 1</p>
-            <img  onClick={handleImageClick} />
-          </div>
-          <div className='CardMatItem'>
-            <p >Pathologie 2</p>
-            <img  onClick={handleImageClick} />
-          </div>
-          <div className='CardMatItem'>
-            <p >Pathologie 3</p>
-            <img  onClick={handleImageClick} />
-          </div>
-          {/* Ajoutez d'autres éléments spécifiques à cette catégorie si nécessaire */}
+          { pathologies
+            .filter(pathologie => pathologie.category === "PERTE MATIERE")
+            .slice(0, 3)
+            .map((pathologie, index) => (
+              <div className='CardMatItem' key={index} style={{marginTop:'3%', marginBottom:'-3%', width:'200px',height: '180px',border: '1px solid dimgrey ',marginRight:'3%'}}>
+
+              <p style={{marginLeft:'35%', marginTop:'25%', fontSize:'17px'}}>{pathologie.title}</p>
+              
+            </div>
+            ))}
         </div>
       );
       categoryUrl = "/perte de matière";
     } else if (CatName === t("Menu.Autres")) {
-    categoryContent = (
-      <div className='CategorieList'>
-        <div className='CardMatItem'>
-          <p >Pathologie 1</p>
-          <img  onClick={handleImageClick} />
+      categoryContent = (
+        <div className='CategorieList'>
+          { pathologies
+            .filter(pathologie => pathologie.category === "AUTRE")
+            .slice(0, 3)
+            .map((pathologie, index) => (
+              <div className='CardMatItem' key={index} style={{marginTop:'3%', marginBottom:'-3%', width:'200px',height: '180px',border: '1px solid dimgrey ',marginRight:'3%'}}>
+
+              <p style={{marginLeft:'35%', marginTop:'25%', fontSize:'17px'}}>{pathologie.title}</p>
+              
+            </div>
+            ))}
         </div>
-        <div className='CardMatItem'>
-          <p >Pathologie 2</p>
-          <img  onClick={handleImageClick} />
-        </div>
-        <div className='CardMatItem'>
-          <p >Pathologie 3</p>
-          <img  onClick={handleImageClick} />
-        </div>
-        {/* Ajoutez d'autres éléments spécifiques à cette catégorie si nécessaire */}
-      </div>
-    );
+      );
     categoryUrl = "/autres";
     }
   return (

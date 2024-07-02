@@ -1,17 +1,58 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import CytoscapeComponent from 'react-cytoscapejs';
 import './GraphStyle.css';
-import { useNavigate } from 'react-router-dom';
-import { useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import queryString from 'query-string';
 
-const Neo4jGraph = ({graph}) => {
+const Neo4jGraph = () => {
   const [elements, setElements] = useState([]);
   const location = useLocation();
   const navigate = useNavigate();
-  console.log(graph)
-const [matId,setMatId]=useState(0);
+  const [matId, setMatId] = useState(0);
+  const [cyInstance, setCyInstance] = useState(null);
+  const cyInstanceRef = useRef(null);
+
+
+  const legend = [
+    { color: 'orange', label: 'Produit' },
+    { color: 'gold', label: 'Ouvrage' },
+    { color: 'crimson', label: 'Monument' },
+    { color: 'aquamarine', label: 'ConstruirRelation' },
+    { color: 'blue', label: 'Materiau' },
+    { color: 'green', label: 'Periode' },
+    { color: 'red', label: 'Place' },
+    { color: 'violet', label: 'Pathologie' }
+  ];
+
+  const fetchGraphData = async () => {
+    try {
+      const response = await axios.get('http://localhost:1000/api/nodes');
+      const responseData = response.data;
+
+      // Filtrer les nœuds pour n'inclure que ceux qui sont connectés par des relations
+      const connectedNodes = filterConnectedNodes(responseData.nodes, responseData.edges);
+
+      // Formater les éléments pour Cytoscape
+      const { nodes, edges } = formatElements(connectedNodes, responseData.edges);
+
+      setElements([...nodes, ...edges]);
+    } catch (error) {
+      console.error('Error fetching graph data:', error);
+    }
+  };
+
+  const filterConnectedNodes = (nodes, edges) => {
+    const connectedNodeIds = new Set();
+
+    edges.forEach(edge => {
+      connectedNodeIds.add(edge.startNodeElementId);
+      connectedNodeIds.add(edge.endNodeElementId);
+    });
+
+    return nodes.filter(node => connectedNodeIds.has(node.id));
+  };
+
   const formatElements = (nodes, edges) => {
     const formattedNodes = nodes.map((item, index) => {
       const positionX = index * 100;
@@ -19,35 +60,45 @@ const [matId,setMatId]=useState(0);
       let backgroundColor = '';
       let label = 'node';
 
-      if (item.labels[0].includes('Produit')) {
-        backgroundColor = 'orange';
-        label = item.designation;
-      } else if (item.labels[0].includes('Restauration')) {
-        backgroundColor = '';
-      } else if (item.labels[0].includes('Technique')) {
-        backgroundColor = '';
-      } else if (item.labels[0].includes('Pathologie')) {
-        backgroundColor = '';
-      } else if (item.labels[0].includes('Ouvrage')) {
-        backgroundColor = 'gold';
-        label = item.designation;
-      } else if (item.labels[0].includes('Monument')) {
-        backgroundColor = 'crimson';
-        label = item.designation;
-      } else if (item.labels[0].includes('ConstruirRelation')) {
-        backgroundColor = 'aquamarine';
-        label = item.designation;
-      } else if (item.labels[0].includes('Materiau')) {
-        backgroundColor = 'blue';
-        label = item.designation;
-      } else if (item.labels[0].includes('Periode')) {
-        backgroundColor = 'green';
-        label = item.designation;
-      } else if (item.labels[0].includes('Place')) {
-        backgroundColor = 'red';
-        label = item.designation;
-      } else {
-        label = item.designation;
+      switch (item.labels[0]) {
+        case 'Produit':
+          backgroundColor = 'orange';
+          label = item.designation;
+          break;
+        case 'Restauration':
+        case 'Technique':
+          backgroundColor = '';
+          break;
+        case 'Pathologie':
+          backgroundColor = 'violet';
+          break;
+        case 'Ouvrage':
+          backgroundColor = 'gold';
+          label = item.designation;
+          break;
+        case 'Monument':
+          backgroundColor = 'crimson';
+          label = item.designation;
+          break;
+        case 'ConstruirRelation':
+          backgroundColor = 'aquamarine';
+          label = item.designation;
+          break;
+        case 'Materiau':
+          backgroundColor = 'blue';
+          label = item.designation;
+          break;
+        case 'Periode':
+          backgroundColor = 'green';
+          label = item.designation;
+          break;
+        case 'Place':
+          backgroundColor = 'red';
+          label = item.designation;
+          break;
+        default:
+          label = item.designation;
+          break;
       }
 
       return {
@@ -66,52 +117,36 @@ const [matId,setMatId]=useState(0);
 
     const formattedEdges = edges.map(edge => ({
       data: {
-        id: edge.elementId-300,
+        id: `edge_${edge.elementId}`,
         source: edge.startNodeElementId,
         target: edge.endNodeElementId,
-        label: edge.type,
+        label: edge.labels
       },
       style: {
         color: 'black',
         fontWeight: 'bold',
-        fontSize: '100px',
-      },
+        fontSize: '100px'
+      }
     }));
 
     return { nodes: formattedNodes, edges: formattedEdges };
   };
 
-
-  
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        console.log(graph)
-        const responseData = graph
-        const { nodes, edges } = formatElements(responseData.nodes, responseData.edges);
-        setElements([...nodes, ...edges]);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-    
-    fetchData();
+    fetchGraphData();
+
     // Extraction des paramètres de requête de l'URL
     const queryParams = queryString.parse(location.search);
     const selectedMaterials = queryParams.selectedMaterials;
-  
-    // Si des matériaux sont sélectionnés, récupérer le sous-graphe correspondant
+
+    // Si des matériaux sont sélectionnés, mettre à jour matId
     if (selectedMaterials) {
       const materialIds = Array.isArray(selectedMaterials) ? selectedMaterials : [selectedMaterials];
       const materialId = materialIds[0];
-      setMatId(materialId); // Mise à jour de materId
+      setMatId(materialId);
     }
-  
-    
-  }, [location.search]); // Ajout de fetchSubGraph comme dépendance
-  
+  }, [location.search]);
 
-  // Utiliser useEffect pour appeler fetchSubGraph une fois que matId est mis à jour
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -123,16 +158,15 @@ const [matId,setMatId]=useState(0);
         console.error('Error fetching subgraph:', error);
       }
     };
-  
+
     fetchData(); // Appel initial pour récupérer le sous-graphe lorsque le composant est monté
-  
+
     // L'effet sera réexécuté chaque fois que matId change
   }, [matId]);
 
   const fetchSubGraph = async (nodeId) => {
     try {
       setElements([]);
-      console.log(nodeId);
       const response = await axios.get(`http://localhost:2000/api/nodes/subgraph/${nodeId}`);
       const responseData = response.data;
       const { nodes, edges } = formatElements(responseData.nodes, responseData.edges);
@@ -141,28 +175,54 @@ const [matId,setMatId]=useState(0);
       console.error('Error fetching subgraph:', error);
     }
   };
-  
+
   const layoutOptions = {
     name: 'cose',
   };
 
+  useEffect(() => {
+    if (cyInstanceRef.current) {
+      cyInstanceRef.current.fit();
+    }
+  }, [elements]);
+  
   const cyEventHandler = (cy) => {
+    try {
+      cyInstanceRef.current = cy;
     cy.on('tap', 'node', (event) => {
       const nodeId = event.target.id();
-      const nodelabels = event.target._private.data.type;
-      if (nodelabels && nodelabels.includes('Produit')) {
-        navigate(`/produitdetails/${nodeId}`);
-      } else if (nodelabels.includes('Materiau')) {
-        navigate(`/materialdetails/${nodeId}`);
-      } else if (nodelabels.includes('Monument')) {
-        navigate(`/monumentdetails/${nodeId}`);
-      } else if (nodelabels.includes('Ouvrage')) {
-        navigate(`/ouvragedetails/${nodeId}`);
+      const nodeType = event.target._private.data.type;
+
+      switch (nodeType) {
+        case 'Produit':
+          navigate(`/produitDetails/${nodeId}`);
+          break;
+        case 'Materiau':
+          navigate(`/materiauDetails/${nodeId}`);
+          break;
+        case 'Monument':
+          navigate(`/monumentDetails/${nodeId}`);
+          break;
+        case 'Ouvrage':
+          navigate(`/ouvrageDetails/${nodeId}`);
+          break;
+        default:
+          break;
+      }
+      if (cyInstanceRef.current) {
+        cyInstanceRef.current.fit();
       }
     });
+
+    if (cyInstance) {
+      cyInstance.fit();
+    } else {
+      setCyInstance(cy);
+    }
+  } catch (error) {
+    console.error('Error in cyEventHandler:', error);
+  }
   };
-
-
 
   return (
     <div>
@@ -172,11 +232,31 @@ const [matId,setMatId]=useState(0);
         layout={layoutOptions}
         cy={(cy) => {
           cyEventHandler(cy);
-          cy.layout({ name: 'cose' }).run();
+          cy.layout({
+            name: 'cose',
+            animate: true, // Désactive l'animation lors de l'exécution du layout
+            idealEdgeLength: 200, // Longueur idéale des arêtes
+            edgeElasticity: 0.7, // Élasticité des arêtes
+            nodeRepulsion: 1000, // Répulsion entre les nœuds
+            nodeOverlap: 9000, // Tolérance de chevauchement entre les nœuds
+            randomize: false, // Désactive la randomisation initiale des positions des nœuds
+            padding: 10,
+          }).run();
         }}
       />
+      <div className="legend">
+        <h3>Legend</h3>
+        <ul>
+          {legend.map((item, index) => (
+            <li key={index}>
+              <span className="legend-color" style={{ backgroundColor: item.color }}></span>
+              {item.label}
+            </li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
-}
-  
+};
+
 export default Neo4jGraph;

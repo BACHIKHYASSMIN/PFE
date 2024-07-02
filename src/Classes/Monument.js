@@ -19,7 +19,7 @@ import ChatBox from '../Elements/ChatBox';
 import { useAuth } from '../AuthContext';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
-const Monument = ({monuments}) => {
+const Monument = ({monuments, products, buildings, periodes,places}) => {
  
 
   const [isMenuOpen, setMenuOpen] = useState(false);
@@ -59,7 +59,7 @@ const Monument = ({monuments}) => {
     );
     setData({ ...Monumentsdata,filteredMonuments });
   };
-
+console.log(monuments)
 
   const navigate = useNavigate();
   const handleImageClick = (monumentId) => {
@@ -193,7 +193,16 @@ const Monument = ({monuments}) => {
             currentMonuments.map(monument => (
             <div className='catItem'>
               <p >{monument.title}</p>
-              <img key={monument.id} src={`data:image/jpg;base64, ${monument.image}`} onClick={() => handleImageClick(monument.id)}/>
+              {monument.image && monument.image.length > 0 ? (
+                <img 
+                  className="mat-img" 
+                  src={`data:image/jpg;base64, ${monument.image[0]}`} // Affiche la première image
+                  onClick={() => handleImageClick(monument.id)} 
+                  alt="Material"
+                />
+              ) : (
+                <img src={`data:image/jpg;base64, ${monument.image}`}  onClick={() => handleImageClick(monument.id)}/>
+              )}
             </div>
           ))
           ):(
@@ -243,7 +252,7 @@ const Monument = ({monuments}) => {
           </div>
           <div className='catboxList'>
           <ul>
-          { data.produits.map(produit => (
+          { products.map(produit => (
         <div key={produit.id}>
           <input
             type="checkbox"
@@ -268,7 +277,7 @@ const Monument = ({monuments}) => {
           </div>
           <div className='catboxList'>
           <ul>
-          { data.ouvrages.map(ouvrage => (
+          { buildings.map(ouvrage => (
         <div key={ouvrage.id}>
           <input
             type="checkbox"
@@ -293,7 +302,7 @@ const Monument = ({monuments}) => {
       </div>
       <div className='catboxList'>
         <ul>
-          {data.periodes.map(periode => (
+          {periodes.map(periode => (
             <div key={periode.id}>
               <input
                 type="checkbox"
@@ -311,7 +320,7 @@ const Monument = ({monuments}) => {
       </div>
       <div className='catboxList'>
         <ul>
-          {data.places.map(place => (
+          {places.map(place => (
             <div key={place.id}>
               <input
                 type="checkbox"
@@ -390,7 +399,7 @@ const Monument = ({monuments}) => {
   <div className='lineDecBar'></div>
   <div className='Decon'>
     <img className="dec" src={deconIcon} alt="Decon Icon" onClick={handleDeconnect} />
-    <a className='decLink' >{t("Menu.Deconnexion")}</a>
+    <a className='decLink' onClick={handleDeconnect}>{t("Menu.Deconnexion")}</a>
   </div>
 </div>
 

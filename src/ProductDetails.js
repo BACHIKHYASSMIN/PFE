@@ -18,7 +18,15 @@ import axios from 'axios';
 function ProductDetails() {
   const [product, setProduct] = useState(null);
   const {productId} = useParams();
-  
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [infos,setInfos]=useState();
+  const prevSlide = () => {
+    setCurrentIndex((prevIndex) => (prevIndex === 0 ? product.component.images.length - 1 : prevIndex - 1));
+  };
+
+  const nextSlide = () => {
+    setCurrentIndex((prevIndex) => (prevIndex === product.component.images.length - 1 ? 0 : prevIndex + 1));
+  };
   console.log("productId:", productId);
 
   useEffect(() => {
@@ -29,10 +37,18 @@ function ProductDetails() {
       .catch(error => console.error('Error fetching product details:', error));
   }, [productId]);
 
+  useEffect(() => {
+    // Convertissez productId en entier en utilisant parseInt()
+    fetch(`http://localhost:1000/api/RealtionsData/${productId}`)
+      .then(response => response.json())
+      .then(data => setInfos(data))
+      .catch(error => console.error('Error fetching product details:', error));
+  }, [productId]);
   const [isMenuOpen, setMenuOpen ,setGraph ,isGraph] = useState(false);
   const handleMenuToggle = () => {
     setMenuOpen(!isMenuOpen);
   };
+  
 
 const handleDownloadPdf = async () => {
   const pdf = new jsPDF();
@@ -83,53 +99,103 @@ const handleDownloadPdf = async () => {
        <img className="menuList" src={menuIcon} alt="Menu Icon"  onClick={handleMenuToggle}  />
        <div id="pdfContent">
       <div className="materials">
-      <img className="mat-img"   />
       {product && product.component ? (
-         <div>
-          <img className="mat-img" src={`data:image/jpg;base64, ${product.component.images}`}  />
-              <p className='mat-name'>{product.component.designation}</p>
+        <div>
+          <p className='mat-name'>{product.component.designation}</p>
+
+          {product.component.images && product.component.images.length > 0 ? (
+            <div className="slider-container">
+              <div
+                className="slider-images"
+                style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+              >
+                {product.component.images.map((image, index) => (
+                  <div className="slider-image" key={image.id}>
+                    <img
+                      className="mat-img"
+                      src={`data:image/jpg;base64, ${image}`}
+                      alt={`Image ${index}`}
+                    />
+                  </div>
+                ))}
               </div>
-          ):(
-            <p>Aucun produit trouvé</p>
-          )
-          }
+              <a className="prev" onClick={prevSlide}>&#10094;</a>
+              <a className="next" onClick={nextSlide}>&#10095;</a>
+            </div>
+          ) : (
+            <p>Aucune image trouvée pour ce matériau</p>
+          )}
+
+        </div>
+        ) : (
+          <p>Aucun matériau trouvé</p>
+        )}
       </div>
 
       <div className="Description">
-      <h3 >Description</h3>
-      
-      {product && product.component ? (
-        <ul>
-             <li> <span className='champ'> Longueur:  </span>  {product.component.longueur}</li>
-             <li><span className='champ'>  Surface :</span>   {product.component.surface} </li>
-             <li><span className='champ'> Largeur: </span> {product.component.largeur}</li>
-      <li><span className='champ'> Isolation Thermique : </span> {product.component.isolation_thermique}</li>
-      <li>
-      <span className='champ'>  Couleur: </span> {product.component.couleur.map((color, index) => (
-    <span key={index}>
-      {color}{index !== product.component.couleur.length - 1 && ', '}
-    </span>
-  ))}
-</li>
-      <li><span className='champ'> Forme:</span>   {product.component.forme.map((forme,index)=> (
-         <span key={index}>
-         {forme}{index !== product.component.forme.length - 1 && ', '}
-       </span>
-      ))}</li>
-      <li><span className='champ'> Inertie Thermique: </span>  {product.component.inertie_thermique}</li>
-      <li><span className='champ'> Profondeur:</span>   {product.component.profondeur}</li>
-      <li><span className='champ'> Epesseur: </span>  {product.component.epesseur}</li>
-      <li><span className='champ'> Plasticite: </span>  {product.component.plasticite}</li>
-      <li><span className='champ'> Dimention: </span>  {product.component.dimention}</li>
-      <li><span className='champ'> Hauteur: </span>  {product.component.hauteur}</li>
-      <li><span className='champ'> Disponibilité: </span> {product.component.disponibilite}</li>
-      </ul>
-          ):(
-            <p>Aucun produit trouvé</p>
-          )
-}
-      
-      </div>
+  <h3>Description</h3>
+  
+  {product && product.component ? (
+    <ul>
+      {product.component.longueur && (
+        <li><span className='champ'> Longueur: </span> {product.component.longueur}</li>
+      )}
+      {product.component.surface && (
+        <li><span className='champ'> Surface :</span> {product.component.surface} </li>
+      )}
+      {product.component.largeur && (
+        <li><span className='champ'> Largeur: </span> {product.component.largeur}</li>
+      )}
+      {product.component.isolation_thermique && (
+        <li><span className='champ'> Isolation Thermique : </span> {product.component.isolation_thermique}</li>
+      )}
+      {product.component.couleur && product.component.couleur.length > 0 && (
+        <li>
+          <span className='champ'> Couleur: </span> 
+          {product.component.couleur.map((color, index) => (
+            <span key={index}>
+              {color}{index !== product.component.couleur.length - 1 && ', '}
+            </span>
+          ))}
+        </li>
+      )}
+      {product.component.forme && product.component.forme.length > 0 && (
+        <li>
+          <span className='champ'> Forme:</span>   
+          {product.component.forme.map((forme,index)=> (
+            <span key={index}>
+              {forme}{index !== product.component.forme.length - 1 && ', '}
+            </span>
+          ))}
+        </li>
+      )}
+      {product.component.inertie_thermique && (
+        <li><span className='champ'> Inertie Thermique: </span> {product.component.inertie_thermique}</li>
+      )}
+      {product.component.profondeur && (
+        <li><span className='champ'> Profondeur:</span> {product.component.profondeur}</li>
+      )}
+      {product.component.epesseur && (
+        <li><span className='champ'> Epaisseur: </span> {product.component.epesseur}</li>
+      )}
+      {product.component.plasticite && (
+        <li><span className='champ'> Plasticite: </span> {product.component.plasticite}</li>
+      )}
+      {product.component.dimention && (
+        <li><span className='champ'> Dimension: </span> {product.component.dimention}</li>
+      )}
+      {product.component.hauteur && (
+        <li><span className='champ'> Hauteur: </span> {product.component.hauteur}</li>
+      )}
+      {product.component.disponibilite && (
+        <li><span className='champ'> Disponibilité: </span> {product.component.disponibilite}</li>
+      )}
+    </ul>
+  ) : (
+    <p>Aucun produit trouvé</p>
+  )}
+</div>
+
       <div className="Vertical">
       <div className="Source">
       <h3 >Source</h3>
@@ -141,14 +207,23 @@ const handleDownloadPdf = async () => {
 }
       </div>
       <div className="Composition">
-      <h3 >Caractéristiques</h3>
-      {product && product.component ? (
-         <p>{product.component.caracteristique}</p>
-         ):(
-          <p>Aucun produit trouvé</p>
-        )
-}
-      </div>
+  <h3>Informations Relatives</h3>
+  {infos && infos.infos ? (
+    // Utilisation de reduce pour regrouper les éléments par type de relation
+    Object.entries(infos.infos.reduce((acc, item) => {
+      const relationType = item.relation.toUpperCase(); // Convertit en majuscules pour uniformiser
+      if (!acc[relationType]) {
+        acc[relationType] = [];
+      }
+      acc[relationType].push(item.Cible);
+      return acc;
+    }, {})).map(([relationType, items], index) => (
+      <p key={index}>{items.length > 0 ? `${relationType} : [${items.join(", ")}]` : ''}</p>
+    ))
+  ) : (
+    <p>Aucune information trouvée</p>
+  )}
+</div>
       </div>
       </div>
 
@@ -208,6 +283,7 @@ const handleDownloadPdf = async () => {
   <Link className="pageLink" to="/Graph">Graph</Link>
   <Link className="pageLink" to="/carte-geographique">Carte Geographique</Link>
   <Link className="pageLink" to="/recherche-avancee">Recherche Avancée</Link>
+  <Link className="pageLink" to="/a-propos">À propos</Link>
   <Link className="pageLink" to="/a-propos">À propos</Link>
   <div className='lineDecBar'></div>
   <div className='Decon'>

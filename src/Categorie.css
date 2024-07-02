@@ -192,3 +192,25 @@ padding-right: 40%;
 .Links a{
   font-size: 100%;
 }
+
+.border-blue {
+  border: 1px solid  ;
+  padding: 2%; /* Vous pouvez ajuster le padding selon vos besoins */
+  margin-left: 5px; /* Vous pouvez ajuster le margin selon vos besoins */
+  width: 25%;
+  background-color: #ECF0F1;
+  font-size: larger;
+  margin-bottom: 2%;
+  text-align: center;
+  font-weight: bold;
+  color: #2C3E50;
+}
+
+.catPathlements{
+  margin-left: 4%;
+  display: flex;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  width: 1200px;
+  margin-top: 4%;
+}

@@ -1,7 +1,7 @@
 // src/services/apiService.js
 import axios from 'axios';
 
-const API_URL = 'http://localhost:2000/api';
+const API_URL = 'http://localhost:1000/api';
 
 const getMonuments = async () => {
   try {
@@ -13,6 +13,17 @@ const getMonuments = async () => {
   }
 };
  export { getMonuments};
+
+ const getUsages = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/UsageData`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    throw error;
+  }
+};
+ export { getUsages};
 
  const getPlaces = async () => {
   try {
@@ -35,6 +46,17 @@ const getProducts = async () => {
   }
 };
 export {getProducts}
+
+const getPathologies = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/PathologieData`);
+    return  response.data;
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    throw error;
+  }
+};
+export {getPathologies}
 
 const getBuildings = async () => {
   try {

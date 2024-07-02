@@ -13,7 +13,7 @@ import menuIcon from "./Assets/icon.png";
 import './RechercheAvancée.css';
 import { ContinuousSizeLegend } from 'react-vis';
 import { filter } from 'd3';
-import { getAllData } from './apiServices';
+import { getAllData, getGraph } from './apiServices';
 import { configConsumerProps } from 'antd/es/config-provider';
 
 const { Option } = Select;
@@ -34,6 +34,7 @@ const RechercheAvancée = ({products,materials,buildings,monuments,places,period
   const [isPeriodeSelceted,setPeriodesSelected]=useState(false);
   const [isSearchBar, setSearchBar] = useState(false);
   const [selectedPeriod, setSelectedPeriod] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState([]);
   const [selectedPlace, setSelectedPlace] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedColor, setSelectedColor] = useState([]);
@@ -64,6 +65,7 @@ const RechercheAvancée = ({products,materials,buildings,monuments,places,period
       try {
         const data= await getAllData();
         setAllData(data);
+      
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -73,32 +75,81 @@ const RechercheAvancée = ({products,materials,buildings,monuments,places,period
   }, []);
 
   useEffect(() => {
-    handleSearch()
-  })
+    const fetchData=async ()=>{
+      await renderItems(combinedData)
+
+    }
+     
+   fetchData();
+  },[])
+
+
   const handleSearch = async () => {
     try {
-     // setFiltredData([]); 
-      let response;
+      // Initialiser un ensemble pour stocker les résultats d'intersection
+      let intersectionSet = new Set();
   
-      
-       if (isPlaceSelected) {
-        response = await axios.get(`http://localhost:2000/api/nodes/advancedSearch/${selectedPlace}`);
-        setFiltredData(response.data.nodes);
+      // Fonction pour obtenir les données de l'API et les convertir en ensemble d'IDs
+      const fetchAndConvertToSet = async (url) => {
+        const response = await axios.get(url);
+        return new Set(response.data.nodes.map(node => node.title));
+      };
+  
+      // Tableau des URLs à interroger en fonction des filtres sélectionnés
+      const urls = [];
+  
+      if (isColorSelected) {
+        urls.push(`http://localhost:1000/api/nodes/Color/${selectedColor}`);
       }
+  
+      if (isPlaceSelected) {
+        urls.push(`http://localhost:1000/api/nodes/advancedSearch/${selectedPlace}`);
+      }
+  
       if (isPeriodeSelceted) {
-        response = await axios.get(`http://localhost:2000/api/nodes/advancedSearch/${selectedPeriod}`);
-        setFiltredData(response.data.nodes);
+        urls.push(`http://localhost:1000/api/nodes/advancedSearch/${selectedPeriod}`);
       }
-      else if (isSearchBar) {
-        response = await axios.get(`http://localhost:2000/api/nodes/Search/${searchTerm}`);
-      }
-      
   
+      if (isSearchBar) {
+        urls.push(`http://localhost:1000/api/nodes/Search/${searchTerm}`);
+      }
+  
+      if (isCategorySelected) {
+        urls.push(`http://localhost:1000/api/nodes/Category/${selectedCategory}`);
+      }
+  
+      // Parcourir chaque URL et mettre à jour l'intersection des résultats
+      for (const url of urls) {
+        const currentSet = await fetchAndConvertToSet(url);
+  
+        if (intersectionSet.size === 0) {
+          intersectionSet = currentSet;
+        } else {
+          intersectionSet = new Set([...intersectionSet].filter(title => currentSet.has(title)));
+        }
+      }
+  
+      // Filtrer les données uniques à partir de l'intersection des IDs
+      const responseArray = [];
+      for (const title of intersectionSet) {
+        const response = await axios.get(`http://localhost:1000/api/nodes/Search/${title}`);
+        responseArray.push(...response.data.nodes);
+        
+      }
+       // Supprimer les doublons
+    const uniqueResults = Array.from(new Set(responseArray.map(a => a.id)))
+    .map(id => {
+      return responseArray.find(a => a.id === id);
+    });
+
+      setFiltredData(uniqueResults);
+     
     } catch (error) {
       console.error('Error fetching data:', error);
     }
-    
   };
+  
+
   
 
  
@@ -172,15 +223,20 @@ const RechercheAvancée = ({products,materials,buildings,monuments,places,period
   const handlePeriodChange = (value) => {
     setPeriodesSelected(true);
     setSelectedPeriod(value);
-    // handleSearch()
+    handleSearch()
       
   };
   
-
+  const handleCategoryChange = (value) => {
+    setCategorySelected(true);
+    setSelectedCategory(value);
+    handleSearch()
+      
+  };
   const handlePlaceChange = (value) => {
     setPlacesSelecetd(true)
     setSelectedPlace(value);
-  //  handleSearch()
+  handleSearch()
 
   };
 
@@ -188,7 +244,7 @@ const RechercheAvancée = ({products,materials,buildings,monuments,places,period
   const handleColorChange = (value) => {
     setColorsSeleceted(true)
     setSelectedColor(value);
-  //  handleSearch()
+  handleSearch()
    
   };
 
@@ -257,46 +313,99 @@ const renderItems = (items) => {
     return selectedFilters.map((filter, index) => (
       <Card
         key={index}
-        title={filter.title}
-        extra={<a onClick={() => getDetailLink(filter.category[0], filter.id)}>Voir plus</a>}
+        title={filter.category}
+        extra={<a onClick={() => getDetailLink(filter.category, filter.id)}>Voir plus</a>}
         style={{ width: '30%', marginRight: '10px', marginLeft: '20px', marginBottom: '20px', border: '1px solid #2C3E50' }}
       >
         <Row gutter={16} align="middle">
-          <Col span={8}>
-            <p>{filter.title}</p>
-          </Col>
           <Col span={16}>
-            <div>
-              <img src={filter.image} alt={filter.title} style={{ maxWidth: '100%' }} />
-            </div>
+            <p>{filter.title}</p>
           </Col>
         </Row>
       </Card>
     ));
-  } else if(filtredData && filtredData.length >0 && isPlaceSelected ){
+  } else if(filtredData && filtredData.length > 0 && isPlaceSelected ){
     return  filtredData.map((filter, index) =>
       (
         <Card
         key={index}
-        title={filter.title}
+        title={filter.category}
         extra={<a onClick={() => getDetailLink(filter.category[0],filter.id)}>Voir plus</a>}
         style={{ width: '30%', marginRight: '10px', marginLeft: '20px', marginBottom: '20px', border: '1px solid #2C3E50' }}
       >
         <Row gutter={16} align="middle">
-          <Col span={8}>
-            <p>{filter.title}</p>
-          </Col>
           <Col span={16}>
-            <div>
-              <img src={filter.image} alt={filter.title} style={{ maxWidth: '100%' }} />
-            </div>
+            <p>{filter.title}</p>
           </Col>
         </Row>
       </Card>
     ));
-    setFiltredData([]);
-    setSearchBar(false)
-  } 
+  } else if(filtredData && filtredData.length >0 && isPeriodeSelceted ){
+    return  filtredData.map((filter, index) =>
+      (
+        <Card
+        key={index}
+        title={filter.category}
+        extra={<a onClick={() => getDetailLink(filter.category[0],filter.id)}>Voir plus</a>}
+        style={{ width: '30%', marginRight: '10px', marginLeft: '20px', marginBottom: '20px', border: '1px solid #2C3E50' }}
+      >
+        <Row gutter={16} align="middle">
+          <Col span={16}>
+            <p>{filter.title}</p>
+          </Col>
+        </Row>
+      </Card>
+    ));
+  } else if(filtredData && filtredData.length >0 && isSearchBar ){
+    return  filtredData.map((filter, index) =>
+      (
+        <Card
+        key={index}
+        title={filter.category}
+        extra={<a onClick={() => getDetailLink(filter.category[0],filter.id)}>Voir plus</a>}
+        style={{ width: '30%', marginRight: '10px', marginLeft: '20px', marginBottom: '20px', border: '1px solid #2C3E50' }}
+      >
+        <Row gutter={16} align="middle">
+          <Col span={16}>
+            <p>{filter.title}</p>
+          </Col>
+        </Row>
+      </Card>
+    ));
+  } else if(filtredData && filtredData.length >0 && isCategorySelected ){
+    return  filtredData.map((filter, index) =>
+      (
+        <Card
+        key={index}
+        title={filter.category}
+        extra={<a onClick={() => getDetailLink(filter.category[0],filter.id)}>Voir plus</a>}
+        style={{ width: '30%', marginRight: '10px', marginLeft: '20px', marginBottom: '20px', border: '1px solid #2C3E50' }}
+      >
+        <Row gutter={16} align="middle">
+          <Col span={16}>
+            <p>{filter.title}</p>
+          </Col>
+        </Row>
+      </Card>
+    ));
+  } else if(filtredData && filtredData.length >0 && isColorSelected ){
+    return  filtredData.map((filter, index) =>
+      (
+        <Card
+        key={index}
+        title={filter.category}
+        extra={<a onClick={() => getDetailLink(filter.category[0],filter.id)}>Voir plus</a>}
+        style={{ width: '30%', marginRight: '10px', marginLeft: '20px', marginBottom: '20px', border: '1px solid #2C3E50' }}
+      >
+        <Row gutter={16} align="middle">
+          <Col span={16}>
+            <p>{filter.title}</p>
+          </Col>
+
+        </Row>
+      </Card>
+    ));
+  }
     else {
       // Afficher tous les éléments de la liste
       return items.map((item, index) => (
@@ -312,13 +421,8 @@ const renderItems = (items) => {
             border: '1px solid #2C3E50',
           }}>
           <Row gutter={16} align="middle">
-            <Col span={8}>
-              <p>{item.title}</p>
-            </Col>
             <Col span={16}>
-              <div>
-                <img src={item.image} alt={item.title} style={{ maxWidth: '100%' }} />
-              </div>
+              <p>{item.title}</p>
             </Col>
           </Row>
         </Card>
@@ -438,15 +542,15 @@ const renderItems = (items) => {
                 <Form.Item label={t("Header.Categorie")}>
                   <Select
                     mode="multiple"
-                    value={selectedCategories}
-                    onChange={(value) => handleCategoriesChange(value)}
+                    value={selectedCategory}
+                    onChange={(value) => handleCategoryChange(value)}
                     style={{ width: '100%' }}
                   >
-                    <Option value="materiau">{t("Header.Mat")}</Option>
-                    <Option value="produit">{t("Header.Prod")}</Option>
-                    <Option value="ouvrage">{t("Header.Ouv")}</Option>
-                    <Option value="pathologie">{t("Header.Path")}</Option>
-                    <Option value="monument">{t("Header.Monu")}</Option>
+                    <Option value="Materiau">{t("Header.Mat")}</Option>
+                    <Option value="Produit">{t("Header.Prod")}</Option>
+                    <Option value="Ouvrage">{t("Header.Ouv")}</Option>
+                    <Option value="Pathologie">{t("Header.Path")}</Option>
+                    <Option value="Monument">{t("Header.Monu")}</Option>
                   </Select>
                 </Form.Item>
                 <Form.Item label={t("Header.Color")}>

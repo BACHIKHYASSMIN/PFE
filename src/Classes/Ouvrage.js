@@ -23,7 +23,7 @@ import Footer from '../Elements/Footer';
 import ChatBox from '../Elements/ChatBox';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
-const Ouvrage = ({buildings}) => {
+const Ouvrage = ({buildings,products,monuments,usage}) => {
  
 
   const [isMenuOpen, setMenuOpen] = useState(false);
@@ -183,7 +183,16 @@ const Ouvrage = ({buildings}) => {
   currentBuildings.map(ouvrage => (
     <div className='catItem'>
       <p>{ouvrage.title}</p>
-      <img key={ouvrage.id} src={`data:image/jpg;base64, ${ouvrage.image}`} onClick={() => handleImageClick(ouvrage.id)} />
+      {ouvrage.image && ouvrage.image.length > 0 ? (
+                <img 
+                  className="mat-img" 
+                  src={`data:image/jpg;base64, ${ouvrage.image[0]}`} // Affiche la première image
+                  onClick={() => handleImageClick(ouvrage.id)} 
+                  alt="Material"
+                />
+              ) : (
+                <img src={`data:image/jpg;base64, ${ouvrage.image}`}  onClick={() => handleImageClick(ouvrage.id)}/>
+              )}
     </div>
   ))
 ) : (
@@ -233,7 +242,7 @@ const Ouvrage = ({buildings}) => {
           </div>
           <div className='catboxList'>
           <ul>
-          { data.map(produit => (
+          { products.map(produit => (
         <div key={produit.id}>
           <input
             type="checkbox"
@@ -259,7 +268,7 @@ const Ouvrage = ({buildings}) => {
           </div>
           <div className='catboxList'>
           <ul>
-          { data.map(monument => (
+          {monuments.map(monument => (
         <div key={monument.id}>
           <input
             type="checkbox"
@@ -284,15 +293,25 @@ const Ouvrage = ({buildings}) => {
           <h3 className='filter-name' >Usages</h3>
           </div>
           <div className='catboxList'>
-    <div className='catbox'>
-      <input  type="checkbox"  checked={isCheckedUsage1}  onChange={handleCheckboxUsage1Change} />
-      <label htmlFor="checkbox">usage1</label>
-    </div>
-    <div className='catbox'>
-      <input  type="checkbox"  checked={isCheckedUsage2}  onChange={handleCheckboxUsage2Change} />
-      <label htmlFor="checkbox">usage2</label>
-    </div>
-    </div> 
+          <ul>
+          {usage.map(use => (
+        <div key={use.id}>
+          <input
+            type="checkbox"
+            checked={isCheckedMonument[use.id] || false}
+            onChange={e => {
+              const isChecked = e.target.checked;
+              setCheckedMonument(prevState => ({
+                ...prevState,
+                [use.id]: isChecked
+              }));
+            }}
+          />
+          <label htmlFor={`checkbox-${use.id}`}>{use.title}</label>
+        </div>
+      ))}
+      </ul>
+      </div> 
           <div className='lineFBar'></div>
           <div className='ValBtn'>
           <button className='annuler' onClick={handleCancel}>{t("Btn.Annuler")}</button>

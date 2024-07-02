@@ -35,7 +35,6 @@ const Navbar = () => {
   const handleToggle = () => {
     setIsOpen(!isOpen);
   };
-console.log("From navbar",isConnected)
   const handleLangChange = (lang) => {
     toggleLang(lang);
     setIsOpen(false);

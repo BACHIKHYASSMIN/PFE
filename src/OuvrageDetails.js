@@ -16,6 +16,22 @@ import Monument from './Classes/Monument';
 function OuvrageDetails() {
   const [ouvrage, setOuvrage] = useState([]);
   const {ouvrageId} = useParams();
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [infos,setInfos]=useState();
+  const prevSlide = () => {
+    setCurrentIndex((prevIndex) => (prevIndex === 0 ? ouvrage.component.images.length - 1 : prevIndex - 1));
+  };
+
+  const nextSlide = () => {
+    setCurrentIndex((prevIndex) => (prevIndex === ouvrage.component.images.length - 1 ? 0 : prevIndex + 1));
+  };
+  useEffect(() => {
+    // Convertissez productId en entier en utilisant parseInt()
+    fetch(`http://localhost:1000/api/RealtionsData/${ouvrageId}`)
+      .then(response => response.json())
+      .then(data => setInfos(data))
+      .catch(error => console.error('Error fetching product details:', error));
+  }, [ouvrageId]);
   console.log('MonumentId :' ,{ouvrageId});
   useEffect(() => {
     // Convertissez productId en entier en utilisant parseInt()
@@ -73,13 +89,37 @@ function OuvrageDetails() {
        <img className="menuList" src={menuIcon} alt="Menu Icon"  onClick={handleMenuToggle}  />
        
       <div className="materials">
-      <img className="mat-img"   />
       {ouvrage && ouvrage.component ? (
-              <p className='mat-name'>{ouvrage.component.designation}</p>
-          ):(
-            <p>Aucun ouvrage trouvé</p>
-          )
-          }
+        <div>
+          <p className='mat-name'>{ouvrage.component.designation}</p>
+
+          {ouvrage.component.images && ouvrage.component.images.length > 0 ? (
+            <div className="slider-container">
+              <div
+                className="slider-images"
+                style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+              >
+                {ouvrage.component.images.map((image, index) => (
+                  <div className="slider-image" key={image.id}>
+                    <img
+                      className="mat-img"
+                      src={`data:image/jpg;base64, ${image.data}`}
+                      alt={`Image ${index}`}
+                    />
+                  </div>
+                ))}
+              </div>
+              <a className="prev" onClick={prevSlide}>&#10094;</a>
+              <a className="next" onClick={nextSlide}>&#10095;</a>
+            </div>
+          ) : (
+            <p>Aucune image trouvée pour cet ouvrage</p>
+          )}
+
+        </div>
+        ) : (
+          <p>Aucun ouvrage trouvé</p>
+        )}
       </div>
 
       <div className="Description">
@@ -106,14 +146,23 @@ function OuvrageDetails() {
 }
       </div>
       <div className="Composition">
-      <h3 >Composition</h3>
-      {ouvrage && ouvrage.component ? (
-         <p>{ouvrage.component.description}</p>
-         ):(
-          <p>Aucun produit trouvé</p>
-        )
-}
-      </div>
+  <h3>Informations Relatives</h3>
+  {infos && infos.infos ? (
+    // Utilisation de reduce pour regrouper les éléments par type de relation
+    Object.entries(infos.infos.reduce((acc, item) => {
+      const relationType = item.relation.toUpperCase(); // Convertit en majuscules pour uniformiser
+      if (!acc[relationType]) {
+        acc[relationType] = [];
+      }
+      acc[relationType].push(item.Cible);
+      return acc;
+    }, {})).map(([relationType, items], index) => (
+      <p key={index}>{items.length > 0 ? `${relationType} : [${items.join(", ")}]` : ''}</p>
+    ))
+  ) : (
+    <p>Aucune information trouvée</p>
+  )}
+</div>
       </div>
       {/* Afficher le menu latéral s'il est ouvert */}
       {isMenuOpen && (

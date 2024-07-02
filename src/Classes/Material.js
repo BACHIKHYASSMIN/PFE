@@ -18,7 +18,7 @@ import ChatBox from '../Elements/ChatBox';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../AuthContext';
 
-const Material = () => {
+const Material = ({materials}) => {
   const [isMenuOpen, setMenuOpen ] = useState(false);
   const [data, setData] = useState([]);
   const { t,i18n } = useTranslation();
@@ -27,6 +27,11 @@ const Material = () => {
 
   const navigate = useNavigate();
 
+  const handleImageClick = (materialId) => {
+    const integerMaterialId = parseInt(materialId, 10);
+    navigate(`/materiauDetails/${integerMaterialId}`);
+  };
+ 
   const handleDeconnect = () => {
     logout(); // Déconnexion de l'utilisateur
     navigate('/'); // Redirection vers la page d'accueil
@@ -35,8 +40,7 @@ const Material = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:2000/api/data');
-        setData(response.data);
+       
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -66,9 +70,9 @@ const Material = () => {
   <span className='Path' style={{ color: 'blue' }}  >&gt;</span> 
   <Link to="/material" style={{ marginLeft:'10px', color: 'blue', textDecoration: 'none' }}>{t("Header.Mat")}</Link>
 </div>
-          <Categories  categorieName={t("Menu.MAT")}/>
-          <Categories  categorieName={t("Menu.MER")}/>
-          <Categories  categorieName={t("Menu.Bois")}/>
+          <Categories materials={materials} categorieName={t("Menu.MAT")}/>
+          <Categories  materials={materials} categorieName={t("Menu.MER")}/>
+          <Categories  materials={materials} categorieName={t("Menu.Bois")}/>
 
           {/* Afficher le menu latéral s'il est ouvert */}
           {isMenuOpen && (
@@ -120,7 +124,7 @@ const Material = () => {
   <div className='lineBar'></div>
   <h3 className='rub'  style={{textAlign: 'center' }} >{t("Menu.Pages")}</h3>
   {/* Ajoutez vos liens du menu ici */}
-  <Link className="pageLink" to="/userHome">{t("navbar.accueil")}</Link>
+  <Link className="pageLink" to="/acceuil">{t("navbar.accueil")}</Link>
   <Link className="pageLink" to="/Graph">{t("navbar.graph")}</Link>
   <Link className="pageLink" to="/carte-geographique">{t("navbar.carteGeographique")}</Link>
   <Link className="pageLink" to="/recherche-avancee">{t("navbar.rechercheAvancee")}</Link>
@@ -143,11 +147,13 @@ const Material = () => {
 const Categories = (props) => {
   const { t,i18n } = useTranslation();
   const CatName = props.categorieName;
+  const materials=props.materials
   const navigate = useNavigate();
-  const handleImageClick = () => {
-    // Naviguer vers la page "Details" lors du clic sur l'image
-    navigate('/details');
+  const handleImageClick = (materialId) => {
+    const integerMaterialId = parseInt(materialId, 10);
+    navigate(`/materiauDetails/${integerMaterialId}`);
   };
+ 
 
   let categoryContent;
   let categoryUrl;
@@ -155,51 +161,72 @@ const Categories = (props) => {
   if (CatName === t("Menu.MAT")) {
     categoryContent = (
       <div className='CategorieList'>
-        <div className='CardMatItem'>
-          <p >{t("Header.TC")}</p>
-          <img  onClick={handleImageClick} />
-        </div>
-        <div className='CardMatItem'>
-          <p >{t("Header.TNC")}</p>
-          <img  onClick={handleImageClick}  />
-        </div>
-        
-        {/* Ajoutez d'autres éléments spécifiques à cette catégorie si nécessaire */}
+        { materials
+          .filter(materiau => materiau.famille === "Base terre")
+          .slice(0, 3)
+          .map((materiau, index) => (
+            <div className='CardMatItem' key={index}>
+              <p>{materiau.title}</p>
+              {materiau.image && materiau.image.length > 0 ? (
+                <img 
+                  className="mat-img" 
+                  src={`data:image/jpg;base64, ${materiau.image[0]}`} // Affiche la première image
+                  onClick={() => handleImageClick(materiau.id)} 
+                  alt="Material"
+                />
+              ) : (
+                <img src={`data:image/jpg;base64, ${materiau.image}`}  onClick={() => handleImageClick(materiau.id)}/>
+              )}
+            </div>
+          ))}
       </div>
     );
     categoryUrl = "/categorie1";
   } else if (CatName === t("Menu.MER")) {
     categoryContent = (
       <div className='CategorieList'>
-        <div className='CardMatItem'>
-          <p >{t("Header.CEL")}</p>
-          <img  onClick={handleImageClick} />
-        </div>
-        <div className='CardMatItem'>
-          <p >{t("Header.Pierre")}</p>
-          <img  onClick={handleImageClick} />
-        </div>
-       
-        {/* Ajoutez d'autres éléments spécifiques à cette catégorie si nécessaire */}
+        { materials
+          .filter(materiau => materiau.famille === "Minérale et roche")
+          .slice(0, 3)
+          .map((materiau, index) => (
+            <div className='CardMatItem' key={index}>
+              <p>{materiau.title}</p>
+              {materiau.image && materiau.image.length > 0 ? (
+                <img 
+                  className="mat-img" 
+                  src={`data:image/jpg;base64, ${materiau.image[0]}`} // Affiche la première image
+                  onClick={() => handleImageClick(materiau.id)} 
+                  alt="Material"
+                />
+              ) : (
+                <img src={`data:image/jpg;base64, ${materiau.image}`}  onClick={() => handleImageClick(materiau.id)}/>
+              )}
+            </div>
+          ))}
       </div>
     );
     categoryUrl = "/categorie2";
   } else {
     categoryContent = (
       <div className='CategorieList'>
-        <div className='CardMatItem'>
-          <p >{t("Header.Cédre")}</p>
-          <img  onClick={handleImageClick} />
-        </div>
-        <div className='CardMatItem'>
-          <p >{t("Header.Thuya")}</p>
-          <img  onClick={handleImageClick} />
-        </div>
-        <div className='CardMatItem'>
-          <p >{t("Header.ENI")}</p>
-          <img  onClick={handleImageClick} />
-        </div>
-        {/* Ajoutez d'autres éléments génériques si nécessaire */}
+        { materials
+          .filter(materiau => materiau.famille === "Bois")
+          .slice(0, 3)
+          .map((materiau, index) => (
+            <div className='CardMatItem' key={index}>
+              <p>{materiau.title}</p>
+              {materiau.image && materiau.image.length > 0 ? (
+                <img 
+                  className="mat-img" 
+                  src={`data:image/jpg;base64, ${materiau.image[0]}`} // Affiche la première image
+                  onClick={() => handleImageClick(materiau.id)} 
+                  alt="Material"
+                />
+              ) : (
+                <img src={`data:image/jpg;base64, ${materiau.image}`}  onClick={() => handleImageClick(materiau.id)}/>
+              )}
+            </div>
+          ))}
       </div>
     );
     categoryUrl = "/categorie3";

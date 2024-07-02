@@ -72,7 +72,7 @@ const handleSubmit = async () => {
 
 const fetchUserInfo = async () => {
   try {
-    const response = await axios.get(`http://localhost:2000/userInfo/${userId}`);
+    const response = await axios.get(`http://localhost:5000/userInfo/${userId}`);
     const userData = response.data.data;
     setUserInfo(userData);
     const userImage=response.data.data.image.data
@@ -156,7 +156,7 @@ useEffect(() => {
     }
   
     try {
-      const response = await axios.post('http://localhost:2000/update-user', formData, {
+      const response = await axios.post('http://localhost:5000/update-user', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

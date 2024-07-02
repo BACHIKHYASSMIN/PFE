@@ -11,6 +11,24 @@ const port = 2000;
 const upload = multer();
 app.set('view engine', 'ejs');
 
+const profiler = require('v8-profiler-next');
+const fs = require('fs');
+
+// Démarrer le profilage
+profiler.startProfiling('MyProfile', true);
+
+// Arrêter le profilage après un certain temps ou à un certain point de votre code
+setTimeout(() => {
+  const profile = profiler.stopProfiling('MyProfile');
+
+  // Enregistrer le profil dans un fichier
+  profile.export((error, result) => {
+    fs.writeFileSync('profile.cpuprofile', result);
+    profile.delete();
+    console.log('Profil sauvegardé.');
+  });
+}, 10000);  // Par exemple, après 10 secondes
+
 // Middleware pour activer CORS
 app.use(cors());
 app.use(express.json());
@@ -48,6 +66,8 @@ const pool = mysql.createPool({
   password: '',
   database: 'materiautheque'
 });
+
+/*
 app.get('/api/MaterialData', async (req, res) => {
   const session = driver.session();
   try {
@@ -73,9 +93,9 @@ app.get('/api/MaterialData', async (req, res) => {
         console.error(`Error executing query: ${err.message}`);
         res.status(500).send('Error executing query');
     } 
-      finally {
-        await session.close();
-      }
+    finally {
+      await session.close();
+    }
     });
 
 
@@ -102,7 +122,7 @@ app.get('/api/MaterialData', async (req, res) => {
           console.error(`Error executing query: ${err.message}`);
           res.status(500).send('Error executing query');
       } finally {
-          await session.close();
+        await session.close();
       }
   });
  
@@ -247,7 +267,7 @@ app.get('/api/ColorsData', async (req, res) => {
 });
 
 
-
+*/
 app.get('/api/all', async (req, res) => {
   const session = driver.session();
 
@@ -281,8 +301,6 @@ app.get('/api/componentsId/:id', async (req, res) => {
 const session = driver.session(); // Assigner la session ici
   const componentId = parseInt(req.params.id, 10);
   try {
-   
-    
     const componentsresult = await session.run('MATCH (p) WHERE ID(p)=$componentId RETURN p',{componentId});
     const componentsArr = componentsresult.records[0].get('p').properties;
     res.json({component:componentsArr});
@@ -294,6 +312,7 @@ const session = driver.session(); // Assigner la session ici
   }
 });
 
+/*
 app.get('/api/nodes', async (req, res) => {
   const session = driver.session();
   try {
@@ -322,7 +341,7 @@ app.get('/api/nodes', async (req, res) => {
     await session.close();
   }
 });
-
+*/
 app.get('/api/node', async (req, res) => {
   const session = driver.session();
   
@@ -343,7 +362,7 @@ app.get('/api/node', async (req, res) => {
     await session.close();
   }
 });
-
+/*
 app.post('/api/register', async (req, res) => {
   const { nomComplet, email, motDePasse } = req.body;
 
@@ -377,7 +396,6 @@ app.post('/api/register', async (req, res) => {
 // Endpoint pour gérer la connexion
 app.post('/api/login', async (req, res) => {
   const { email, pass } = req.body;
-
   try {
     // Requête SQL pour chercher l'utilisateur par email et mot de passe
     const results = await query('SELECT `id` FROM logging WHERE `email` = ? AND `password` = ?', [email, pass]);
@@ -397,47 +415,62 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
-
+*/
 app.get('/api/nodes/subgraph/:nodeId', async (req, res) => {
   const session = driver.session();
   const componentId = parseInt(req.params.nodeId, 10);
+  console.log(componentId);
+
   try {
-     
-     
-  
-      // Récupération du schéma du graphe
-      const nodesresult = await session.run('MATCH (n)-[]-(connectedNode) WHERE ID(n) =$componentId RETURN n,connectedNode',{componentId});
-      let nodes = [];
-      // Traitement des données du schéma pour les rendre compatibles avec la bibliothèque frontale
-      nodesresult.records.forEach(record => {
-          // Extraire les propriétés du nœud de chaque enregistrement
-          const Nproperties = record.get('n');
-          nodes.push(Nproperties); // Ajouter les propriétés du nœud à votre tableau de nœuds
-          const properties = record.get('connectedNode');
-          nodes.push(properties); // Ajouter les propriétés du nœud à votre tableau de nœuds
-          
+    // Combined query to fetch nodes and edges in one go
+    const result = await session.run(
+      `MATCH (n)-[r]-(connectedNode)
+       WHERE ID(n) = $componentId
+       RETURN n, connectedNode, r`,
+      { componentId }
+    );
+
+    let nodes = new Map();
+    let edges = [];
+
+    // Process records
+    result.records.forEach(record => {
+      const n = record.get('n');
+      const connectedNode = record.get('connectedNode');
+      const r = record.get('r');
+
+      // Add nodes if they don't already exist in the map
+      [n, connectedNode].forEach(node => {
+        if (!nodes.has(node.identity.low)) {
+          nodes.set(node.identity.low, {
+            id: node.identity.low,
+            designation: node.properties.designation,
+            labels: node.labels
+          });
+        }
       });
 
-
-      // Récupération du schéma du graphe
-      const edgesresult = await session.run('MATCH (n)-[r]-(connectedNode) WHERE ID(n) = $componentId RETURN  r',{componentId});
-      let edges = [];
-      // Traitement des données du schéma pour les rendre compatibles avec la bibliothèque frontale
-      edgesresult .records.forEach(record => {
-          // Extraire les propriétés du nœud de chaque enregistrement
-          const properties = record.get('r');
-          edges.push(properties); // Ajouter les propriétés du nœud à votre tableau de nœuds
+      // Add edge
+      edges.push({
+        elementId: r.identity.low,
+        startNodeElementId: r.start.low,
+        endNodeElementId: r.end.low,
+        type: r.type
       });
-      res.json({ nodes,edges });
-  
+    });
+
+    // Convert nodes map to array
+    const nodesArray = Array.from(nodes.values());
+
+    res.json({ nodes: nodesArray, edges });
   } catch (err) {
-      console.error(`Error fetching schema: ${err.message}`);
-      res.status(500).send('Error fetching schema');
+    console.error(`Error fetching schema: ${err.message}`);
+    res.status(500).send('Error fetching schema');
   } finally {
     await session.close();
   }
 });
-
+/*
 app.get('/api/nodes/advancedSearch/:searchTerm', async (req, res) => {
   const session = driver.session();
   const Term = req.params.searchTerm;
@@ -459,7 +492,7 @@ app.get('/api/nodes/advancedSearch/:searchTerm', async (req, res) => {
     console.error(`Error fetching advanced search results: ${err.message}`);
     res.status(500).send('Error fetching advanced search results');
   } finally {
-    session.close();
+    await session.close();
   }
 });
 
@@ -497,6 +530,7 @@ app.get('/api/nodes/Search/:search', async (req, res) => {
       category: connectedNode.labels
     })
 */
+/*
   });
     
   res.json({nodes});
@@ -509,6 +543,7 @@ app.get('/api/nodes/Search/:search', async (req, res) => {
   }
 });
 
+*/
 app.post('/send-email', (req, res) => {
   const { recipientEmail, subject, message } = req.body;
 
@@ -530,7 +565,7 @@ app.post('/send-email', (req, res) => {
   });
 });
 
-
+/*
 app.post('/update-user', upload.single('profileImage'), (req, res) => {
   const { userId, editedName, editedFullName, editedEmail, editedPassword } = req.body;
   const profileImageBuffer = req.file ? req.file.buffer : null;
@@ -590,13 +625,88 @@ try {
   res.status(500).json({ message: 'Erreur lors de la connexion à la base de données' });
 }finally {
   // Fermer la connexion à la base de données
-  connection.end();
+ connection.end();
 }
 });
 
 
+*/
 
 
+// Connexion à la base de données MySQL
+const connection = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: '',
+  database: 'materiautheque'
+});
+
+// Connexion à MySQL
+connection.connect((err) => {
+  if (err) {
+    console.error('Erreur de connexion à la base de données :', err);
+    return;
+  }
+  console.log('Connexion à la base de données MySQL réussie');
+});
+
+// Middleware pour traiter les requêtes JSON
+app.use(express.json());
+
+// Route pour récupérer tous les messages
+app.get('/api/messages', (req, res) => {
+  const sql = 'SELECT * FROM messages';
+  connection.query(sql, (err, results) => {
+    if (err) {
+      console.error('Erreur lors de la récupération des messages :', err);
+      res.status(500).json({ message: 'Erreur lors de la récupération des messages' });
+    } else {
+      console.log('Messages récupérés avec succès');
+      const messages = nestMessages(results);
+      res.status(200).json(messages);
+    }
+  });
+});
+
+// Route pour envoyer un nouveau message
+app.post('/api/messages', (req, res) => {
+  const { message, parentId } = req.body;
+  const sql = 'INSERT INTO messages (message, parentId) VALUES (?, ?)';
+  connection.query(sql, [message, parentId], (err, result) => {
+    if (err) {
+      console.error('Erreur lors de l\'envoi du message :', err);
+      res.status(500).json({ message: 'Erreur lors de l\'envoi du message' });
+    } else {
+      console.log('Message envoyé avec succès');
+      res.status(201).json({ id: result.insertId });
+    }
+  });
+});
+
+// Fonction pour imbriquer les messages
+const nestMessages = (messages) => {
+  const map = {};
+  const nested = [];
+
+  // Mapper les messages par leur ID
+  messages.forEach(msg => {
+    map[msg.id] = { ...msg, replies: [] };
+  });
+
+  // Construire la structure hiérarchique des messages basée sur parentId
+  messages.forEach(msg => {
+    if (msg.parentId !== null && map[msg.parentId]) {
+      map[msg.parentId].replies.push(map[msg.id]);
+    } else {
+      nested.push(map[msg.id]);
+    }
+  });
+
+  return nested;
+};
+
+
+ 
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
   });

@@ -17,7 +17,7 @@ import { Form, Select, Button, Input, Card, Row, Col , Typography } from 'antd';
 import Footer from '../Elements/Footer';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
-function Categorie2({products,materials,buildings,monuments}) {
+function Categorie2({products,materials,buildings,monuments,places,colors}) {
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isFilterMenuOpen, setFilterMenuOpen] = useState(false);
   const [isChecked1, setChecked1] = useState(false);
@@ -33,11 +33,15 @@ function Categorie2({products,materials,buildings,monuments}) {
   const [data, setData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedProductId, setSelectedProductId] = useState(); 
+  const [selectedColor, setSelectedColor] = useState(); 
+  const [isCheckedPlaces, setCheckedPlaces] = useState({});
+  const [isCheckedColors, setCheckedColors] = useState({});
   const materialsPerPage = 10;
   const indexOfLastMaterial = currentPage * materialsPerPage;
   const indexOfFirstMaterial = indexOfLastMaterial - materialsPerPage;
   console.log(materials)
-  const currentMaterials = filteredMaterials.slice(indexOfFirstMaterial, indexOfLastMaterial);
+  const currentMaterials = filteredMaterials.filter(materiau => materiau.famille === "Minérale et roche").slice(indexOfFirstMaterial, indexOfLastMaterial);
     
   const handleNextPage = () => {
     if (currentPage < Math.ceil(filteredMaterials.length / materialsPerPage)) {
@@ -50,6 +54,56 @@ function Categorie2({products,materials,buildings,monuments}) {
       setCurrentPage(currentPage - 1);
     }
   };
+  useEffect(() => {
+    const fetchData = async () => {
+     // Remplacez par l'ID du nœud souhaité
+     const nodeFamily = 'Minérale et roche'; // Remplacez par la famille de nœud souhaitée
+      
+      try {
+        const response = await axios.post('http://localhost:1000/api/RelationData', {
+          nodeId: selectedProductId,
+          nodeFamily: nodeFamily ,
+        });
+        console.log('Données reçues:', response.data.data);
+        const data = response.data.data;
+        setData(data)
+        
+        // Traitez les données reçues ici
+      } catch (error) {
+        console.error('Erreur lors de la requête API:', error.message);
+      }
+    };
+    
+    if (selectedProductId !== null) {
+      fetchData();
+    }
+  }, [selectedProductId]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+     // Remplacez par l'ID du nœud souhaité
+     const nodeFamily = 'Minérale et roche'; // Remplacez par la famille de nœud souhaitée
+      
+      try {
+        const response = await axios.post('http://localhost:1000/api/RelationColorData', {
+          nodeColor: selectedColor,
+          nodeFamily: nodeFamily ,
+        });
+        console.log('Données reçues:', response.data.data);
+        const data = response.data.data;
+        setData(data)
+        
+        // Traitez les données reçues ici
+      } catch (error) {
+        console.error('Erreur lors de la requête API:', error.message);
+      }
+    };
+    
+    if (selectedColor !== null) {
+      fetchData();
+    }
+  }, [selectedColor]);
+
   const handleSearch = () => {
     const filteredMateriaux = filteredMaterials.filter((materiau) =>
       materiau.title.toLowerCase().includes(searchTerm.toLowerCase())
@@ -187,19 +241,52 @@ function Categorie2({products,materials,buildings,monuments}) {
       </Row>
           
       <div className='catElements'>
-  {currentMaterials  ? (
-    currentMaterials 
-    .filter(materiau => materiau.famille === "Minérale et roche")
-      .map(materiau => (
+  {/* Affichage des données récupérées si disponibles */}
+  {data && data.length > 0 ? (
+    data.map((item) => (
+      <div className='catItem' key={item.id}>
+        <p>{item.title}</p>
+        {/* Affichage de l'image si disponible */}
+        {item.image && item.image.length > 0 ? (
+          <img
+            className="mat-img"
+            src={`data:image/jpg;base64, ${item.image[0]}`}
+            onClick={() => handleImageClick(item.id)}
+            alt="Material"
+          />
+        ) : (
+          <img src={`data:image/jpg;base64, ${item.image}`}  onClick={() => handleImageClick(item.id)}/>
+        )}
+      </div>
+    ))
+  ) : selectedProductId ? (
+    <li>{t("Messages.MatErr")}</li>
+  ) : selectedColor ? (
+    <li>{t("Messages.MatErr")}</li>
+  ) :(
+    // Si aucune donnée n'est disponible dans data, afficher les currentMaterials
+    currentMaterials && currentMaterials.length > 0 ? (
+      currentMaterials.map(materiau => (
         <div className='catItem' key={materiau.id}>
           <p>{materiau.title}</p>
-          <img src={`data:image/jpg;base64, ${materiau.image}`} onClick={() => handleImageClick(materiau.id)}/>
+          {materiau.image && materiau.image.length > 0 ? (
+            <img 
+              className="mat-img" 
+              src={`data:image/jpg;base64, ${materiau.image[0]}`}
+              onClick={() => handleImageClick(materiau.id)} 
+              alt="Material"
+            />
+          ) : (
+            <img src={`data:image/jpg;base64, ${materiau.image}`}  onClick={() => handleImageClick(materiau.id)}/>
+          )}
         </div>
       ))
-  ) : (
-    <li>{t("Messages.MatErr")}</li>
+    ) : (
+      <li>{t("Messages.MatErr")}</li>
+    )
   )}
 </div>
+
 
 <div className='Links'>
   {currentPage > 1 && currentMaterials.length > 0 && (
@@ -209,7 +296,6 @@ function Categorie2({products,materials,buildings,monuments}) {
     <Link onClick={handleNextPage}>Suivante</Link>
   )}
 </div>
-              
               
          {/* Afficher le menu latéral s'il est ouvert */}
       {isFilterMenuOpen && (
@@ -221,33 +307,14 @@ function Categorie2({products,materials,buildings,monuments}) {
           onClick={handleFilterMenuToggle}  />
           </div>
           <div className='lineFBar'></div>
-          <div className='FilterCat'>
-          <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
-          onClick={handleFilterMenuToggle}  />
-          <h3 className='catt'>Famille des matériaux</h3>
-          </div>
-          <div className='catboxList'>
-    <div className='catbox'>
-      <input  type="checkbox"  checked={isChecked1}  onChange={handleCheckbox1Change} />
-      <label htmlFor="checkbox">Matériaux à base de terre</label>
-    </div>
-    <div className='catbox'>
-      <input  type="checkbox"  checked={isChecked2}  onChange={handleCheckbox2Change} />
-      <label htmlFor="checkbox">Minéraux et Roches</label>
-    </div>
-    <div className='catbox'>
-      <input  type="checkbox"  checked={isChecked3}  onChange={handleCheckbox3Change} />
-      <label htmlFor="checkbox">Bois</label>
-    </div>   
-    </div> 
     <div className='FilterCat'>
     <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
           onClick={handleFilterMenuToggle}  />
-          <h3 className='filter-name' >Produits</h3>
+          <h3 className='filter-name' >{t("Header.Prod")}</h3>
           </div>
           <div className='catboxList'>
           <ul>
-          { data.produits.map(produit => (
+          { products.map(produit => (
         <div key={produit.id}>
           <input
             type="checkbox"
@@ -258,6 +325,13 @@ function Categorie2({products,materials,buildings,monuments}) {
                 ...prevState,
                 [produit.id]: isChecked
               }));
+              if (isChecked) {
+                setSelectedProductId(produit.id);
+              } else {
+                setSelectedProductId(null); // Désélectionner le produit
+                setData()
+              }
+             
             }}
           />
           <label htmlFor={`checkbox-${produit.id}`}>{produit.title}</label>
@@ -268,11 +342,11 @@ function Categorie2({products,materials,buildings,monuments}) {
     <div className='FilterCat'>
     <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
           onClick={handleFilterMenuToggle}  />
-          <h3 className='filter-name' >Ouvrages</h3>
+          <h3 className='filter-name' >{t("Header.Ouv")}</h3>
           </div>
           <div className='catboxList'>
           <ul>
-          { data.ouvrages.map(ouvrage => (
+          { buildings.map(ouvrage => (
         <div key={ouvrage.id}>
           <input
             type="checkbox"
@@ -283,6 +357,12 @@ function Categorie2({products,materials,buildings,monuments}) {
                 ...prevState,
                 [ouvrage.id]: isChecked
               }));
+              if (isChecked) {
+                setSelectedProductId(ouvrage.id);
+              } else {
+                setSelectedProductId(null); // Désélectionner le produit
+                setData()
+              }
             }}
           />
           <label htmlFor={`checkbox-${ouvrage.id}`}>{ouvrage.title}</label>
@@ -295,11 +375,11 @@ function Categorie2({products,materials,buildings,monuments}) {
     <div className='FilterCat'>
     <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
           onClick={handleFilterMenuToggle}  />
-          <h3 className='filter-name' >Monuments</h3>
+          <h3 className='filter-name' >{t("Header.Monu")}</h3>
           </div>
           <div className='catboxList'>
           <ul>
-          { data.monuments.map(monument => (
+          { monuments.map(monument => (
         <div key={monument.id}>
           <input
             type="checkbox"
@@ -310,6 +390,12 @@ function Categorie2({products,materials,buildings,monuments}) {
                 ...prevState,
                 [monument.id]: isChecked
               }));
+              if (isChecked) {
+                setSelectedProductId(monument.id);
+              } else {
+                setSelectedProductId(null); // Désélectionner le produit
+                setData()
+              }
             }}
           />
           <label htmlFor={`checkbox-${monument.id}`}>{monument.title}</label>
@@ -319,44 +405,66 @@ function Categorie2({products,materials,buildings,monuments}) {
     </div> 
     
 
-   
     <div className='FilterCat'>
         <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown" onClick={handleFilterMenuToggle} />
-        <h3 className='filter-name'>Places</h3>
+        <h3 className='filter-name'>{t("Header.Place")}</h3>
       </div>
       <div className='catboxList'>
         <ul>
-          {data.places.map(place => (
+          {places.map(place => (
             <div key={place.id}>
               <input
                 type="checkbox"
-                checked={selectedPlaces.includes(place.id)}
-                onChange={() => handleCheckboxPlaceChange(place.id)}
+                checked={isCheckedPlaces[place.id] || false}
+                onChange={e => {
+                  const isChecked = e.target.checked;
+                  setCheckedPlaces(prevState => ({
+                    ...prevState,
+                    [place.id]: isChecked
+                  }));
+                  if (isChecked) {
+                    setSelectedProductId(place.id);
+                  } else {
+                    setSelectedProductId(null); // Désélectionner le produit
+                    setData()
+                  }
+                }}
               />
               <label htmlFor={`checkbox-${place.id}`}>{place.title}</label>
             </div>
           ))}
         </ul>
       </div>
-
       <div className='FilterCat'>
         <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown" onClick={handleFilterMenuToggle} />
-        <h3 className='filter-name'>Couleurs</h3>
+        <h3 className='filter-name'>{t("Header.Color")}</h3>
       </div>
       <div className='catboxList'>
-        <ul>
-          {data.couleurs.map(couleur => (
-            <div key={couleur.id}>
-              <input
-                type="checkbox"
-                checked={selectedColors.includes(couleur.id)}
-                onChange={() => handleCheckboxCouleurChange(couleur.id)}
-              />
-              <label htmlFor={`checkbox-${couleur.id}`}>{couleur.title}</label>
-            </div>
-          ))}
-        </ul>
+  <ul>
+    {colors.map((couleur, index) => ( // Utilisation de l'index comme identifiant
+      <div key={index}>
+        <input
+          type="checkbox"
+          checked={isCheckedColors[index] || false}
+          onChange={e => {
+            const isChecked = e.target.checked;
+            setCheckedColors(prevState => ({
+              ...prevState,
+              [index]: isChecked
+            }));
+            if (isChecked) {
+              setSelectedColor(couleur.title);
+            } else {
+              setSelectedColor(null); // Désélectionner le produit
+              setData(null); // Remise à zéro des données
+            }
+          }}
+        />
+        <label htmlFor={`checkbox-${index}`}>{couleur.title}</label>
       </div>
+    ))}
+  </ul>
+</div>
           <div className='lineFBar'></div>
           <div className='ValBtn'>
           <button className='annuler' onClick={handleCancel}>Annuler</button>

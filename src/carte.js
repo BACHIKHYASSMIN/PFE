@@ -32,7 +32,13 @@ function Carte({ monuments }) {
   const navigate = useNavigate();
   const { isConnected } = useAuth();
 
-
+  const handleDeselectMonument = (monumentId) => {
+    setSelectedMonuments(prevState => ({
+      ...prevState,
+      [monumentId]: false
+    }));
+  };
+  
 
   const toggleLang = (lang) => {
     i18n.changeLanguage(lang);
@@ -71,7 +77,7 @@ function Carte({ monuments }) {
     fetchData();
   }, []);
 
-  
+ 
 
   const [form] = Form.useForm();
  
@@ -200,18 +206,18 @@ function Carte({ monuments }) {
         <div style={{ width: '100%', height: '600px' }}>
   <MapContainer center={[7.1881, 21.0938]} zoom={3} scrollWheelZoom={false} style={{ marginLeft: '10%', zIndex: '100', width: '80%', height: '100%' }}>
     <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-    {data  ? (
+    {data ? (
       data.map(monument => (
-        selectedMonuments[monument.id] ? (
-          <ZoomToMonument key={monument.id} monument={monument} />
+        monument.attitude !== null && monument.longitude !== null && selectedMonuments[monument.id] ? (
+          <ZoomToMonument key={monument.id} monument={monument} deselectMonument={handleDeselectMonument} />
         ) : null
       ))
     ) : (
       <li>{t("Messages.MonuErr")}</li>
     )}
   </MapContainer>
-  
 </div>
+
 
       </div>
    
@@ -290,20 +296,29 @@ function Carte({ monuments }) {
 }
 
 // Composant ZoomToMonument pour zoomer automatiquement sur un monument sélectionné
-function ZoomToMonument({ monument }) {
+function ZoomToMonument({ monument , deselectMonument }) {
   const map = useMap();
-  
-  // Utilisez map.flyTo pour zoomer et centrer la carte sur le monument sélectionné
-  useEffect(() => {
-    if (map && monument) {
-      map.flyTo([monument.attitude, monument.longitude], 16);
-    }
-  }, [map, monument]);
 
+  useEffect(() => {
+    console.log("attitude",monument.attitude);
+    console.log("longitude",monument.longitude);
+    if (map && monument && monument.attitude !== undefined && monument.longitude !== undefined) {
+      map.flyTo([monument.attitude, monument.longitude], 16);
+    } else {
+      console.error("Les coordonnées du monument ne sont pas définies  :", monument);
+    }
+  }, [map, monument,, deselectMonument]);
+
+  if (!monument || monument.attitude === 36.7372 || monument.longitude ===  3.0822) {
+    alert("Les coordonnées du monument ne sont pas définies correctement :", monument);
+    deselectMonument(monument.id); // Désélectionne le monument
+}
   return (
     <Marker position={[monument.attitude, monument.longitude]}>
       <Popup>{monument.title}</Popup>
     </Marker>
   );
+
 }
+
 export default Carte;

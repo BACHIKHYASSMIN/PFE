@@ -16,7 +16,25 @@ import Monument from './Classes/Monument';
 function MonumentDetails() {
   const [monument, setMonument] = useState([]);
   const {monumentId} = useParams();
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [infos,setInfos]=useState();
+  const prevSlide = () => {
+    setCurrentIndex((prevIndex) => (prevIndex === 0 ? monument.component.images.length - 1 : prevIndex - 1));
+  };
+
+  const nextSlide = () => {
+    setCurrentIndex((prevIndex) => (prevIndex === monument.component.images.length - 1 ? 0 : prevIndex + 1));
+  };
   console.log('MonumentId :' ,{monumentId});
+
+  useEffect(() => {
+    // Convertissez productId en entier en utilisant parseInt()
+    fetch(`http://localhost:1000/api/RealtionsData/${monumentId}`)
+      .then(response => response.json())
+      .then(data => setInfos(data))
+      .catch(error => console.error('Error fetching product details:', error));
+  }, [monumentId]);
+
   useEffect(() => {
     // Convertissez productId en entier en utilisant parseInt()
     fetch(`http://localhost:2000/api/componentsId/${monumentId}`)
@@ -74,13 +92,39 @@ function MonumentDetails() {
       <div className="materials">
       {monument && monument.component ? (
         <div>
-          <img className="mat-img" src={`data:image/jpg;base64, ${monument.component.images}`}  />
-              <p className='mat-name'>{monument.component.designation}</p>
+          <p className='mat-name'>{monument.component.designation}</p>
+
+          {monument.component.images && monument.component.images.length > 1? (
+            <div className="slider-container">
+              <div
+                className="slider-images"
+                style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+              >
+                {monument.component.images.map((image, index) => (
+                  <div className="slider-image" key={image.id}>
+                    <img
+                      className="mat-img"
+                      src={`data:image/jpg;base64, ${image.data}`}
+                      alt={`Image ${index}`}
+                    />
+                  </div>
+                ))}
               </div>
-          ):(
-            <p>Aucun monument trouvé</p>
-          )
-          }
+              <a className="prev" onClick={prevSlide}>&#10094;</a>
+              <a className="next" onClick={nextSlide}>&#10095;</a>
+            </div>
+          ) : (
+            
+            <img
+            className="monument-img"
+            src={`data:image/jpg;base64, ${monument.component.images}`}
+          />
+          )}
+
+        </div>
+        ) : (
+          <p>Aucun monument trouvé</p>
+        )}
       </div>
 
       <div className="Description">
@@ -108,14 +152,23 @@ function MonumentDetails() {
 }
       </div>
       <div className="Composition">
-      <h3 >Composition</h3>
-      {monument && monument.component ? (
-         <p>{monument.component.description}</p>
-         ):(
-          <p>Aucun produit trouvé</p>
-        )
-}
-      </div>
+  <h3>Informations Relatives</h3>
+  {infos && infos.infos ? (
+    // Utilisation de reduce pour regrouper les éléments par type de relation
+    Object.entries(infos.infos.reduce((acc, item) => {
+      const relationType = item.relation.toUpperCase(); // Convertit en majuscules pour uniformiser
+      if (!acc[relationType]) {
+        acc[relationType] = [];
+      }
+      acc[relationType].push(item.Cible);
+      return acc;
+    }, {})).map(([relationType, items], index) => (
+      <p key={index}>{items.length > 0 ? `${relationType} : [${items.join(", ")}]` : ''}</p>
+    ))
+  ) : (
+    <p>Aucune information trouvée</p>
+  )}
+</div>
       </div>
       {/* Afficher le menu latéral s'il est ouvert */}
       {isMenuOpen && (

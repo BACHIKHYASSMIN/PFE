@@ -37,8 +37,8 @@ function Footer() {
     <div className="Contact">
     <div className="Location ">
     <p className="locName">{t("Footer.ENcadrement")}</p> 
-    <p className="locName">ENS Khouri Selma </p> 
-    <p className="locName">ENS Oufaida Houda</p> 
+    <p className="locName">Khouri Selma </p> 
+    <p className="locName">Oufaida Houda</p> 
     </div>
     </div>
     <div className="Contact">

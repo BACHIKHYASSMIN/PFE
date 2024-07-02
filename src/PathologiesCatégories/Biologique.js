@@ -18,8 +18,8 @@ import { Form, Select, Button, Input, Card, Row, Col , Typography } from 'antd';
 import Footer from '../Elements/Footer';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
-
-function Biologique() {
+import { useAuth } from '../AuthContext';
+function Biologique({pathologies}) {
   const { t,i18n } = useTranslation();
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [isFilterMenuOpen, setFilterMenuOpen] = useState(false);
@@ -29,12 +29,40 @@ function Biologique() {
   const [isCheckedOuvrage, setCheckedOuvrage] = useState({})
   const [isCheckedProduit, setCheckedProduit] = useState({})
   const [data, setData] = useState([]);
+  const {logout}=useAuth();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [filteredPathologies, setFilteredPathologies] = useState(pathologies);
+  const pathologiesPerPage = 10;
+  const indexOfLastPathologie = currentPage * pathologiesPerPage;
+  const indexOfFirstPathologie = indexOfLastPathologie - pathologiesPerPage;
+  const currentPathologies = filteredPathologies.filter(pathologie => pathologie.category === "BIOLOGIQUE").slice(indexOfFirstPathologie, indexOfLastPathologie);
+  
+  const handleNextPage = () => {
+    if (currentPage < Math.ceil(pathologies.length/ pathologiesPerPage)) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+  
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+  const handleSearch = () => {
+    const filteredPathologie = filteredPathologies.filter((pathologie) =>
+      pathologie.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredPathologies(filteredPathologie);
+    setCurrentPage(1); // Réinitialiser à la première page après la recherche
+  };
   const navigate = useNavigate();
   const handleImageClick = () => {
     // Naviguer vers la page "Details" lors du clic sur l'image
     navigate('/details');
   };
   const handleDeconnect = () => {
+    logout();
     navigate('/');
   };
   const  handleFilterMenuToggle = () => {
@@ -47,8 +75,7 @@ function Biologique() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('http://localhost:2000/api/data');
-        setData(response.data);
+        setFilteredPathologies(pathologies)
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -87,7 +114,7 @@ function Biologique() {
       
           <div className='MaterialCat'>
   <img className="home" src={homeIcon}  />
-  <Link to="/userHome" style={{ marginLeft:'10px',color: 'blue', textDecoration: 'none' }}>{t("navbar.accueil")}</Link> {/* Lien vers la page d'accueil */}
+  <Link to="/acceuil" style={{ marginLeft:'10px',color: 'blue', textDecoration: 'none' }}>{t("navbar.accueil")}</Link> {/* Lien vers la page d'accueil */}
   <span className='Path' style={{ color: 'blue' }}>&gt;</span> {/* Utilisation de span pour le symbole ">" */}
   <Link to="/pathologie" style={{ marginLeft:'10px',color: 'blue', textDecoration: 'none' }}>{t("Header.Path")}</Link> {/* Lien vers la page Monument */}
   <span className='Path' style={{ color: 'blue' }}>&gt;</span> {/* Utilisation de span pour le symbole ">" */}
@@ -96,23 +123,20 @@ function Biologique() {
 
           <Row justify="space-between" align="middle" style={{ marginBottom: '20px', paddingLeft: '10px', paddingRight: '10px' }}>
         <Col>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-    <div style={{  display: 'flex',  alignItems: 'center' , width: '400px', height: '60px', background: '#ECF0F1', marginRight: '20px' , justifyContent:"center"}}>
-    <img  src={FilterIcon}  onClick={handleFilterMenuToggle}   />
-    <Link   onClick={handleFilterMenuToggle} ><h2 style={{ textAlign: 'center', color: '#2C3E50', textDecoration:'none'}}>Filtres</h2></Link>
-    </div>
-    </div>
+     
         </Col>
-        <Col flex="auto" style={{ textAlign: 'right' }}>
+        <Col flex="auto" style={{ textAlign: 'right'}}>
           <Row gutter={16}>
-            <Col flex="auto">
+            <Col flex="auto" style={{ marginLeft:'6%'}}>
               <Input
                 placeholder={`${t("Tokens.RechercherUn")} ${t("Header.Path")}`}
                 style={{ flex:1, marginRight: '10px', background: '#ECF0F1', color:'#2C3E50' }}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
             </Col>
             <Col>
-              <Button type="primary" htmlType="submit"  style={{backgroundColor :'#2C3E50'}}>
+              <Button type="primary" htmlType="submit"  style={{backgroundColor :'#2C3E50'}} onClick={handleSearch}>
               {t("Btn.Valider")}
               </Button>
             </Col>
@@ -120,39 +144,27 @@ function Biologique() {
         </Col>
       </Row>
           
-          <div className='catElements'>
-          <div className='catItem'>
-              <p >Pathologie 1</p>
-              <img   onClick={handleImageClick}/>
-              </div>
-              <div className='catItem'>
-              <p >Pathologie 2</p>
-              <img  onClick={handleImageClick}/>
-              </div>
-              <div className='catItem'>
-              <p >Pathologie 3</p>
-              <img onClick={handleImageClick} />
-              </div>
-              <div className='catItem'>
-              <p >Pathologie 4</p>
-              <img onClick={handleImageClick} />
-              </div>
-              <div className='catItem'>
-              <p >Pathologie 5</p>
-              <img  onClick={handleImageClick}/>
-              </div>
-               <div className='catItem'>
-              <p >Pathologie 6</p>
-              <img  onClick={handleImageClick} />
-              </div>
-              
-              </div>
-              <div className='Links'>
-              <a >1</a>
-              <a >2</a>
-              <a >3</a>
-              <a >&gt;</a>
-              </div>  
+      <div className='catPathlements'>
+  {currentPathologies  ? (
+   currentPathologies 
+    .map(pathologie => (
+      <div className='pathologieItem border-blue' key={pathologie.id}>
+      {pathologie.title}
+    </div>
+      ))
+  ) : (
+    <li>{t("Messages.MatErr")}</li>
+  )}
+</div>
+
+<div className='Links'>
+  {currentPage > 1 && currentPathologies.length > 0 && (
+    <Link onClick={handlePreviousPage}>Précédente</Link>
+  )}
+  {currentPathologies.length === pathologiesPerPage-1 && (
+    <Link onClick={handleNextPage}>Suivante</Link>
+  )}
+</div>
               
          {/* Afficher le menu latéral s'il est ouvert */}
       {isFilterMenuOpen && (
@@ -295,7 +307,7 @@ function Biologique() {
   <div className='lineBar'></div>
   <h3 className='rub'  style={{textAlign: 'center' }} >{t("Menu.Pages")}</h3>
   {/* Ajoutez vos liens du menu ici */}
-  <Link className="pageLink" to="/userHome">{t("navbar.accueil")}</Link>
+  <Link className="pageLink" to="/acceuil">{t("navbar.accueil")}</Link>
   <Link className="pageLink" to="/Graph">{t("navbar.graph")}</Link>
   <Link className="pageLink" to="/carte-geographique">{t("navbar.carteGeographique")}</Link>
   <Link className="pageLink" to="/recherche-avancee">{t("navbar.rechercheAvancee")}</Link>

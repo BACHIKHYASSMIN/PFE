@@ -17,7 +17,10 @@ import { Form, Select, Button, Input, Card, Row, Col , Typography } from 'antd';
 import Footer from '../Elements/Footer';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
-function Autres() {
+import Pathologie from './../Classes/Pathologie';
+import { useAuth } from '../AuthContext';
+
+function Autres({pathologies}) {
   const { t,i18n } = useTranslation();
     const [isMenuOpen, setMenuOpen] = useState(false);
     const [isFilterMenuOpen, setFilterMenuOpen] = useState(false);
@@ -27,12 +30,42 @@ function Autres() {
     const [isCheckedOuvrage, setCheckedOuvrage] = useState({})
     const [isCheckedProduit, setCheckedProduit] = useState({})
     const [data, setData] = useState([]);
+    const {logout}=useAuth();
+    const [searchTerm, setSearchTerm] = useState("");
+     const [currentPage, setCurrentPage] = useState(1);
+  const [filteredPathologies, setFilteredPathologies] = useState(pathologies);
+
+  const pathologiesPerPage = 10;
+  const indexOfLastPathologie = currentPage * pathologiesPerPage;
+  const indexOfFirstPathologie = indexOfLastPathologie - pathologiesPerPage;
+  const currentPathologies = filteredPathologies .filter(pathologie => pathologie.category === "AUTRE").slice(indexOfFirstPathologie, indexOfLastPathologie);
+  
+  const handleNextPage = () => {
+    if (currentPage < Math.ceil(pathologies.length/ pathologiesPerPage)) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+  
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handleSearch = () => {
+    const filteredPathologie = filteredPathologies.filter((pathologie) =>
+      pathologie.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredPathologies(filteredPathologie);
+    setCurrentPage(1); // Réinitialiser à la première page après la recherche
+  };
     const navigate = useNavigate();
     const handleImageClick = () => {
       // Naviguer vers la page "Details" lors du clic sur l'image
       navigate('/details');
     };
     const handleDeconnect = () => {
+      logout();
       navigate('/');
     };
     const  handleFilterMenuToggle = () => {
@@ -45,19 +78,7 @@ function Autres() {
     useEffect(() => {
       const fetchData = async () => {
         try {
-          const response = await axios.get('http://localhost:2000/api/data');
-          setData(response.data);
-        } catch (error) {
-          console.error('Error fetching data:', error);
-        }
-      };
-  
-      fetchData();
-    }, []);useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const response = await axios.get('http://localhost:2000/api/data');
-          setData(response.data);
+          setFilteredPathologies(pathologies)
         } catch (error) {
           console.error('Error fetching data:', error);
         }
@@ -65,6 +86,8 @@ function Autres() {
   
       fetchData();
     }, []);
+  
+    
       
       const handleCheckbox1Change = () => {
         setChecked1(!isChecked1);
@@ -106,23 +129,20 @@ function Autres() {
 
 <Row justify="space-between" align="middle" style={{ marginBottom: '20px', paddingLeft: '10px', paddingRight: '10px' }}>
         <Col>
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-    <div style={{  display: 'flex',  alignItems: 'center' , width: '400px', height: '60px', background: '#ECF0F1', marginRight: '20px' , justifyContent:"center"}}>
-    <img  src={FilterIcon}  onClick={handleFilterMenuToggle}   />
-    <Link   onClick={handleFilterMenuToggle} ><h2 style={{ textAlign: 'center', color: '#2C3E50', textDecoration:'none'}}>Filtres</h2></Link>
-    </div>
-    </div>
+
         </Col>
         <Col flex="auto" style={{ textAlign: 'right' }}>
-          <Row gutter={16}>
+          <Row gutter={16}  style={{ marginLeft:'6%'}}>
             <Col flex="auto">
               <Input
-                placeholder="Rechercher un matériau"
+                 placeholder={`${t("Tokens.RechercherUn")} ${t("Header.Path")}`}
                 style={{ flex:1, marginRight: '10px', background: '#ECF0F1', color:'#2C3E50' }}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
             </Col>
             <Col>
-              <Button type="primary" htmlType="submit"  style={{backgroundColor :'#2C3E50'}}>
+              <Button type="primary" htmlType="submit"  style={{backgroundColor :'#2C3E50'}} onClick={handleSearch}>
               {t("Btn.Valider")}
               </Button>
             </Col>
@@ -130,39 +150,27 @@ function Autres() {
         </Col>
       </Row>
           
-          <div className='catElements'>
-          <div className='catItem'>
-              <p >Pathologie 1</p>
-              <img   onClick={handleImageClick}/>
-              </div>
-              <div className='catItem'>
-              <p >Pathologie 2</p>
-              <img  onClick={handleImageClick}/>
-              </div>
-              <div className='catItem'>
-              <p >Pathologie 3</p>
-              <img onClick={handleImageClick} />
-              </div>
-              <div className='catItem'>
-              <p >Pathologie 4</p>
-              <img onClick={handleImageClick} />
-              </div>
-              <div className='catItem'>
-              <p >Pathologie 5</p>
-              <img  onClick={handleImageClick}/>
-              </div>
-               <div className='catItem'>
-              <p >Pathologie 6</p>
-              <img  onClick={handleImageClick} />
-              </div>
-              
-              </div>
-              <div className='Links'>
-              <a >1</a>
-              <a >2</a>
-              <a >3</a>
-              <a >&gt;</a>
-              </div>  
+      <div className='catPathlements'>
+  {currentPathologies  ? (
+   currentPathologies 
+    .map(pathologie => (
+      <div className='pathologieItem border-blue' key={pathologie.id}>
+      {pathologie.title}
+    </div>
+      ))
+  ) : (
+    <li>{t("Messages.MatErr")}</li>
+  )}
+</div>
+
+<div className='Links'>
+  {currentPage > 1 && currentPathologies.length > 0 && (
+    <Link onClick={handlePreviousPage}>Précédente</Link>
+  )}
+  {currentPathologies.length === pathologiesPerPage-1 && (
+    <Link onClick={handleNextPage}>Suivante</Link>
+  )}
+</div>
          {/* Afficher le menu latéral s'il est ouvert */}
       {isFilterMenuOpen && (
         

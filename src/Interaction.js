@@ -1,110 +1,171 @@
 import React, { useState, useRef, useEffect } from 'react';
-import './Interaction.css';
-import './Categorie.css';
 import Navbar from './Elements/Navbar';
 import Footer from './Elements/Footer';
-import { Link, useNavigate } from 'react-router-dom';
-import MenuIcon from "./Assets/icon.png";
-import deconIcon from "./Assets/decon.png";
-import closeIcon from "./Assets/close.png";
-import whitemenuIcon from "./Assets/wmenu.png";
-
+import axios from 'axios';
 import { useTranslation } from 'react-i18next';
-import { Typography, Input, Button, List, Avatar, Form, Card, Space } from 'antd';
+import MenuIcon from "./Assets/icon.png";
+import { Link, useNavigate } from 'react-router-dom';
+import deconIcon from "./Assets/decon.png";
+import whitemenuIcon from "./Assets/wmenu.png";
+import closeIcon from "./Assets/close.png";
+import menuIcon from "./Assets/icon.png";
 
 const Interaction = () => {
-  const navigate = useNavigate();
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [messages, setMessages] = useState([]);
   const [formValue, setFormValue] = useState('');
   const [replyTo, setReplyTo] = useState(null);
-  const messagesEndRef = useRef(null); // Définir la référence useRef
-  const messageIdCounter = useRef(0);
-  const { t, i18n } = useTranslation();
+  const messagesEndRef = useRef(null);
+  const { t } = useTranslation();
+  const messageIdCounter = useRef(1); // Utilisé pour générer des IDs uniques
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-  const toggleLang = (lang) => {
-    i18n.changeLanguage(lang);
-  }
+    fetchMessages();
+  }, []);
 
-  const handleDeconnect = () => {
-    navigate('/');
+  const fetchMessages = async () => {
+    try {
+      const response = await axios.get('http://localhost:2000/api/messages');
+      const messages = response.data;
+      const structuredMessages = structureMessages(messages);
+      setMessages(structuredMessages);
+    } catch (error) {
+      console.error('Erreur lors de la récupération des messages :', error);
+    }
+  };
+
+  const structureMessages = (messages) => {
+    const messageMap = {};
+    const structuredMessages = [];
+
+    messages.forEach((message) => {
+      messageMap[message.id] = { ...message, replies: [] };
+    });
+
+    messages.forEach((message) => {
+      if (message.parentID === 0) {
+        structuredMessages.push(messageMap[message.id]);
+      } else if (messageMap[message.parentID]) {
+        messageMap[message.parentID].replies.push(messageMap[message.id]);
+      }
+    });
+
+    return structuredMessages;
+  };
+
+  const sendMessagesToServer = async (newMessage) => {
+    try {
+      const response = await axios.post('http://localhost:2000/api/messages', {
+        message: newMessage.text,
+        parentId: newMessage.parentId,
+        localId: newMessage.id
+      });
+  
+      const serverMessage = { ...newMessage, id: response.data.id }; // Mettre à jour l'ID et autres données retournées par le serveur
+  
+      // Mettre à jour l'état des messages après l'ajout du nouveau message
+      const updatedMessages = [...messages, serverMessage];
+      setMessages(structureMessages(updatedMessages));
+  
+      // Optionnel : récupérer à nouveau les messages après mise à jour
+      fetchMessages();
+  
+    } catch (error) {
+      console.error('Erreur lors de l\'envoi du message au serveur :', error);
+    }
+  };
+  
+
+  const sendMessage = async (e) => {
+    e.preventDefault();
+
+    let level = 0;
+    if (replyTo !== null) {
+      const repliedMessage = messages.find(msg => msg.id === replyTo);
+      if (repliedMessage) {
+        level = repliedMessage.level + 1; // Calcul du niveau de profondeur
+      }
+    }
+
+    const newMessage = {
+      id: messageIdCounter.current++, // ID unique (local)
+      text: formValue,
+      user: "currentUser",
+      parentId: replyTo !== null ? replyTo : 0, // Utiliser l'ID réel du parent dans la base de données
+      level: level // Utilisation du niveau calculé
+    };
+
+    // Envoyer le message au serveur
+    try {
+      await sendMessagesToServer(newMessage);
+    } catch (error) {
+      console.error('Erreur lors de l\'envoi du message au serveur :', error);
+      return; // Arrêter l'exécution si une erreur se produit
+    }
+
+    // Effacer le formulaire et réinitialiser la réponse
+    setFormValue('');
+    setReplyTo(null);
   };
 
   const handleMenuToggle = () => {
     setMenuOpen(!isMenuOpen);
   };
 
-  const sendMessage = (e) => {
-    e.preventDefault();
-    const newMessage = {
-      id: messageIdCounter.current++,
-      text: formValue,
-      user: "currentUser",
-      replies: [],
-      parentId: replyTo
-    };
-    
-    if (replyTo === null) {
-      setMessages([...messages, newMessage]);
-    } else {
-      const updatedMessages = addReply(messages, replyTo, newMessage);
-      setMessages(updatedMessages);
-    }
-  
-    setFormValue('');
-    setReplyTo(null);
-  };
-  
-  // Fonction pour ajouter une réponse à un message parent
-  const addReply = (msgs, parentId, newReply) => {
-    return msgs.map(msg => {
-      if (msg.id === parentId) {
-        return {
-          ...msg,
-          replies: [...msg.replies, newReply]
-        };
-      } else if (msg.replies.length > 0) {
-        return {
-          ...msg,
-          replies: addReply(msg.replies, parentId, newReply)
-        };
-      }
-      return msg;
-    });
-  };
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-  const renderMessages = (msgs, level = 0) => {
-    return msgs.map(msg => (
-      <div key={msg.id} style={{ ...styles.messageContainer, marginLeft: `${level * 20}px` }}>
-        <ChatMessage message={msg} setReplyTo={setReplyTo} />
-        {msg.replies.length > 0 && (
-          <div style={styles.repliesContainer}>
-            {renderMessages(msg.replies, level + 1)}
-          </div>
-        )}
+  const renderMessages = (messages, level = 0) => {
+    return messages.map((message) => (
+      <div key={message.id} style={{ marginLeft: `${level * 20}px`, marginBottom: '10px' }}>
+        <div style={{ ...styles.message, ...styles.card }}>
+          <p style={styles.messageText}>{message.message}</p>
+          <button onClick={() => setReplyTo(message.id)} style={styles.replyButton}>{t("Tokens.Reply")}</button>
+        </div>
+        {message.replies && message.replies.length > 0 && renderMessages(message.replies, level + 1)}
       </div>
     ));
   };
+
   return (
-    <div style={{ 
-  
+    <div style={{
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',
-      minHeight: '100vh', // Assurez-vous que la hauteur de la div couvre toute la hauteur de la page
+      minHeight: '100vh',
     }}>
-      <Navbar/>
+      <Navbar />
       <header style={styles.header}>
         <img src={MenuIcon} alt="Menu Icon" onClick={handleMenuToggle} style={styles.menuIcon} />
         <h1 style={styles.headerText}>{t("Title.espace")}</h1>
       </header>
-   
       <div style={styles.container}>
+        {isMenuOpen && (
+          <div className="side-menu">
+            {/* Contenu du menu */}
+          </div>
+        )}
+        <div style={styles.chatContainer}>
+          {messages.length > 0 ? (
+            renderMessages(messages)
+          ) : (
+            <p>Aucun message à afficher.</p>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+        <form onSubmit={sendMessage} style={styles.form}>
+          {replyTo && (
+            <div style={styles.replyingTo}>
+              Répondre au message ID: {replyTo}
+              <button onClick={() => setReplyTo(null)} style={styles.cancelReplyButton}>{t("Btn.Annuler")}</button>
+            </div>
+          )}
+          <input
+            value={formValue}
+            onChange={(e) => setFormValue(e.target.value)}
+            placeholder={t("Tokens.TapeMess")}
+            style={styles.input}
+          />
+          <button type="submit" style={styles.button}>{t("Btn.Envoyer")}</button>
+        </form>
+      </div>
       {isMenuOpen && (
         
         <div className="side-menu">
@@ -135,10 +196,10 @@ const Interaction = () => {
   <Link to="/chromatique-dépot" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Chd")}</Link>
 </li>
 <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/déformation" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Déformation")}</Link>
+  <Link to="/déformation" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Deformation")}</Link>
 </li>
 <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/détachement" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Détachement")}</Link>
+  <Link to="/détachement" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Detachment")}</Link>
 </li>
 <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
   <Link to="/fissure" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Fissure")}</Link>
@@ -161,70 +222,30 @@ const Interaction = () => {
   <Link className="pageLink" to="/a-propos">{t("navbar.aPropos")}</Link>
   <div className='lineDecBar'></div>
   <div className='Decon'>
-    <img className="dec" src={deconIcon} alt="Decon Icon" onClick={handleDeconnect} />
+    <img className="dec" src={deconIcon} alt="Decon Icon" onClick={handleMenuToggle} />
     <a className='decLink' href="/lien2">{t("Menu.Deconnexion")}</a>
   </div>
 </div>
 
       )}
-        <div style={styles.chatContainer}>
-          {renderMessages(messages)}
-          <div ref={messagesEndRef} />
-        </div>
-        <form onSubmit={sendMessage} style={styles.form}>
-          {replyTo && (
-            <div style={styles.replyingTo}>
-              Réponde au  message ID: {replyTo}
-              <button onClick={() => setReplyTo(null)} style={styles.cancelReplyButton}>{t("Btn.Annuler")}</button>
-            </div>
-          )}
-          <input
-            value={formValue}
-            onChange={(e) => setFormValue(e.target.value)}
-            placeholder=  {t("Tokens.TapeMess")}
-            style={styles.input}
-          />
-          <button type="submit" style={styles.button}>{t("Btn.Envoyer")}</button>
-        </form>
-      </div>
-      <Footer/>
-    </div>
-  );
-};
-
-const ChatMessage = ({ message, setReplyTo }) => {
-  
-  const { t, i18n } = useTranslation();
-  const toggleLang = (lang) => {
-    i18n.changeLanguage(lang);
-  }
-  const handleReply = () => {
-    setReplyTo(message.id);
-  };
-
-  return (
-    <div style={styles.message}>
-      <p style={styles.messageText}>{message.text}</p>
-      <button onClick={handleReply} style={styles.replyButton}>{t("Tokens.Reply")}</button>
+      <Footer />
     </div>
   );
 };
 
 const styles = {
-  
   container: {
     display: 'flex',
     flexDirection: 'column',
-    marginTop : '50px', 
-    height: '60vh',
+    marginTop: '50px',
+    height: '80vh',
     width: '100%',
-    maxWidth: '90%',
+    maxWidth: '98%',
     margin: '0 auto',
-    border: '2px solid #2C3E50',
+    border: '2px solid #ddd',
     borderRadius: '8px',
     overflow: 'hidden',
-    
-   
+    backgroundColor: '#ECF0F1',
   },
   header: {
     backgroundColor: '#ffffff',
@@ -233,7 +254,6 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     marginBottom: '10px',
- 
   },
   headerText: {
     color: '#000000',
@@ -243,67 +263,6 @@ const styles = {
   menuIcon: {
     cursor: 'pointer',
   },
-  sideMenu: {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    width: '250px',
-    height: '100%',
-    backgroundColor: '#333',
-    color: '#fff',
-    zIndex: 1000,
-    padding: '20px',
-  },
-  popIcons: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    marginBottom: '20px',
-  },
-  popmenu: {
-    cursor: 'pointer',
-  },
-  closemenu: {
-    cursor: 'pointer',
-  },
-  lineBar: {
-    height: '1px',
-    backgroundColor: '#fff',
-    margin: '10px 0',
-  },
-  menuTitle: {
-    textAlign: 'center',
-  },
-  menuList: {
-    listStyle: 'none',
-    padding: 0,
-  },
-  menuItem: {
-    padding: '10px 0',
-  },
-  pageList: {
-    listStyle: 'none',
-    padding: 0,
-  },
-  pageItem: {
-    padding: '10px 0',
-  },
-  lineDecBar: {
-    height: '1px',
-    backgroundColor: '#fff',
-    margin: '10px 0',
-  },
-  decon: {
-    display: 'flex',
-    alignItems: 'center',
-  },
-  dec: {
-    cursor: 'pointer',
-    marginRight: '10px',
-  },
-  decLink: {
-    color: '#fff',
-    textDecoration: 'none',
-  },
   chatContainer: {
     flex: 1,
     padding: '10px',
@@ -311,54 +270,67 @@ const styles = {
   },
   form: {
     display: 'flex',
-    borderTop: '1px solid #2C3E50',
+    borderTop: '1px solid #ddd',
     padding: '10px',
+    backgroundColor: '#fff',
   },
   input: {
     flex: 1,
     padding: '10px',
-    border: '1px solid #2C3E50',
-    borderRadius: '4px',
+    border: '1px solid #ddd',
+    borderRadius: '20px',
     marginRight: '10px',
+    outline: 'none',
   },
   button: {
-    padding: '10px',
-    backgroundColor: '#6200ea',
+    padding: '10px 20px',
+    backgroundColor: '#2C3E50',
     color: '#fff',
     border: 'none',
-    borderRadius: '4px',
+    borderRadius: '10px',
     cursor: 'pointer',
-  },
-  message: {
-    marginBottom: '10px',
-  },
-  messageText: {
-    margin: 0,
-    padding: '10px',
-    border: '1px solid #2C3E50',
-    borderRadius: '2px ',
-    backgroundColor: '#f1f1f1',
-  },
-  reply: {
-    marginTop: '5px',
-    fontSize: '0.8em',
-    color: '#888',
-  },
-  repliesContainer: {
-    marginLeft: '20px', // Ajoute une marge à gauche pour l'indentation des réponses
-    borderLeft: '2px solid #ddd', // Ajoute une bordure à gauche pour marquer l'indentation
-    paddingLeft: '10px', // Ajoute un padding à gauche pour l'indentation
   },
   replyButton: {
     marginTop: '5px',
     backgroundColor: 'transparent',
     border: 'none',
-    color: '#6200ea',
+    color: '#34B7F1',
     cursor: 'pointer',
-  }
+  },
+  replyingTo: {
+    marginBottom: '10px',
+    backgroundColor: '#fff',
+    padding: '5px 10px',
+    borderRadius: '20px',
+    color: '#075E54',
+  },
+  cancelReplyButton: {
+    marginLeft: '10px',
+    padding: '2px 5px',
+    backgroundColor: '#f8d7da',
+    color: '#842029',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: 'pointer',
+  },
+  message: {
+    marginBottom: '12px',
+    padding: '10px',
+    borderRadius: '8px',
+    maxWidth: '98%',
+    wordWrap: 'break-word',
+    position: 'relative',
+  },
+  card: {
+    backgroundColor: '#fff',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+    padding: '10px',
+    borderRadius: '10px',
+  },
+  messageText: {
+    margin: 0,
+  },
+
 };
 
-
-
 export default Interaction;
-
