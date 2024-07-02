@@ -632,6 +632,81 @@ try {
 
 */
 
+// Connexion à la base de données MySQL
+const connection = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: '',
+  database: 'materiautheque'
+});
+
+// Connexion à MySQL
+connection.connect((err) => {
+  if (err) {
+    console.error('Erreur de connexion à la base de données :', err);
+    return;
+  }
+  console.log('Connexion à la base de données MySQL réussie');
+});
+
+// Middleware pour traiter les requêtes JSON
+app.use(express.json());
+
+// Route pour récupérer tous les messages
+app.get('/api/messages', (req, res) => {
+  const sql = 'SELECT * FROM messages';
+  connection.query(sql, (err, results) => {
+    if (err) {
+      console.error('Erreur lors de la récupération des messages :', err);
+      res.status(500).json({ message: 'Erreur lors de la récupération des messages' });
+    } else {
+      console.log('Messages récupérés avec succès');
+      const messages = nestMessages(results);
+      res.status(200).json(messages);
+    }
+  });
+});
+
+// Route pour envoyer un nouveau message
+app.post('/api/messages', (req, res) => {
+  const { message, parentId } = req.body;
+  const sql = 'INSERT INTO messages (message, parentId) VALUES (?, ?)';
+  connection.query(sql, [message, parentId], (err, result) => {
+    if (err) {
+      console.error('Erreur lors de l\'envoi du message :', err);
+      res.status(500).json({ message: 'Erreur lors de l\'envoi du message' });
+    } else {
+      console.log('Message envoyé avec succès');
+      res.status(201).json({ id: result.insertId });
+    }
+  });
+});
+
+// Fonction pour imbriquer les messages
+const nestMessages = (messages) => {
+  const map = {};
+  const nested = [];
+
+  // Mapper les messages par leur ID
+  messages.forEach(msg => {
+    map[msg.id] = { ...msg, replies: [] };
+  });
+
+  // Construire la structure hiérarchique des messages basée sur parentId
+  messages.forEach(msg => {
+    if (msg.parentId !== null && map[msg.parentId]) {
+      map[msg.parentId].replies.push(map[msg.id]);
+    } else {
+      nested.push(map[msg.id]);
+    }
+  });
+
+  return nested;
+};
+
+
+ 
+
 
 // Connexion à la base de données MySQL
 const connection = mysql.createConnection({
