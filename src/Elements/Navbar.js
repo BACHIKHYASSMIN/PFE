@@ -89,10 +89,14 @@ const Navbar = () => {
         )}
           </div>
          
+           
           <div className="navbarHome-elements">
-          <div className="navbarHome-menu">
+      {isConnected && (
+        <div className="navbarHome-menu">
           <img src={MenuIcon} alt="Profile" onClick={handleMenuToggle} />
-          </div>
+        </div>
+      )}
+    
         <ul className="navbar-menu">
           {/* Use Link to navigate to different pages */}
           {isConnected && (
