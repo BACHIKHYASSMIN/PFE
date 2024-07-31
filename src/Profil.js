@@ -7,6 +7,7 @@ import './Profil.css';
 import { Link } from 'react-router-dom';
 import ImgEdit from "./Assets/photo.png";
 import MessageIcon from "./Assets/email.png";
+import ArrowIcon from "./Assets/down-arrow.png"
 import ChatBox from './Elements/ChatBox';
 import deconIcon from "./Assets/decon.png";
 import whitemenuIcon from "./Assets/wmenu.png";
@@ -22,15 +23,16 @@ function Profil() {
   const [editedFullName, setEditedFullName] = useState('');
   const [editedEmail, setEditedEmail] = useState('');
   const [editedPassword, setEditedPassword] = useState('');
-  const [isMenuOpen, setMenuOpen] = useState(false);
   const inputRef = useRef(null);
   const [isSendingMessage, setIsSendingMessage] = useState(false);
   const [recipientEmail, setRecipientEmail] = useState('');
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
+  const [filterMenuOpen, setFiltMenuOpen] = useState(null); 
+  const [isMenuOpen, setMenuOpen] = useState(false);
   const { t, i18n } = useTranslation();
   const { TextArea } = Input;
-  const { userId } = useAuth();
+  const { userId, updateProfileImage } = useAuth();
   const [userInfo, setUserInfo] = useState({});
   const [selectedFile, setSelectedFile] = useState(null);
   const [image,setImage]=useState(null);
@@ -47,6 +49,13 @@ function Profil() {
     setMessage(e.target.value);
   };
 
+  const handleFiltMenuToggle = (menuType) => {
+    if (filterMenuOpen === menuType) {
+      setFiltMenuOpen(null); // Fermer le menu si déjà ouvert
+    } else {
+      setFiltMenuOpen(menuType); // Ouvrir le menu correspondant
+    }
+  };
 
 
 const handleSubmit = async () => {
@@ -131,8 +140,21 @@ useEffect(() => {
   };
 
   const handleFileSelect = (event) => {
-    setSelectedFile(event.target.files[0]);
+    const file = event.target.files[0];
+    setSelectedFile(file);
+    // Preview the image immediately
+    
+
+    const imageUrl = URL.createObjectURL(file);
+    setImage(imageUrl);
+    updateProfileImage(imageUrl);
   };
+  // Automatically save when selectedFile changes
+  useEffect(() => {
+    if (selectedFile) {
+      handleSave();
+    }
+  }, [selectedFile]);
 
   const toggleLang = (lang) => {
     i18n.changeLanguage(lang);
@@ -163,6 +185,7 @@ useEffect(() => {
       });
       if (response.status === 200) {
         console.log('User information updated successfully');
+        // Convert the updated image to a URL and update the context
         await fetchUserInfo();
         setIsEditing(false);
       }
@@ -185,7 +208,7 @@ useEffect(() => {
       </div>
       <div className={`ProfilCard ${isEditing ? 'editing' : ''} ${isSendingMessage ? 'sending-message' : ''}`}>
         <div className='ProfilImage'>
-        {image && <img src={image} alt="Profile" />}
+        {image && <img  style={{backgroundColor:'white', borderRadius: '50%' }} src={image} alt="Profile" />}
           {isEditing && (
             <div className="EditIcon">
               <img src={ImgEdit} alt="Edit Icon" onClick={handleEditClick} />
@@ -237,8 +260,8 @@ useEffect(() => {
         </div>
       )}
 
-      {isMenuOpen && (
-        <div className="side-menu">
+{isMenuOpen && (
+        <div className="sideProfil-menu">
           <div className="popIcons">
             <img className="popmenu" src={whitemenuIcon} alt="Menu Icon" onClick={handleMenuToggle} />
             <img className="closemenu" src={closeIcon} alt="Close Icon" onClick={handleMenuToggle} />
@@ -246,7 +269,15 @@ useEffect(() => {
           <div className='lineBar'></div>
           <h3 className='rub' style={{ textAlign: 'center' }}>{t("Menu.Rubrique")}</h3>
           <ul className='mats' style={{ paddingLeft: '20px' }}>
-            <li className='rubMat-name'><Link to="/material">{t("Header.Mat")}</Link></li>
+            <li className='rubMat-name'>
+            <div className='MenuCat'>
+              <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
+          onClick={() => handleFiltMenuToggle(t("Header.Mat"))}  />
+           <Link to="/material">{t("Header.Mat")}</Link>
+          </div>
+          </li>
+          {filterMenuOpen === t("Header.Mat") && (
+            <>
             <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
               <Link to="/categorie1" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.MAT")}</Link>
             </li>
@@ -256,9 +287,19 @@ useEffect(() => {
             <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
               <Link to="/categorie3" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Bois")}</Link>
             </li>
+            </>
+          )}
             <li className='rubMat-name'><Link to="/produit">{t("Header.Prod")}</Link></li>
             <li className='rubMat-name'><Link to="/ouvrage">{t("Header.Ouv")}</Link></li>
-            <li className='rubMat-name'><Link to="/pathologie">{t("Header.Path")}</Link></li>
+            <li className='rubMat-name'>
+            <div className='MenuCat'>
+              <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
+          onClick={() => handleFiltMenuToggle(t("Header.Path"))}  />
+           <Link to="/pathologie">{t("Header.Path")}</Link>
+          </div>
+              </li>
+              {filterMenuOpen === t("Header.Path") && (
+                <>
             <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
               <Link to="/biologique" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Biologique")}</Link>
             </li>
@@ -266,10 +307,10 @@ useEffect(() => {
               <Link to="/chromatique-dépot" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Chd")}</Link>
             </li>
             <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-              <Link to="/déformation" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Deformation")}</Link>
+              <Link to="/déformation" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Déformation")}</Link>
             </li>
             <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-              <Link to="/détachement" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Detachment")}</Link>
+              <Link to="/détachement" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Détachement")}</Link>
             </li>
             <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
               <Link to="/fissure" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Fissure")}</Link>
@@ -280,6 +321,8 @@ useEffect(() => {
             <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
               <Link to="/autres" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Autres")}</Link>
             </li>
+            </>
+              )}
             <li className='rubMat-name'><Link to="/monument">{t("Header.Monu")}</Link></li>
           </ul>
           <div className='lineBar'></div>
@@ -291,12 +334,10 @@ useEffect(() => {
           <Link className="pageLink" to="/a-propos">{t("navbar.aPropos")}</Link>
           <div className='lineDecBar'></div>
           <div className='Decon'>
-          <div className='Decon'>
     <img className="dec" src={deconIcon} alt="Decon Icon" onClick={handleDeconnect} />
     <a className='decLink' onClick={handleDeconnect} >{t("Menu.Deconnexion")}</a>
   </div>
           </div>
-        </div>
       )}
 
       {isSendingMessage && (
@@ -332,7 +373,7 @@ useEffect(() => {
         </div>
       )}
       <ChatBox />
-      <Footer />
+    
     </div>
   );
 }

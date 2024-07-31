@@ -2,118 +2,89 @@
     position: relative;
   }
   
-  .apropos-background::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: url('Assets/Materiautheque.png');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    opacity: 0.6; /* Ajustez l'opacité selon vos préférences */
-  }
-  
-  .overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Modifier l'opacité selon vos préférences */
-  }
-  
-  .apropos-title {
-    text-align: center;
-    margin-top: 40px;
-    margin-bottom: 60px;
-    color: white;
+  .Header {
     position: relative;
-    z-index: 1;
-  }
-  
-  
-.apropos-container {
-    padding: 20px;
-  }
-
-
- 
-  .section-container {
-    background-color: #2C3E50;
-    margin-bottom: 80px;
-    padding: 50px;
-   position: relative;
-   margin-left: 15%;
-    max-width:60%; /* Ajustez la largeur maximale selon vos préférences */
-     /* Pour centrer le container */
-  }
-  .section-container1 {
-    background-color: #F39C12;
-    margin-bottom: 80px;
-    padding: 50px;
-   position: relative;
-   
-   margin-left: 15%;
-    max-width:60%; 
-  }
-  
-  .section-container2 {
-    background-color: #F39C12;
-    margin-bottom: 80px;
-    padding: 50px;
-   position: relative;
-   
-   margin-left: 15%;
-    max-width:60%; 
-  }
-  .section-container:not(:last-child):after {
-    content: "";
-    position: absolute;
-    bottom: -40px; /* Ajustez la position verticale de la ligne noire */
-    left: 0;
-    width: 100%; /* La largeur de la ligne est égale à la largeur de la page */
-    height: 1px; /* Épaisseur de la ligne */
-    background-color: black; /* Couleur de la ligne */
-  }
-  
-  .apropos-section h2 {
-    color: white;
-  }
-  
-  .apropos-section p {
-    color: white;
-  }
-  
-  .apropos-section ul {
-    list-style-type: none;
-    padding-left: 20px;
-    color: white;
-  }
-  
-  .apropos-section ul li {
-    margin-bottom: 5px;
-    color: white;
-  }
-  .white-bullets {
-    list-style-type: none;
-  }
-  
-  .white-bullets li:before {
-    content: '•'; /* Utilisez le caractère de votre choix pour la puce */
-    color: white; /* Couleur des puces */
-    display: inline-block;
-    width: 1em;
-    margin-left: -1em;
-  }
-  .slider-container {
+    background-image: url('./Assets/Materiautheq.png');
+    background-size: cover;
+    width: 100%;
+    height: 500px;
+    color: black;
     display: flex;
-    overflow-x: hidden;
-    transition: transform 2s ease-in-out;
+    align-items: center;
+   
+    font-weight: 500;
   }
-  .slide {
-    flex: 0 0 auto;
-    width: 100%; /* Ou une largeur fixe selon votre mise en page */
+  
+  .Header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(103, 103, 102, 0.7);
+    z-index: 1; /* Assure que la superposition est au-dessus de l'image */
   }
+  
+  .Header > * {
+    position: relative;
+    z-index: 2; /* Assure que le contenu est au-dessus de la superposition */
+  }
+  
+ .Container{
+  display: flex;
+  flex-direction: column;
+
+  
+ }
+ .section-container{
+  display: flex;
+  flex-direction: row;
+  height: 300px;
+ justify-content: space-around;
+ align-items: center;
+ background-color:#dad7d7;
+ color: black;
+ }
+ 
+ .section2-container{
+  display: flex;
+  flex-direction: row;
+  height:300px;
+ align-items: center;
+ justify-content: space-around;
+ background-color:#2C3E50 ;
+
+ }
+ .section3-container{
+  display: flex;
+  flex-direction: row;
+ align-items: center;
+ height:300px;
+ justify-content: space-around;
+ background-color:#dad7d7 ;
+ 
+ }
+
+ .section4-container{
+  display: flex;
+  flex-direction: row;
+ align-items: center;
+ height:300px;
+ justify-content: space-around;
+ background-color:#2C3E50  ;
+ 
+ }
+
+
+.AboutDescription{
+position:absolute;
+width: 25%;
+left: -8%;
+color: white;
+font-weight:normal;
+text-align: justify;
+font-size: larger;
+line-height: 1.5; 
+}
+ 

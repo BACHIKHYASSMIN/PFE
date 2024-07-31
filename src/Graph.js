@@ -20,7 +20,8 @@ import ChatBox from './Elements/ChatBox';
 import axios from 'axios';
 import CytoscapeComponent from 'react-cytoscapejs';
 import GraphComponent from './Elements/KnowledgeGraph'
-import Neo4jGraph from './test';
+import Neo4jGraph from './Neo4JGraph';
+import Neo4jGraphD3 from './graphNeo4j';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { getNodes } from './apiServices';
@@ -28,6 +29,7 @@ import { getNodes } from './apiServices';
 
 
 function Graph({products,materials,buildings,nodes,graph}) {
+
   const [isMenuOpen, setMenuOpen] = useState(false);
   const [data, setData] = useState([]);
   const [materialsData, setMaterialsData] = useState([]);
@@ -35,6 +37,8 @@ function Graph({products,materials,buildings,nodes,graph}) {
   const [buildingsData, setBuildingsData] = useState([]);
   const [Nodedata, setNodeData] = useState([]);
   const { t,i18n } = useTranslation();
+  const [filterMenuOpen, setFiltMenuOpen] = useState(null); 
+  const [isFilterMenuOpen, setFilterMenuOpen] = useState(false);
   const [selectedMaterials, setSelectedMaterials] = useState([]);
   // État pour stocker la liste des suggestions de recherche
 const [searchSuggestions, setSearchSuggestions] = useState([]);
@@ -69,7 +73,8 @@ const [searchSuggestions, setSearchSuggestions] = useState([]);
       console.log("Aucun terme de recherche saisi");
     }
   };
-  
+   
+  console.log('materials',materials)
 
   const handleMaterialSelect = (materialId) => {
     setSelectedMaterials((prevSelected) => {
@@ -120,6 +125,13 @@ const handleSearchInputChange = (input) => {
     const selectedMaterialsQuery = selectedMaterials.join('&');
     navigate(`/graph?selectedMaterials=${selectedMaterialsQuery}`);
   };
+  const handleFiltMenuToggle = (menuType) => {
+    if (filterMenuOpen === menuType) {
+      setFiltMenuOpen(null); // Fermer le menu si déjà ouvert
+    } else {
+      setFiltMenuOpen(menuType); // Ouvrir le menu correspondant
+    }
+  };
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -151,8 +163,7 @@ const handleSearchInputChange = (input) => {
       <div className='graph'>
     <Navbar isAuthenticated={true} /> 
     <div className="material-head">
-          <img className="menu" src={menuIcon} alt="Menu Icon"
-          onClick={handleMenuToggle}  />
+        
     <Typography.Title level={1} style={{ fontWeight: 'bold', marginBottom: '40px',textAlign: 'center' }}>
     {t("navbar.graph")}
       </Typography.Title>
@@ -160,7 +171,7 @@ const handleSearchInputChange = (input) => {
       <Row justify="space-between" align="middle" style={{ marginBottom: '20px', paddingLeft: '10px', paddingRight: '10px' }}>
         <Col>
         <div style={{ display: 'flex', alignItems: 'center' }}>
-    <div style={{ width: '400px', height: '60px', background: '#2C3E50', marginRight: '20px' }}>
+    <div style={{ width: '400px', height: '60px', background: '#5B828E', marginRight: '20px' }}>
     <Link   onClick={handleMenuToggle}><h2 style={{ textAlign: 'center', color: 'white', textDecoration:'none'}}>Filtres</h2></Link>
     </div>
     </div>
@@ -184,7 +195,7 @@ const handleSearchInputChange = (input) => {
 
       </Col>
             <Col>
-              <Button type="primary" htmlType="submit"  style={{backgroundColor :'#2C3E50'}} onClick={handleSearch}>
+              <Button type="primary" htmlType="submit"  style={{backgroundColor :'#5B828E'}} onClick={handleSearch}>
               {t("Tokens.Recherche")}
               </Button>
             </Col>
@@ -198,7 +209,7 @@ const handleSearchInputChange = (input) => {
       
             
             
-              <div style={{ display: 'flex' }}>
+              <div style={{ display: 'flex' ,marginBottom:'5%'}}>
       
 
       <div style={{ flex: 2  ,paddingLeft:'10px'}}>
@@ -209,8 +220,16 @@ const handleSearchInputChange = (input) => {
     {/* Vos champs de formulaire ici */}
     <div style={{ display: 'flex', flexDirection: 'column' }}>
     <div style={{ marginBottom: '10px' }}>
-    <Form.Item name="Matériaux" label={t("Header.Mat")}>
+      
+    <Form.Item name="Matériaux" >
+    <div className='FilterCat'>
+          <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
+           onClick={() => handleFiltMenuToggle(t("Header.Mat"))}  />
+          <h3 className='catt'>{t("Header.Mat")}</h3>
+          </div>
+          {filterMenuOpen === t("Header.Mat")&& (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
+      
     { materials   ? (
            materials.map(materiau => (
   <Checkbox  key={materiau.id} onChange={() => handleMaterialSelect(materiau.id)}
@@ -221,11 +240,18 @@ const handleSearchInputChange = (input) => {
           )
       }  
       </div>
+      )}
     </Form.Item>
     </div>
-
+    
     <div style={{ marginBottom: '10px' }}>
-    <Form.Item name="produit" label={t("Header.Prod")}>
+    <Form.Item name="produit" >
+    <div className='FilterCat'>
+          <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
+           onClick={() => handleFiltMenuToggle(t("Header.Prod"))}  />
+          <h3 className='catt'>{t("Header.Prod")}</h3>
+          </div>
+          {filterMenuOpen === t("Header.Prod")&& (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
     {products ? (
             products.map(produit => (
@@ -236,10 +262,17 @@ const handleSearchInputChange = (input) => {
           )
       }  
       </div>
+          )}
     </Form.Item>
     </div>
     <div style={{ marginBottom: '10px' }}>
-    <Form.Item name="ouvrage" label={t("Header.Ouv")}>
+    <Form.Item name="ouvrage">
+    <div className='FilterCat'>
+          <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
+           onClick={() => handleFiltMenuToggle(t("Header.Ouv"))}  />
+          <h3 className='catt'>{t("Header.Ouv")}</h3>
+          </div>
+          {filterMenuOpen === t("Header.Ouv") && (
     <div style={{ display: 'flex', flexDirection: 'column' }}>
     {buildings ? (
             buildings.map(ouvrage=> (
@@ -250,14 +283,13 @@ const handleSearchInputChange = (input) => {
           )
       }  
       </div>
+          )}
     </Form.Item>
     </div>
     {/* Répétez ce schéma pour les autres Form.Item */}
     <Form.Item>
-      <Button type="primary" htmlType="submit" style={{ marginRight: '10px', backgroundColor: '#27AE60', marginTop: '20px' }} onClick={handleSubmit}>
-      {t("Btn.Valider")}
-      </Button>
-      <Button type="default" style={{ backgroundColor: '#d9d9d9', border: 'none' }} onClick={handleCancel}>
+     
+      <Button type="default" style={{ backgroundColor: '#d9d9d9', border: 'none', fontWeight:'bold' }} onClick={handleCancel}>
       {t("Btn.Annuler")}
       </Button>
     </Form.Item>
@@ -271,75 +303,13 @@ const handleSearchInputChange = (input) => {
         
         
        
-        < Neo4jGraph  graph={graph} />
+        < Neo4jGraphD3  graph={graph} />
   
       </div>
-     
+      
     
 
       
-      {isMenuOpen && (
-        
-        <div className="side-menu">
-  <div className="popIcons">
-    <img className="popmenu" src={whitemenuIcon} alt="Menu Icon" onClick={handleMenuToggle} />
-    <img className="closemenu" src={closeIcon} alt="Close Icon" onClick={handleMenuToggle} />
-  </div>
-  <div className='lineBar'></div>
-  <h3 className='rub' style={{textAlign: 'center' }}>{t("Menu.Rubrique")}</h3>
-  <ul className='mats' style={{ paddingLeft: '20px' }}>
-    <li className='rubMat-name' ><Link to="/material">{t("Header.Mat")}</Link></li>
-    <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/categorie1" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.MAT")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/categorie2" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.MER")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/categorie3" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Bois")}</Link>
-</li>
-    <li className='rubMat-name'><Link to="/produit">{t("Header.Prod")}</Link></li>
-    <li className='rubMat-name'><Link to="/ouvrage">{t("Header.Ouv")}</Link></li>
-    <li className='rubMat-name'><Link to="/pathologie">{t("Header.Path")}</Link></li>
-    <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/biologique" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Biologique")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/chromatique-dépot" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Chd")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/déformation" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Deformation")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/détachement" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Detachment")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/fissure" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Fissure")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/perte de matière" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.PDM")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/autres" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Autres")}</Link>
-</li>
-    <li className='rubMat-name'><Link to="/monument">{t("Header.Monu")}</Link></li>
-    </ul>
-  <div className='lineBar'></div>
-  <h3 className='rub'  style={{textAlign: 'center' }} >{t("Menu.Pages")}</h3>
-  {/* Ajoutez vos liens du menu ici */}
-  <Link className="pageLink" to="/userHome">{t("navbar.accueil")}</Link>
-  <Link className="pageLink" to="/Graph">{t("navbar.graph")}</Link>
-  <Link className="pageLink" to="/carte-geographique">{t("navbar.carteGeographique")}</Link>
-  <Link className="pageLink" to="/recherche-avancee">{t("navbar.rechercheAvancee")}</Link>
-  <Link className="pageLink" to="/a-propos">{t("navbar.aPropos")}</Link>
-  <div className='lineDecBar'></div>
-  <div className='Decon'>
-    <img className="dec" src={deconIcon} alt="Decon Icon" onClick={handleMenuToggle} />
-    <a className='decLink' href="/lien2">{t("Menu.Deconnexion")}</a>
-  </div>
-</div>
-
-      )}
 
 
       

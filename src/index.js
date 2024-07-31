@@ -9,7 +9,7 @@ import i18next from 'i18next';
 import translationEN from './translation/en/global.json';
 import translationFR from './translation/fr/global.json';
 import { AuthProvider } from './AuthContext';
-
+import './fonts.css'; 
 i18next.init({
   interpolation: { escapeValue: false },
   lng: 'en',
@@ -25,7 +25,7 @@ root.render(
     <BrowserRouter>
       <I18nextProvider i18n={i18next}>
         <AuthProvider>
-          <App />
+        <App />
         </AuthProvider>
       </I18nextProvider>
     </BrowserRouter>

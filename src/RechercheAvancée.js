@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, Select, Button, Input, Card, Row, Col, Checkbox, Typography, Modal, Pagination } from 'antd';
 import Navbar from './Elements/Navbar';
 import Footer from './Elements/Footer';
+import ArrowIcon from "./Assets/arrow.png"
 import ChatBox from './Elements/ChatBox';
 import { Link, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -18,13 +19,14 @@ import { configConsumerProps } from 'antd/es/config-provider';
 
 const { Option } = Select;
 
-const RechercheAvancée = ({products,materials,buildings,monuments,places,periodes,colors}) => {
+const RechercheAvancée = ({products,materials,buildings,monuments,places,periodes,colors,pathologies}) => {
   const [form] = Form.useForm();
   const [isMenuOpen, setMenuOpen] = useState(false);
   const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [alldata,setAllData]= useState([])
+  const [filterMenuOpen, setFiltMenuOpen] = useState(null); 
   const [combinedData, setCombinedData] = useState([]);
   const [selectedFields, setSelectedFields] = useState([]);
   const [isAdvancedSearchOpen, setAdvancedSearchOpen] = useState(false);
@@ -264,7 +266,13 @@ const RechercheAvancée = ({products,materials,buildings,monuments,places,period
     // Close the modal
     handleCancelAdvancedSearch();
   };
-
+  const handleFiltMenuToggle = (menuType) => {
+    if (filterMenuOpen === menuType) {
+      setFiltMenuOpen(null); // Fermer le menu si déjà ouvert
+    } else {
+      setFiltMenuOpen(menuType); // Ouvrir le menu correspondant
+    }
+  };
   const handleVoirPlus = (id) => {
     navigate(`/details/${id}`);
   };
@@ -448,7 +456,7 @@ const renderItems = (items) => {
     <div>
       <Navbar />
       <div className="material-head">
-        <img className="menu" src={menuIcon} alt="Menu Icon" onClick={handleMenuToggle} />
+       
         <Typography.Title level={1} style={{ fontWeight: 'bold', marginBottom: '40px', textAlign: 'center' }}>
           {t("navbar.rechercheAvancee")}
         </Typography.Title>
@@ -456,7 +464,7 @@ const renderItems = (items) => {
       <Row justify="space-between" align="middle" style={{ marginBottom: '20px', paddingLeft: '10px', paddingRight: '10px' }}>
         <Col>
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            <div style={{ width: '400px', height: '60px', background: '#2C3E50', marginRight: '20px' }}>
+            <div style={{ width: '400px', height: '60px', background: '#5B828E', marginRight: '20px' }}>
               <h2 style={{ textAlign: 'center', color: 'white' }}> {t("Tokens.Filter")}</h2>
             </div>
           </div>
@@ -467,7 +475,7 @@ const renderItems = (items) => {
               <Col flex="auto">
                 <Input
                   placeholder={t("Tokens.rechReq")}
-                  style={{ flex: 1, marginRight: '10px', background: '#ECF0F1', color: '#2C3E50' }}
+                  style={{ flex: 1, marginRight: '10px', background: '#ECF0F1', color: '#5B828E' }}
                   value={searchTerm}
                   onChange={(e) => { 
                     setSearchTerm(e.target.value);
@@ -479,7 +487,7 @@ const renderItems = (items) => {
                 />
               </Col>
               <Col>
-                <Button type="primary" htmlType="submit" style={{ backgroundColor: '#2C3E50', float: 'right' }} onClick={handleAdvancedSearch}>
+                <Button type="primary" htmlType="submit" style={{ backgroundColor: '#5B828E', float: 'right' }} onClick={handleAdvancedSearch}>
                   {t("navbar.rechercheAvancee")}
                 </Button>
               </Col>
@@ -582,8 +590,14 @@ const renderItems = (items) => {
             <Form form={form} layout="vertical" name="advanced_search" onFinish={onFinish}>
               <div style={{ display: 'flex', flexDirection: 'column' }}>
                 <div style={{ marginBottom: '10px' }}>
-                  <Form.Item name="Matériaux" label={t("Header.Mat")}>
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  <Form.Item >
+                  <div className='FilterCat'>
+          <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
+           onClick={() => handleFiltMenuToggle(t("Header.Mat"))}  />
+          <h3 className='catt'>{t("Header.Mat")}</h3>
+          </div>
+          {filterMenuOpen === t("Header.Mat")&& (
+             <div style={{ display: 'flex', flexDirection: 'column' }}>
                       {materials  ? (
                         materials.map(materiau => (
                           <Checkbox  key={materiau.id}
@@ -594,11 +608,18 @@ const renderItems = (items) => {
                         <li>{t("Messages.MatErr")}</li>
                       )}
                     </div>
+                       )}
                   </Form.Item>
                 </div>
                 <div style={{ marginBottom: '10px' }}>
-                  <Form.Item name="produit" label={t("Header.Prod")}>
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <Form.Item name="produit" >
+    <div className='FilterCat'>
+          <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
+           onClick={() => handleFiltMenuToggle(t("Header.Prod"))}  />
+          <h3 className='catt'>{t("Header.Prod")}</h3>
+          </div>
+          {filterMenuOpen === t("Header.Prod")&& (
+             <div style={{ display: 'flex', flexDirection: 'column' }}>
                       {products  ? (
                         products.map(produit => (
                           <Checkbox key={produit.id} 
@@ -610,11 +631,19 @@ const renderItems = (items) => {
                         <li>{t("Messages.ProdErr")}</li>
                       )}
                     </div>
+                       )}
                   </Form.Item>
                 </div>
+
                 <div style={{ marginBottom: '10px' }}>
-                  <Form.Item name="ouvrage" label={t("Header.Ouv")}>
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <Form.Item name="ouvrage">
+    <div className='FilterCat'>
+          <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
+           onClick={() => handleFiltMenuToggle(t("Header.Ouv"))}  />
+          <h3 className='catt'>{t("Header.Ouv")}</h3>
+          </div>
+          {filterMenuOpen === t("Header.Ouv") && (
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
                       {buildings ? (
                         buildings.map(ouvrage => (
                           <Checkbox key={ouvrage.id} value={ouvrage.title}
@@ -624,6 +653,53 @@ const renderItems = (items) => {
                         <li>{t("Messages.OuvErr")}</li>
                       )}
                     </div>
+                         )}
+                  </Form.Item>
+                </div>
+                <div style={{ marginBottom: '10px' }}>
+                <Form.Item name="produit" >
+    <div className='FilterCat'>
+          <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
+           onClick={() => handleFiltMenuToggle(t("Header.Monu"))}  />
+          <h3 className='catt'>{t("Header.Monu")}</h3>
+          </div>
+          {filterMenuOpen === t("Header.Monu")&& (
+             <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      {monuments  ? (
+                        monuments.map(monument => (
+                          <Checkbox key={monument.id} 
+                          value={monument.title}
+  
+                            onChange={() => handleFilterSelect(t("Header.Prod"),monument)}>{monument.title}</Checkbox>
+                        ))
+                      ) : (
+                        <li>{t("Messages.ProdErr")}</li>
+                      )}
+                    </div>
+                       )}
+                  </Form.Item>
+                </div>
+                <div style={{ marginBottom: '10px' }}>
+                <Form.Item name="produit" >
+    <div className='FilterCat'>
+          <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
+           onClick={() => handleFiltMenuToggle(t("Header.Path"))}  />
+          <h3 className='catt'>{t("Header.Path")}</h3>
+          </div>
+          {filterMenuOpen === t("Header.Path")&& (
+             <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      {pathologies  ? (
+                        pathologies.map(pathologie => (
+                          <Checkbox key={pathologie.id} 
+                          value={pathologie.title}
+  
+                            onChange={() => handleFilterSelect(t("Header.Prod"),pathologie)}>{pathologie.title}</Checkbox>
+                        ))
+                      ) : (
+                        <li>{t("Messages.ProdErr")}</li>
+                      )}
+                    </div>
+                       )}
                   </Form.Item>
                 </div>
                 <Form.Item>
@@ -672,68 +748,8 @@ const renderItems = (items) => {
           </div>
         </div>
       </div>
-      {isMenuOpen && (
-        
-        <div className="side-menu">
-  <div className="popIcons">
-    <img className="popmenu" src={whitemenuIcon} alt="Menu Icon" onClick={handleMenuToggle} />
-    <img className="closemenu" src={closeIcon} alt="Close Icon" onClick={handleMenuToggle} />
-  </div>
-  <div className='lineBar'></div>
-  <h3 className='rub' style={{textAlign: 'center' }}>{t("Menu.Rubrique")}</h3>
-  <ul className='mats' style={{ paddingLeft: '20px' }}>
-    <li className='rubMat-name' ><Link to="/material">{t("Header.Mat")}</Link></li>
-    <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/categorie1" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.MAT")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/categorie2" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.MER")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/categorie3" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Bois")}</Link>
-</li>
-    <li className='rubMat-name'><Link to="/produit">{t("Header.Prod")}</Link></li>
-    <li className='rubMat-name'><Link to="/ouvrage">{t("Header.Ouv")}</Link></li>
-    <li className='rubMat-name'><Link to="/pathologie">{t("Header.Path")}</Link></li>
-    <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/biologique" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Biologique")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/chromatique-dépot" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Chd")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/déformation" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Deformation")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/détachement" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Detachment")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/fissure" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Fissure")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/perte de matière" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.PDM")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/autres" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Autres")}</Link>
-</li>
-    <li className='rubMat-name'><Link to="/monument">{t("Header.Monu")}</Link></li>
-    </ul>
-  <div className='lineBar'></div>
-  <h3 className='rub'  style={{textAlign: 'center' }} >{t("Menu.Pages")}</h3>
-  {/* Ajoutez vos liens du menu ici */}
-  <Link className="pageLink" to="/userHome">{t("navbar.accueil")}</Link>
-  <Link className="pageLink" to="/Graph">{t("navbar.graph")}</Link>
-  <Link className="pageLink" to="/carte-geographique">{t("navbar.carteGeographique")}</Link>
-  <Link className="pageLink" to="/recherche-avancee">{t("navbar.rechercheAvancee")}</Link>
-  <Link className="pageLink" to="/a-propos">{t("navbar.aPropos")}</Link>
-  <div className='lineDecBar'></div>
-  <div className='Decon'>
-    <img className="dec" src={deconIcon} alt="Decon Icon" onClick={handleMenuToggle} />
-    <a className='decLink' href="/lien2">{t("Menu.Deconnexion")}</a>
-  </div>
-</div>
-
-      )}
+     
+      
       <ChatBox />
       <Footer />
     </div>

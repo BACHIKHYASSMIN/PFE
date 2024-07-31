@@ -39,6 +39,7 @@ margin-bottom: 3%;
 .Description li{
     margin-bottom: 4%;
     font-weight:400;
+    width: 100%;
 }
 
 .Vertical{
@@ -158,3 +159,10 @@ margin-bottom: 3%;
     width: 30%;
     height: 10%;
   }
+
+
+  .mat-img_not{
+
+    margin-right: 10%;
+  }
+ 

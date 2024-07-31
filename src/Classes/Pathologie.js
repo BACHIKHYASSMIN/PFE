@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './Material.css';  
 import  menuIcon from "../Assets/icon.png"
 import homeIcon from "../Assets/Vector.png"
+import NoImage from "../Assets/block.png"
 import agrImg from  "../Assets/agr.png"
 import pierImg from  "../Assets/pier.png"
 import deconIcon from "../Assets/decon.png"
@@ -33,8 +34,7 @@ const Pathologie = ({pathologies}) => {
     <na className="material">
       <Navbar  /> 
       <div className="material-head">
-          <img className="menu" src={menuIcon} alt="Menu Icon"
-          onClick={handleMenuToggle}  />
+        
          <Typography.Title level={1} style={{ fontWeight: 'bold', marginBottom: '10px',textAlign: 'center', marginLeft:'30%' }}>
          {t("Header.Path")}
       </Typography.Title>
@@ -54,69 +54,7 @@ const Pathologie = ({pathologies}) => {
           <Categories pathologies={pathologies} categorieName={t("Menu.PDM")}/>
           <Categories pathologies={pathologies} categorieName={t("Menu.Autres")}/>
 
-        {/* Afficher le menu latéral s'il est ouvert */}
-        {isMenuOpen && (
-        
-        <div className="side-menu">
-  <div className="popIcons">
-    <img className="popmenu" src={whitemenuIcon} alt="Menu Icon" onClick={handleMenuToggle} />
-    <img className="closemenu" src={closeIcon} alt="Close Icon" onClick={handleMenuToggle} />
-  </div>
-  <div className='lineBar'></div>
-  <h3 className='rub' style={{textAlign: 'center' }}>{t("Menu.Rubrique")}</h3>
-  <ul className='mats' style={{ paddingLeft: '20px' }}>
-    <li className='rubMat-name' ><Link to="/material">{t("Header.Mat")}</Link></li>
-    <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/categorie1" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.MAT")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/categorie2" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.MER")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/categorie3" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Bois")}</Link>
-</li>
-    <li className='rubMat-name'><Link to="/produit">{t("Header.Prod")}</Link></li>
-    <li className='rubMat-name'><Link to="/ouvrage">{t("Header.Ouv")}</Link></li>
-    <li className='rubMat-name'><Link to="/pathologie">{t("Header.Path")}</Link></li>
-    <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/biologique" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Biologique")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/chromatique-dépot" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Chd")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/déformation" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Déformation")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/détachement" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Détachement")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/fissure" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Fissure")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/perte de matière" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.PDM")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/autres" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Autres")}</Link>
-</li>
-    <li className='rubMat-name'><Link to="/monument">{t("Header.Monu")}</Link></li>
-    </ul>
-  <div className='lineBar'></div>
-  <h3 className='rub'  style={{textAlign: 'center' }} >{t("Menu.Pages")}</h3>
-  {/* Ajoutez vos liens du menu ici */}
-  <Link className="pageLink" to="/acceuil">{t("navbar.accueil")}</Link>
-  <Link className="pageLink" to="/Graph">{t("navbar.graph")}</Link>
-  <Link className="pageLink" to="/carte-geographique">{t("navbar.carteGeographique")}</Link>
-  <Link className="pageLink" to="/recherche-avancee">{t("navbar.rechercheAvancee")}</Link>
-  <Link className="pageLink" to="/a-propos">{t("navbar.aPropos")}</Link>
-  <div className='lineDecBar'></div>
-  <div className='Decon'>
-    <img className="dec" src={deconIcon} alt="Decon Icon" onClick={handleDeconnect} />
-    <a className='decLink' onClick={handleDeconnect} >{t("Menu.Deconnexion")}</a>
-  </div>
-</div>
-
-      )}
+       
    <ChatBox/>   
 
       <Footer/>
@@ -130,6 +68,7 @@ const Categories = (props) => {
   const pathologies=props.pathologies
   const { t,i18n } = useTranslation();
   const navigate = useNavigate();
+  console.log('pathologies',pathologies)
   const handleImageClick = () => {
     // Naviguer vers la page "Details" lors du clic sur l'image
     navigate('/details');
@@ -145,11 +84,16 @@ const Categories = (props) => {
           .filter(pathologie => pathologie.category === "BIOLOGIQUE")
           .slice(0, 3)
           .map((pathologie, index) => (
-            <div className='CardMatItem' key={index} style={{marginTop:'3%', marginBottom:'-3%', width:'200px',height: '180px',border: '1px solid dimgrey ',marginRight:'3%'}}>
-
-              <p style={{marginLeft:'35%', marginTop:'25%', fontSize:'17px'}}>{pathologie.title}</p>
-              
-            </div>
+            <div className='CardMatItem' key={index}>
+            <p>{pathologie.title}</p>
+            <img 
+              className="mat-img" 
+              src={NoImage}
+              //src={`data:image/jpg;base64, ${pathologie.image[0]}`} // Affiche la première image
+              onClick={() => handleImageClick(pathologie.id)} 
+              alt="Material"
+            />
+          </div>
           ))}
       </div>
     );
@@ -162,10 +106,15 @@ const Categories = (props) => {
           .filter(pathologie => pathologie.category === "CHROMATIQUE")
           .slice(0, 3)
           .map((pathologie, index) => (
-            <div className='CardMatItem' key={index} style={{marginTop:'3%', marginBottom:'-3%', width:'200px',height: '180px',border: '1px solid dimgrey ',marginRight:'3%'}}>
-
-            <p style={{marginLeft:'35%', marginTop:'25%', fontSize:'17px'}}>{pathologie.title}</p>
-            
+            <div className='CardMatItem' key={index}>
+            <p>{pathologie.title}</p>
+            <img 
+              className="mat-img" 
+              src={NoImage}
+              //src={`data:image/jpg;base64, ${pathologie.image[0]}`} // Affiche la première image
+              onClick={() => handleImageClick(pathologie.id)} 
+              alt="Material"
+            />
           </div>
           ))}
       </div>
@@ -178,10 +127,15 @@ const Categories = (props) => {
           .filter(pathologie => pathologie.category === "DEFORMATION")
           .slice(0, 3)
           .map((pathologie, index) => (
-            <div className='CardMatItem' key={index} style={{marginTop:'3%', marginBottom:'-3%', width:'200px',height: '180px',border: '1px solid dimgrey ',marginRight:'3%'}}>
-
-            <p style={{marginLeft:'35%', marginTop:'25%', fontSize:'17px'}}>{pathologie.title}</p>
-            
+            <div className='CardMatItem' key={index}>
+            <p>{pathologie.title}</p>
+            <img 
+              className="mat-img" 
+              src={NoImage}
+              //src={`data:image/jpg;base64, ${pathologie.image[0]}`} // Affiche la première image
+              onClick={() => handleImageClick(pathologie.id)} 
+              alt="Material"
+            />
           </div>
           ))}
       </div>
@@ -194,10 +148,15 @@ const Categories = (props) => {
           .filter(pathologie => pathologie.category === "DETACHEMENT")
           .slice(0, 3)
           .map((pathologie, index) => (
-            <div className='CardMatItem' key={index} style={{marginTop:'3%', marginBottom:'-3%', width:'200px',height: '180px',border: '1px solid dimgrey ',marginRight:'3%'}}>
-
-            <p style={{marginLeft:'35%', marginTop:'25%', fontSize:'17px'}}>{pathologie.title}</p>
-            
+            <div className='CardMatItem' key={index}>
+            <p>{pathologie.title}</p>
+            <img 
+              className="mat-img" 
+              src={NoImage}
+              //src={`data:image/jpg;base64, ${pathologie.image[0]}`} // Affiche la première image
+              onClick={() => handleImageClick(pathologie.id)} 
+              alt="Material"
+            />
           </div>
           ))}
       </div>
@@ -210,10 +169,15 @@ const Categories = (props) => {
           .filter(pathologie => pathologie.category === "FISSURE")
           .slice(0, 3)
           .map((pathologie, index) => (
-            <div className='CardMatItem' key={index} style={{marginTop:'3%', marginBottom:'-3%', width:'200px',height: '180px',border: '1px solid dimgrey ',marginRight:'3%'}}>
-
-            <p style={{marginLeft:'35%', marginTop:'25%', fontSize:'17px'}}>{pathologie.title}</p>
-            
+            <div className='CardMatItem' key={index}>
+            <p>{pathologie.title}</p>
+            <img 
+              className="mat-img" 
+              src={NoImage}
+              //src={`data:image/jpg;base64, ${pathologie.image[0]}`} // Affiche la première image
+              onClick={() => handleImageClick(pathologie.id)} 
+              alt="Material"
+            />
           </div>
           ))}
       </div>
@@ -226,10 +190,15 @@ const Categories = (props) => {
             .filter(pathologie => pathologie.category === "PERTE MATIERE")
             .slice(0, 3)
             .map((pathologie, index) => (
-              <div className='CardMatItem' key={index} style={{marginTop:'3%', marginBottom:'-3%', width:'200px',height: '180px',border: '1px solid dimgrey ',marginRight:'3%'}}>
-
-              <p style={{marginLeft:'35%', marginTop:'25%', fontSize:'17px'}}>{pathologie.title}</p>
-              
+              <div className='CardMatItem' key={index}>
+              <p>{pathologie.title}</p>
+              <img 
+                className="mat-img" 
+                src={NoImage}
+                //src={`data:image/jpg;base64, ${pathologie.image[0]}`} // Affiche la première image
+                onClick={() => handleImageClick(pathologie.id)} 
+                alt="Material"
+              />
             </div>
             ))}
         </div>
@@ -242,10 +211,15 @@ const Categories = (props) => {
             .filter(pathologie => pathologie.category === "AUTRE")
             .slice(0, 3)
             .map((pathologie, index) => (
-              <div className='CardMatItem' key={index} style={{marginTop:'3%', marginBottom:'-3%', width:'200px',height: '180px',border: '1px solid dimgrey ',marginRight:'3%'}}>
-
-              <p style={{marginLeft:'35%', marginTop:'25%', fontSize:'17px'}}>{pathologie.title}</p>
-              
+              <div className='CardMatItem' key={index}>
+              <p>{pathologie.title}</p>
+              <img 
+                className="mat-img" 
+                src={NoImage}
+                //src={`data:image/jpg;base64, ${pathologie.image[0]}`} // Affiche la première image
+                onClick={() => handleImageClick(pathologie.id)} 
+                alt="Material"
+              />
             </div>
             ))}
         </div>

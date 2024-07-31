@@ -2,6 +2,8 @@ import '../Categorie.css';
 import React, { useState, useEffect }  from 'react';
 import  menuIcon from "../Assets/icon.png"
 import homeIcon from "../Assets/Vector.png"
+import NoImage from "../Assets/block.png"
+import noResults from "../Assets/no-results.png"
 import FilterIcon from "../Assets/filter.png"
 import agrImg from  "../Assets/agr.png"
 import pierImg from  "../Assets/pier.png"
@@ -37,6 +39,7 @@ function Categorie2({products,materials,buildings,monuments,places,colors}) {
   const [selectedColor, setSelectedColor] = useState(); 
   const [isCheckedPlaces, setCheckedPlaces] = useState({});
   const [isCheckedColors, setCheckedColors] = useState({});
+  const [filterMenuOpen, setFiltMenuOpen] = useState(null); 
   const materialsPerPage = 10;
   const indexOfLastMaterial = currentPage * materialsPerPage;
   const indexOfFirstMaterial = indexOfLastMaterial - materialsPerPage;
@@ -52,6 +55,13 @@ function Categorie2({products,materials,buildings,monuments,places,colors}) {
   const handlePreviousPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
+    }
+  };
+  const handleFiltMenuToggle = (menuType) => {
+    if (filterMenuOpen === menuType) {
+      setFiltMenuOpen(null); // Fermer le menu si déjà ouvert
+    } else {
+      setFiltMenuOpen(menuType); // Ouvrir le menu correspondant
     }
   };
   useEffect(() => {
@@ -82,7 +92,7 @@ function Categorie2({products,materials,buildings,monuments,places,colors}) {
   useEffect(() => {
     const fetchData = async () => {
      // Remplacez par l'ID du nœud souhaité
-     const nodeFamily = 'Minérale et roche'; // Remplacez par la famille de nœud souhaitée
+     const nodeFamily = 'c'; // Remplacez par la famille de nœud souhaitée
       
       try {
         const response = await axios.post('http://localhost:1000/api/RelationColorData', {
@@ -192,7 +202,7 @@ function Categorie2({products,materials,buildings,monuments,places,colors}) {
       <div className='cat'>
          <Navbar/>
          <div className="categorie-head">
-  <img className="menu" src={menuIcon} onClick={handleMenuToggle} />
+  
   <Typography.Title level={1} style={{ fontWeight: 'bold', marginBottom: '10px', textAlign: 'center', marginLeft: '5%', display: 'inline' }}>
   {t("Menu.MER")}
   </Typography.Title>
@@ -265,26 +275,41 @@ function Categorie2({products,materials,buildings,monuments,places,colors}) {
     <li>{t("Messages.MatErr")}</li>
   ) :(
     // Si aucune donnée n'est disponible dans data, afficher les currentMaterials
-    currentMaterials && currentMaterials.length > 0 ? (
-      currentMaterials.map(materiau => (
-        <div className='catItem' key={materiau.id}>
-          <p>{materiau.title}</p>
-          {materiau.image && materiau.image.length > 0 ? (
-            <img 
-              className="mat-img" 
-              src={`data:image/jpg;base64, ${materiau.image[0]}`}
-              onClick={() => handleImageClick(materiau.id)} 
-              alt="Material"
-            />
-          ) : (
-            <img src={`data:image/jpg;base64, ${materiau.image}`}  onClick={() => handleImageClick(materiau.id)}/>
-          )}
-        </div>
-      ))
-    ) : (
-      <li>{t("Messages.MatErr")}</li>
-    )
-  )}
+currentMaterials && currentMaterials.length > 0 ? (
+  // Trier currentMaterials en mettant d'abord les éléments avec images
+  currentMaterials.sort((a, b) => {
+    // Mettre en premier les éléments avec des images
+    if (a.image && a.image.length > 0 && (!b.image || b.image.length === 0)) {
+      return -1;
+    }
+    // Mettre en dernier les éléments sans images
+    if ((!a.image || a.image.length === 0) && b.image && b.image.length > 0) {
+      return 1;
+    }
+    // Sinon, conserver l'ordre actuel
+    return 0;
+  }).map(materiau => (
+    <div className='catItem' key={materiau.id}>
+      <p>{materiau.title}</p>
+      {materiau.image && materiau.image.length > 0 ? (
+        <img 
+          className="mat-img" 
+          src={`data:image/jpg;base64, ${materiau.image[0]}`}
+          onClick={() => handleImageClick(materiau.id)} 
+          alt="Material"
+        />
+      ) : (
+        <img style={{width:"128px",height:"128px",marginLeft:"5%"}} src={NoImage} onClick={() => handleImageClick(materiau.id)} alt="Material"/>
+      )}
+    </div>
+  ))
+) : (
+  <div>
+    <img src={noResults} />
+    <p>{t("Messages.MatErr")}</p>
+  </div>
+)
+)}
 </div>
 
 
@@ -297,7 +322,7 @@ function Categorie2({products,materials,buildings,monuments,places,colors}) {
   )}
 </div>
               
-         {/* Afficher le menu latéral s'il est ouvert */}
+          {/* Afficher le menu latéral s'il est ouvert */}
       {isFilterMenuOpen && (
         
         <div className="side-filter-menu">
@@ -309,9 +334,10 @@ function Categorie2({products,materials,buildings,monuments,places,colors}) {
           <div className='lineFBar'></div>
     <div className='FilterCat'>
     <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
-          onClick={handleFilterMenuToggle}  />
+          onClick={() => handleFiltMenuToggle(t("Header.Prod"))}  />
           <h3 className='filter-name' >{t("Header.Prod")}</h3>
           </div>
+          {filterMenuOpen === t("Header.Prod") && (
           <div className='catboxList'>
           <ul>
           { products.map(produit => (
@@ -339,11 +365,13 @@ function Categorie2({products,materials,buildings,monuments,places,colors}) {
       ))}
       </ul>
     </div> 
+          )}
     <div className='FilterCat'>
     <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
-          onClick={handleFilterMenuToggle}  />
+          onClick={() => handleFiltMenuToggle(t("Header.Ouv"))} />
           <h3 className='filter-name' >{t("Header.Ouv")}</h3>
           </div>
+          {filterMenuOpen === t("Header.Ouv") && (
           <div className='catboxList'>
           <ul>
           { buildings.map(ouvrage => (
@@ -370,13 +398,14 @@ function Categorie2({products,materials,buildings,monuments,places,colors}) {
       ))}
       </ul>
     </div> 
-    
+          )} 
 
     <div className='FilterCat'>
     <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
-          onClick={handleFilterMenuToggle}  />
+         onClick={() => handleFiltMenuToggle(t("Header.Monu"))}  />
           <h3 className='filter-name' >{t("Header.Monu")}</h3>
           </div>
+          {filterMenuOpen === t("Header.Monu") && (
           <div className='catboxList'>
           <ul>
           { monuments.map(monument => (
@@ -403,12 +432,14 @@ function Categorie2({products,materials,buildings,monuments,places,colors}) {
       ))}
       </ul>
     </div> 
-    
+
+          )}
 
     <div className='FilterCat'>
-        <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown" onClick={handleFilterMenuToggle} />
+        <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"  onClick={() => handleFiltMenuToggle(t("Header.Place"))} />
         <h3 className='filter-name'>{t("Header.Place")}</h3>
       </div>
+      {filterMenuOpen === t("Header.Place") && (
       <div className='catboxList'>
         <ul>
           {places.map(place => (
@@ -435,10 +466,13 @@ function Categorie2({products,materials,buildings,monuments,places,colors}) {
           ))}
         </ul>
       </div>
+      )}
+
       <div className='FilterCat'>
-        <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown" onClick={handleFilterMenuToggle} />
+        <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown" onClick={() => handleFiltMenuToggle( t("Header.Color"))} />
         <h3 className='filter-name'>{t("Header.Color")}</h3>
       </div>
+      {filterMenuOpen === t("Header.Color") && (
       <div className='catboxList'>
   <ul>
     {colors.map((couleur, index) => ( // Utilisation de l'index comme identifiant
@@ -465,6 +499,7 @@ function Categorie2({products,materials,buildings,monuments,places,colors}) {
     ))}
   </ul>
 </div>
+  )}
           <div className='lineFBar'></div>
           <div className='ValBtn'>
           <button className='annuler' onClick={handleCancel}>Annuler</button>
@@ -474,70 +509,7 @@ function Categorie2({products,materials,buildings,monuments,places,colors}) {
       )}
 
 
-       {/* Afficher le menu latéral s'il est ouvert */}
-       {isMenuOpen && (
-        
-        <div className="side-menu">
-        <div className="popIcons">
-          <img className="popmenu" src={whitemenuIcon} alt="Menu Icon" onClick={handleMenuToggle} />
-          <img className="closemenu" src={closeIcon} alt="Close Icon" onClick={handleMenuToggle} />
-        </div>
-        <div className='lineBar'></div>
-        <h3 className='rub' style={{textAlign: 'center' }}>Rubriques</h3>
-        <ul className='mats' style={{ paddingLeft: '20px' }}>
-          <li className='rubMat-name' ><Link to="/material">Matériaux</Link></li>
-          <ul style={{ paddingLeft: '30px' ,marginBottom: '10px'}}>
-          <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/categorie1" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Matériaux à base de terre</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/categorie2" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Minéraux et Roches</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/categorie3" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Bois</Link>
-</li>
-          </ul>
-          <li className='rubMat-name'><Link to="/produit">Produits</Link></li>
-          <li className='rubMat-name'><Link to="/ouvrage">Ouvrages</Link></li>
-          <li className='rubMat-name'><Link to="/pathologie">Pathologies</Link></li>
-          <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/biologique" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Biologique</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/chromatique-dépot" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Chromatique-dépot</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/déformation" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Déformation</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/détachement" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Détachement</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/fissure" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Fissure</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/perte de matière" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Pertes de matière</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/autres" style={{ textDecoration: 'none', color: '#FFFFFF' }}>Autres</Link>
-</li>
-          <li className='rubMat-name'><Link to="/monument">Monuments</Link></li>
-          </ul>
-        <div className='lineBar'></div>
-        <h3 className='rub'  style={{textAlign: 'center' }} >Pages</h3>
-        {/* Ajoutez vos liens du menu ici */}
-        <Link className="pageLink" to="/userHome">Accueil</Link>
-        <Link className="pageLink" to="/Graph">Graph</Link>
-        <Link className="pageLink" to="/carte-geographique">Carte Geographique</Link>
-        <Link className="pageLink" to="/recherche-avancee">Recherche Avancée</Link>
-        <Link className="pageLink" to="/a-propos">À propos</Link>
-        <div className='lineDecBar'></div>
-        <div className='Decon'>
-          <img className="dec" src={deconIcon} alt="Decon Icon" onClick={handleMenuToggle} />
-          <a className='decLink' href="/lien2">Deconnexion</a>
-        </div>
-      </div>
-      )}
+      
       <Footer />
       </div>
       

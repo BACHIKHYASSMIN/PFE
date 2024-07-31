@@ -3,8 +3,8 @@
     "navbar":{
       "accueil": "Home",
       "graph": "Graph",
-      "carteGeographique": "Geographical Map",
-      "rechercheAvancee": "Advanced Search",
+      "carteGeographique": "Map",
+      "rechercheAvancee": "Advanced Research",
       "aPropos": "About",
       "profil": "Profile",
       "changerLangue": "Change Language",
@@ -18,6 +18,7 @@
       "Monu":"Monuments",
       "Ouv":"Building",
       "Path":"Pathologies",
+      "Usages":"Uses",
       "Periode":"Periods",
       "Place":"Places",
       "Color":"Colors",
@@ -35,14 +36,15 @@
         
     },
     "intro":{
-      "NumeriqueMaterial":"NumeriqueMaterial is a digital material-library platform for the built heritage of the Kasbah of Algiers, deployed in Algeria, which gives you free access at any time to data on materials, products, structures, monuments, pathologies, causes of deterioration, construction techniques of the built heritage in Algeria.",
-      "MaterialP":"  Numerique Materials invites you to delve into the captivating world of architectural materials through its dedicated section. Our platform offers an immersion into the unique textures, colors and properties of these materials, highlighting their essential contribution to the construction and preservation of historic buildings. Discover the richness of these fundamental elements of built heritage and explore how they shape architectural history. Welcome to our materials area, where every discovery strengthens your connection with architectural heritage.",
-      "ProductP":"Numerique Materials invites you to explore products related to built heritage , and dive into the details of their distinctive properties,you can browse these products and discover their shapes, availabilities, provenances and much more. Explore heritage treasures with us and deepen your knowledge of the elements that shape these iconic monuments",
-      "BuildingP":"Numérique Materials offers you an enriching experience through its section dedicated to architectural structures. Explore a wide range of structures, immerse yourself in their fascinating details and access a wealth of information on history, architecture and technical aspects. Visit the 'Structures' section for a complete exploration of the architectural heritage of the Kasbah of Algiers.",
-       "MonumP":"Numérique Materials offers you a fascinating immersion in the 'Monuments' section, where you can explore the diversity of historic monuments. Discover their types, locations and brief descriptions to get an overview of our rich architectural heritage. Visit the monuments section for a captivating and informative experience.",
-       "PathP":"Numérique Materials offers a comprehensive overview of common pathologies affecting built heritage. Explore the 'Pathologies' section for general information on the various problems that historic buildings can face. Thanks to our platform, you can access a wealth of knowledge on the causes and solutions for preserving these valuable structures. Consult the 'Pathologies' section to broaden your understanding of the challenges involved in preserving architectural heritage."
+      "NumeriqueMaterial":" is a digital material-library platform for the built heritage of the Casbah of Algiers, deployed in Algeria, which gives you free access at any time to data on materials, products, structures, monuments, pathologies, causes of deterioration, construction techniques of the built heritage in Algeria.",
+      "MaterialP":"  TARMEEM Materials invites you to delve into the captivating world of architectural materials through its dedicated section. Our platform offers an immersion into the unique textures, colors and properties of these materials, highlighting their essential contribution to the construction and preservation of historic buildings. Discover the richness of these fundamental elements of built heritage and explore how they shape architectural history. Welcome to our materials area, where every discovery strengthens your connection with architectural heritage.",
+      "ProductP":"TARMEEM invites you to explore products related to built heritage , and dive into the details of their distinctive properties,you can browse these products and discover their shapes, availabilities, provenances and much more. Explore heritage treasures with us and deepen your knowledge of the elements that shape these iconic monuments",
+      "BuildingP":"TARMEEM offers you an enriching experience through its section dedicated to architectural structures. Explore a wide range of structures, immerse yourself in their fascinating details and access a wealth of information on history, architecture and technical aspects. Visit the 'Structures' section for a complete exploration of the architectural heritage of the Kasbah of Algiers.",
+       "MonumP":"TARMEEM offers you a fascinating immersion in the 'Monuments' section, where you can explore the diversity of historic monuments. Discover their types, locations and brief descriptions to get an overview of our rich architectural heritage. Visit the monuments section for a captivating and informative experience.",
+       "PathP":"TARMEEM offers a comprehensive overview of common pathologies affecting built heritage. Explore the 'Pathologies' section for general information on the various problems that historic buildings can face. Thanks to our platform, you can access a wealth of knowledge on the causes and solutions for preserving these valuable structures. Consult the 'Pathologies' section to broaden your understanding of the challenges involved in preserving architectural heritage."
     },
     "Tokens":{
+      "legend":"Legend",
       "suivre":"View all ",
       "Viz":"View Graph",
       "VizP":"Discover a graphic representation of the knowledge available on Numerique Materials.",
@@ -58,6 +60,7 @@
        "Infos":"Personal Information",
        "userName":"User name",
        "EnvoyerMess":"Send a Message",
+       "Aff":"Affiliation",
        "Destinataire":"Recipient",
        "Objet":"Object",
        "mess":"Message content",
@@ -66,13 +69,26 @@
        "RechercherUn":"Search for ",
        "FamilleMat":"Materials family",
        "TapeMess":"Tape a meessage",
-       "Reply": "Reply"
+       "Reply": "Reply",
+       "Connection":"Log In",
+       "Email":"Email",
+       "MDP":"Password",
+       "hvnt":"Don't have an account?  ",
+       "registre":"Sign Up",
+       "hvcount":"Already have an account? ",
+       "or":"OR"
     },
     "Footer":{
       "localosation":"El harrach,Algiers,Algeria",
       "ENcadrement":"Supervised by :",
       "Realisation":"Created by :",
-      "Droits":"All rights reserved "
+      "Droits":"All rights reserved ",
+      "Promoteur":"Supported by : ",
+      "KG":"Knowledge Graph Creator : ",
+      "descriptions":"A digital material library deployed in Algeria,applied to Algerian built heritage.It gives you free access to varios data on materials and ancient monuments anytime.enabling you to acquire in-depth knowledge and ensure appropriate interventions.",
+      "usfulLinks":"Useful Links",
+      "contact":"Contact"
+      
 
     },
     "Btn":{
@@ -108,30 +124,37 @@
       "Deconnexion":"Disconnect"
     },
     "Title":{
-      "abouT":"About NumeriqueMaterials",
-      "Decouvrir":"Discover NumeriqueMaterials",
-      "objectif":"Project objectives",
-      "fonction":"Platform features",
+      "US":"US",
+      "Name":"TARMEEM",
+      "abouT":"About ",
+      "Decouvrir":"Discover  ",
+      "objectif":"Project Objectives",
+      "fonction":"Platform Features",
       "espace":"Interaction Space"
     },
     "Paragraph":{
-      "decouvert":"NumeriqueMaterials is an online digital material library specialized in facilitating the search for materials. NumeriqueMaterials offers users a comprehensive, up-to-date database of a wide range of construction and design materials, designed to be accessible and user-friendly, providing an intuitive and efficient user experience for researchers, engineers and architectural professionals. The aim is to simplify the materials search process, enabling platform users to quickly find the information they need for their projects.",
-      "objectifsP":"The objectives of NumeriqueMaterials are as follows:",
+      "decouvert":"is a digital material library deployed in Algeria, applied to Algerian built heritage. It gives you free access to various data on materials and ancient monuments anytime, enabling you to acquire in-depth knowledge and ensure appropriate interventions.",
+      "objectifsP":"The objectives of TARMEEM are as follows:",
       "objectifsL1":"Provide a user-friendly, intuitive platform for searching for building materials.",
       "objectifsL2":"Offer a comprehensive, up-to-date database of materials from a variety of sources.",
       "objectifsL3":"Enable users to easily filter and study different materials according to their specific needs.",
       "objectifsL4":"Facilitate materials management for architects, engineers and construction professionals.",
-      "fonctionP":"Features offered by NumeriqueMaterials :",
+      "fonctionP":"Features offered by TARMEEM :",
       "fonctionL1":"Consultation of vast collections of materials, products, structures, pathologies and monuments available in the database from a variety of reliable sources.",
       "fonctionL2":"Advanced search with customizable filters to quickly find the materials you're looking for.",
       "fonctionL3":"Visualize graphs and statistical data to analyze trends and material performance.",
       "fonctionL4":"Use filters to refine search results according to specific criteria.",
       "fonctionL5":"Exploring the technical details, characteristics and properties of each material, product, structure, pathology and monument.",
-      "espaceP":"The NumeriqueMaterials platform features an Interaction Area dedicated to exchanges and collaboration between users.  In this area, you can :",
-      "espaceL1":"Share your experiences and suggestions to contribute to the continuous improvement of NumeriqueMaterials.",
+      "espaceP":"The TARMEEM platform features an Interaction Area dedicated to exchanges and collaboration between users.  In this area, you can :",
+      "espaceL1":"Share your experiences and suggestions to contribute to the continuous improvement of TARMEEM.",
       "espaceL2":"Exchange ideas, tips and references with an active and committed community.",
       "espaceL3":"Collaborate with other users to solve specific problems or carry out joint projects.",
-      "espaceL4":"Ask questions to obtain additional information  "
+      "espaceL4":"Ask questions to obtain additional information  ",
+      "ConsMat":"View all Materials ....",
+      "ConsProd":"View all Products ....",
+      "ConsOuv":"View all Buildings ....",
+      "ConsMon":"View all Monuments ....",
+      "ConsPath":"View all Pathologies ...."
     }
 
     

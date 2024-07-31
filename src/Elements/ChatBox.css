@@ -2,7 +2,7 @@
     position: fixed;
     bottom: 20px; /* Ajustez la position verticale selon vos besoins */
     right: 20px; /* Ajustez la position horizontale selon vos besoins */
-    background-color: #2C3E50; /* Couleur de fond de la ChatBox */
+    background-color: black; /* Couleur de fond de la ChatBox */
     border-radius: 50%; /* Pour créer une forme ovale */
     width: 60px; /* Largeur de la ChatBox */
     height: 60px; /* Hauteur de la ChatBox */

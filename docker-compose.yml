@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  neo4j:
+    image: neo4j:4.4.23
+    container_name: neo4j
+    environment:
+      NEO4J_AUTH: 'neo4j/password'
+      NEO4J_dbms_active_database: neo4j
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - neo4j_data:/var/lib/neo4j/data
+      - ./import:/var/lib/neo4j/import
+
+  mysql:
+    image: mysql:5.7
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: materiautheque
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./materiautheque.sql:/docker-entrypoint-initdb.d/materiautheque.sql
+
+  node_scripts:
+      build:
+        context: .
+        dockerfile: Dockerfile.node
+      container_name: node_scripts
+      ports:
+          - "5000:5000" 
+      depends_on:
+          - neo4j
+          - mysql
+      environment:
+          MYSQL_HOST: mysql
+          MYSQL_PORT: 3306
+          MYSQL_USER: root
+          MYSQL_PASSWORD: rootpassword
+      volumes:
+          - .:/usr/src/app
+      working_dir: /usr/src/app
+      command: node connection.js
+
+  react_app:
+    build:
+      context: .
+      dockerfile: Dockerfile.react
+    container_name: react_app
+    ports:
+      - "80:80"
+    depends_on:
+      - neo4j
+      - mysql
+
+volumes:
+  neo4j_data:
+  mysql_data:

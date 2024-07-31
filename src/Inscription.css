@@ -24,7 +24,7 @@
   }
   
   .inscription-background {
-    background-image: url('Assets/Materiautheque.png'); /* Chemin vers votre image de fond */
+    background-image: url('Assets/Materiautheq.png'); /* Chemin vers votre image de fond */
     background-size: cover; /* Ajuster la taille de l'image pour couvrir toute la div */
     background-position: center; /* Centrer l'image */
     position: fixed;

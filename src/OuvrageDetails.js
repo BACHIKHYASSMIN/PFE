@@ -19,11 +19,11 @@ function OuvrageDetails() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [infos,setInfos]=useState();
   const prevSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === 0 ? ouvrage.component.images.length - 1 : prevIndex - 1));
+    setCurrentIndex((prevIndex) => (prevIndex === 0 ? ouvrage.images.length - 1 : prevIndex - 1));
   };
 
   const nextSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === ouvrage.component.images.length - 1 ? 0 : prevIndex + 1));
+    setCurrentIndex((prevIndex) => (prevIndex === ouvrage.images.length - 1 ? 0 : prevIndex + 1));
   };
   useEffect(() => {
     // Convertissez productId en entier en utilisant parseInt()
@@ -93,13 +93,13 @@ function OuvrageDetails() {
         <div>
           <p className='mat-name'>{ouvrage.component.designation}</p>
 
-          {ouvrage.component.images && ouvrage.component.images.length > 0 ? (
+          {ouvrage.images && ouvrage.images.length > 0 ? (
             <div className="slider-container">
               <div
                 className="slider-images"
                 style={{ transform: `translateX(-${currentIndex * 100}%)` }}
               >
-                {ouvrage.component.images.map((image, index) => (
+                {ouvrage.images.map((image, index) => (
                   <div className="slider-image" key={image.id}>
                     <img
                       className="mat-img"
@@ -136,34 +136,53 @@ function OuvrageDetails() {
 }
       </div>
       <div className="Vertical">
-      <div className="Source">
-      <h3 >Source</h3>
-      {ouvrage && ouvrage.component ? (
-         <p>{ouvrage.component.source}</p>
-         ):(
-          <p>Aucun matériau trouvé</p>
-        )
-}
-      </div>
-      <div className="Composition">
-  <h3>Informations Relatives</h3>
-  {infos && infos.infos ? (
-    // Utilisation de reduce pour regrouper les éléments par type de relation
-    Object.entries(infos.infos.reduce((acc, item) => {
-      const relationType = item.relation.toUpperCase(); // Convertit en majuscules pour uniformiser
-      if (!acc[relationType]) {
-        acc[relationType] = [];
-      }
-      acc[relationType].push(item.Cible);
-      return acc;
-    }, {})).map(([relationType, items], index) => (
-      <p key={index}>{items.length > 0 ? `${relationType} : [${items.join(", ")}]` : ''}</p>
-    ))
-  ) : (
-    <p>Aucune information trouvée</p>
-  )}
-</div>
-      </div>
+ 
+ {/* Affiche les éléments avec une autre relation dans un autre div */}
+ {infos && infos.infos  && infos.infos.length > 0 &&(
+   
+ <div className='Source'>
+   <h3>Source</h3>
+      {infos.infos
+      
+     .filter(item => item.relation == "REFERENCER_PAR")
+     .map((item, index) => {
+       const { year, title, author, page } = item.Cible.properties;
+       const yearDisplay = typeof year === 'object' ? `${year.low} - ${year.high}` : year;
+       return (
+     
+       
+       <p key={index}>{title},{author},{yearDisplay},{page}</p>
+     )
+   })
+ }
+     </div>
+   )}
+ 
+ 
+ {infos && infos.infos && infos.infos.length > 0 && (
+   <div className="Composition">
+     <h3>Informations Relatives</h3>
+     {Object.entries(
+       infos.infos
+         .filter(item => !['ILLUSTRER_PAR', 'REFERENCER_PAR'].includes(item.relation.toUpperCase())) // Filtre les relations à exclure
+         .reduce((acc, item) => {
+           const relationType = item.relation.toUpperCase(); // Convertit en majuscules pour uniformiser
+           if (!acc[relationType]) {
+             acc[relationType] = [];
+           }
+           acc[relationType].push(item.Cible.properties.designation);
+           return acc;
+         }, {})
+     ).map(([relationType, items], index) => (
+       <p key={index}>{items.length > 0 ? `${relationType} : [${items.join(", ")}]` : ''}</p>
+     ))}
+   </div>
+ )}
+ 
+ 
+       </div>
+       
+
       {/* Afficher le menu latéral s'il est ouvert */}
       {isMenuOpen && (
         

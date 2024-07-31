@@ -1,68 +1,163 @@
+
 .Footer{
     text-align: center;
-    background-color: #2C3E50;
-}
-.footer-links li a {
-    color: white; /* Couleur du texte */
-    text-decoration: none; /* Supprime le soulignement */
-}
+    background-color: #a48c75;
+display: flex;
+flex-direction: column;
+font-family: 'Montserrat';
+padding-bottom: 20px;
+margin:0;
 
-.LogoName h3{
-    color: white;
-    padding-top: 2%;
 }
-.Pages ul{
-    margin-left: 3%;
- display: flex;
- justify-content: space-between;
- margin-right: 3%;
-}
-.Pages li{
-list-style:none;
-color: white;
-}
-.Pages a {
-    cursor: pointer;
-}
-
-.Contact{
+.colomn1{
     display: flex;
-    justify-content: space-evenly;
+flex-direction: row;
+margin-left: 2%;
+}
+.colomn2{
+    display: flex;
+flex-direction: row;
+margin-left: 2%;
+align-items: flex-end;
+}
+.LogoSection{
+ 
+    margin-top: 3%;
+    display: flex;
+flex-direction: column;
+width: 35%;
+align-items: stretch;
+
+}
+.LogoImg {
+    width: 330px;
+ background-color: #ECF0F1;
+    border-radius: 7%;
+}
+.DescriptionApp{
+    margin-top: 12px;
+    margin-left: 0;
+    color: #ECF0F1;
+    text-align: justify;
+    font-size: medium;
+    font-family: 'Montserrat';
+    width: 89%;
+}
+
+.BarVertical{
+    width: 3px;
+    height: 360px;
+    background-color:#ECF0F1 ;
+    z-index: 100;
+    margin-right: 2%;
+}
+
+.footer-links{
+    margin-top: 3%;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 300px;
+}
+.footer-links li{
+    margin-bottom: 14%;
+}
+
+.footer-links li a{
+    color: #ECF0F1;
+    font-weight: bold;
+    text-decoration: none;
+    text-align:right;
+
     
 }
-.Location{
-   
-   display: flex;
-   align-items: center;
+.footer-usefulLinks{
+    width: 400px;
+    margin-top: 1%;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+.footer-usefulLinks h3{
+color: #ECF0F1;
+}
+.footer-usefulLinks li{
+    margin-bottom: 4%;
 }
 
-.Location img{
-    width:30px;
-    height:30px;
-   margin-right: 5%;
+.footer-usefulLinks li a{
+    color: #ECF0F1;
+   font-size: medium;
+    text-decoration: none;
+    text-align:right;
+}
+.ContactSection{
+    margin-top: 1%;
+    display: flex;
+flex-direction: column;
+width: 30%;
+align-items: stretch;
+}
+.ContactSection h3{
+    color: #ECF0F1;
+}
+.Icons{
+    background-color: black;
+    border-radius: 30px;
+    margin-right: 4%;
 }
 
-.locName{ 
-    width: 200px;
-    color:white;
+.footer-contacts li{
+display: flex;
+flex-direction: row;
+align-items: center;
+margin-bottom: 5%;
+align-items: center;
+}
+.footer-contacts li span,
+.footer-contacts a,
+.footer-contacts p{
+    color: #ECF0F1;
+
+    }
+.IconsLinks a{
+    display: block;
+    text-align: left;
+    text-decoration: none;
     
 }
-.Email{
+.Organisme{
     display: flex;
-    align-items: center;  
+    flex-direction: row;
+    gap: 4px;
+ 
 }
-.Email img{
-    width:30px;
-    height:30px;
-   margin-right: 5%;
-}
-.mailAdr{
+.Organisme img{
     width: 200px;
-    color:white;
-
-}
-.Right{
-    color:white;
-
+    height: 80px;
 }
 
+.Rights{
+    margin: 0;
+    width: 27%;
+
+}
+
+.Equipe{
+    display: flex;
+    flex-direction: row;
+
+ 
+}
+.EquipeNames{
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+    color: #ECF0F1;
+    width: 138px;
+    
+
+    
+}

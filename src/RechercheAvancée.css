@@ -1,0 +1,12 @@
+.arrowdwn{
+    padding-right: 3%;
+    width: 16px;
+  }
+  .FilterCat{
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: baseline;
+  }
+  .catt{
+    padding-right: 40%;
+    }

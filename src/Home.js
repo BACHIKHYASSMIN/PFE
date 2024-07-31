@@ -1,19 +1,31 @@
-import matériautheque from './Assets/Materiautheque.png';
+import matériautheque from './Assets/Materiautheq.png';
 import Materiauphoto from './Assets/Materiauphoto.png';
 import ProduitPhoto from './Assets/ProduitPhoto.png';
 import MonumentPhoto from './Assets/MonumentPhoto.png';
+import PathologiePhoto from './Assets/PathologiePhoto.png'
 import OuvragePhoto from './Assets/OuvragePhoto.png';
 import localisation from './Assets/localisation.jpg';
 import RechAvancée from './Assets/rechercheAvancée.PNG';
 import visualisation from './Assets/visualisation.png';
+import logo from './Assets/Logo.png'
 import './Home.css';
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import NavbarHome from './NavbarHome';
 import Footer from './Elements/Footer';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from './AuthContext';
+import * as THREE from 'three';
+import { color } from 'd3';
+import { useTranslation } from 'react-i18next';
+import zIndex from '@material-ui/core/styles/zIndex';
+
+import Navbar from './Elements/Navbar';
+
+
 
 const Home = () => {
+  const vantaRef = useRef(null);
+  const { t,i18n } = useTranslation();
   const navigate = useNavigate();
   const { isConnected } = useAuth();
 
@@ -38,15 +50,30 @@ const Home = () => {
     };
   
     const descriptionStyle = {
-      textAlign: 'center',
-      color: 'black',
-      fontWeight: 'semi-bold',
+      textAlign:'justify',
+      color: '#000000',
       fontSize: '24px',
-      maxWidth: '850px',
+      maxWidth: '1000px',
       margin: ' auto', // Ajoutez cette ligne pour centrer horizontalement
-      marginBottom: '100px', // Ajoutez cette ligne pour définir la marge basse
-      marginTop: '50px'
+      marginLeft:'13.1%',
+      borderRadius: '10px', // Coins arrondis
     };
+
+    const descriptionTitle = {
+      width: '190px',
+      height: '50px',
+      position: 'absolute',
+      top: '5.7%',
+      left:'43%',
+      //backgroundColor: 'white',
+      //backdropFilter: 'blur(10px)', // Effet de flou
+      borderRadius: '10px', // Coins arrondis
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex:'1'
+    };
+    
   
       const sectionStyle = {
         display: 'flex',
@@ -96,23 +123,24 @@ const Home = () => {
    
     return (
       <div style={containerStyle}>
-       <NavbarHome isAuthenticated={false} />
-        <img src={matériautheque} alt="Description de l'image" style={{ width: '100%', height: '10%' }} />
-  
-        <div style={descriptionStyle} >
-          <p>NumeriqueMaterial est une platforme de matériathèque numérique du domaine du patrimoine bâti de la Casbah d'Alger, deployée en Algérie, qui vous permet d'accerder à tous moment, librement et gratuitement au données sur les matériaux, produits, ouvrages, monuments, pathologies, causes de dégardation  techniques de construction du le patrimoine bati en Algérie.</p>
+       <Navbar isAuthenticated={false} />
+       <div className='HomeHeader' > </div>
+      
+
+        <div   style={descriptionStyle} >
+          <p style={{margin:'1%',}}><span style={{fontWeight:'bold'}}>{t("Title.Name")}</span>{t("intro.NumeriqueMaterial")}</p>
         </div>
-  
+        <div  className='LineBar'/>
         <ul>
     <li>
                 <div style={sectionStyle}>
                 <img src={Materiauphoto} alt="Image des matériaux"  style={{ width: '35%', height: '35%' }}/>
           <div style={textColumnStyle}>
-            <h2>Matériaux</h2>
-            <p>
-            Numerique Materials vous invite à plonger dans l'univers captivant des matériaux architecturaux  à travers sa section dédiée. Notre plateforme offre une immersion au sein des textures, des couleurs et des propriétés uniques de ces matériaux, mettant en lumière leur contribution essentielle à la construction et à la préservation des édifices historiques. Découvrez la richesse de ces éléments fondamentaux du patrimoine bâti et explorez comment ils façonnent l'histoire architecturale. Bienvenue dans notre espace dédié aux matériaux, où chaque découverte renforce votre lien avec le patrimoine architectural.
+            <h2>{t("Header.Mat")}</h2>
+            <p style={{marginLeft:'15%'}}>
+            {t("intro.MaterialP")}
             </p>
-            <div onClick={() => handleMaterialLinkClick('/material')} style={linkStyle}>Consulter tous les Matériaux ...</div>
+            <div onClick={() => handleMaterialLinkClick('/material')} style={linkStyle}> {t("Paragraph.ConsMat")}</div>
           </div>
         </div>
   
@@ -121,11 +149,11 @@ const Home = () => {
     <li>
               <div style={sectionStyle}>
           <div style={textColumnStyle}>
-          <h2>Produits</h2>
+          <h2>{t("Header.Prod")}</h2>
             <p>
-            Numerique Materials vous invite à explorer les produits liés au patrimoine bâti , et à plonger dans les détails de leurs propriétés distinctives,vous pouvez consulter ces produits et découvrir leurs formes, disponibilités, provenances et bien plus encore. Explorez les trésors patrimoniaux avec nous et approfondissez votre connaissance des éléments qui façonnent ces monuments emblématiques.
+            {t("intro.ProductP")}
             </p>
-            <div onClick={() => handleMaterialLinkClick('/produit')} style={linkStyle}>Consulter tout les Produits ...</div>
+            <div onClick={() => handleMaterialLinkClick('/produit')} style={linkStyle}> {t("Paragraph.ConsProd")}</div>
           </div>
           <img src={ProduitPhoto} alt="Image des produits" style={{ width: '35%', height: '35%' }} />
         </div>
@@ -135,11 +163,11 @@ const Home = () => {
       <div style={sectionStyle}>
       <img src={OuvragePhoto} alt="Image des ouvrages"  style={{ width: '35%', height: '35%' }} />
           <div style={textColumnStyle}>
-          <h2>Ouvrages</h2>
-            <p>
-            Numérique Materials vous offre une expérience enrichissante à travers sa section dédiée aux ouvrages architecturaux. Explorez un large éventail d'ouvrages, plongez dans leurs détails fascinants et accédez à une mine d'informations sur l'histoire, l'architecture et les aspects techniques. Consultez la section "Ouvrages" pour une exploration complète du patrimoine architectural de la Casbah d'Alger.
+          <h2>{t("Header.Ouv")}</h2>
+            <p style={{marginLeft:'15%'}}>
+           {t("intro.BuildingP")}
             </p>
-            <div  onClick={() => handleMaterialLinkClick('/ouvrage')} style={linkStyle}>Consulter tout les Ouvrages ...</div>
+            <div  onClick={() => handleMaterialLinkClick('/ouvrage')} style={linkStyle}> {t("Paragraph.ConsOuv")}</div>
             
           </div>
         </div>
@@ -148,13 +176,13 @@ const Home = () => {
     <li>
               <div style={sectionStyle}>
           <div style={textColumnStyle}>
-          <h2>Pathologies</h2>
+          <h2>{t("Header.Path")}</h2>
           <p>
-            Numérique Materials vous propose un aperçu complet des pathologies courantes qui affectent le patrimoine bâti. Explorez la section "Pathologies" pour obtenir des informations générales sur les différents problèmes auxquels peuvent être confrontés les édifices historiques. Grâce à notre plateforme, accédez à une variété de connaissances sur les causes et les solutions pour préserver ces structures précieuses. Consultez la section "Pathologies" pour élargir votre compréhension des défis liés à la conservation du patrimoine architectural.
+          {t("intro.PathP")}
             </p>
-            <div onClick={ () => handleMaterialLinkClick('/pathologie')} style={linkStyle}>Consulter tout les Pathologies ...</div>
+            <div onClick={ () => handleMaterialLinkClick('/pathologie')} style={linkStyle}> {t("Paragraph.ConsPath")}</div>
           </div>
-          <img src={MonumentPhoto} alt="Image des monuments"  style={{ width: '35%', height: '35%' }} />
+          <img src={PathologiePhoto} alt="Image des monuments"  style={{ width: '35%', height: '35%' }} />
         </div>
   
     </li>
@@ -164,11 +192,11 @@ const Home = () => {
       <div style={sectionStyle}>
               <img src={MonumentPhoto} alt="Image des monuments"  style={{ width: '35%', height: '35%' }} />
           <div style={textColumnStyle}>
-          <h2>Monuments</h2>
-          <p>
-            Numérique Materials vous offre une immersion fascinante dans la section "Monuments", où vous pouvez explorer la diversité des monuments historiques . Découvrez leurs types, leurs emplacements et leurs descriptions succinctes pour obtenir une vue d'ensemble du riche patrimoine architectural. Consultez la section dédiée aux monuments pour une expérience captivante et informative.
+          <h2>{t("Header.Monu")}</h2>
+          <p style={{marginLeft:'15%'}}>
+          {t("intro.MonumP")}
             </p>
-            <div onClick={() => handleMaterialLinkClick('/monument')} style={linkStyle}>Consulter tout les Monuments ...</div>
+            <div onClick={() => handleMaterialLinkClick('/monument')} style={linkStyle}> {t("Paragraph.ConsMon")}</div>
           </div>
         </div>
   
@@ -178,21 +206,21 @@ const Home = () => {
   
  
   <div style={cardContainerStyle}>
-        <div style={cardStyle}>
-          <h2>Visualiser le Graphe</h2>
-          <p>Découvrez une représentation graphique des connaissances disponibles sur Numerique Materials.</p>
+        <div style={cardStyle}  onClick={ () => handleMaterialLinkClick('/Graph')}>
+          <h2>{t("Tokens.Viz")}</h2>
+          <p style={{marginLeft:"12px"}}>{t("Tokens.VizP")}</p>
           <img src={visualisation}  style={{height: '100p%' , width: '35%'}} />
         </div>
   
-        <div style={cardStyle}>
-          <h2>Localiser les Monuments</h2>
-          <p>Explorez la carte géographique pour repérer l'emplacement des monuments historiques de la Casbah d'Alger.</p>
+        <div style={cardStyle} onClick={ () => handleMaterialLinkClick('/carte-geographique')}>
+          <h2>{t("Tokens.Loc")}</h2>
+          <p style={{marginLeft:"12px"}}>{t("Tokens.LocP")}</p>
           <img src={localisation}  style={{height: '100p%' , width: '35%'}} />
         </div>
   
-        <div style={cardStyle}>
-          <h2>Recherche Avancée</h2>
-          <p>Effectuez des recherches ciblées en utilisant des mots-clés pour trouver des informations spécifiques sur le patrimoine bâti.</p>
+        <div style={cardStyle} onClick={ () => handleMaterialLinkClick('/recherche-avancee')}>
+          <h2>{t("navbar.rechercheAvancee")}</h2>
+          <p style={{marginLeft:"12px"}}>{t("Tokens.RechP")}</p>
           <img src={RechAvancée}  style={{height: '100p%' , width: '35%'}} /> 
         </div>
         </div>

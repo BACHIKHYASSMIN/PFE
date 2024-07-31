@@ -19,11 +19,11 @@ function MonumentDetails() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [infos,setInfos]=useState();
   const prevSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === 0 ? monument.component.images.length - 1 : prevIndex - 1));
+    setCurrentIndex((prevIndex) => (prevIndex === 0 ? monument.images.length - 1 : prevIndex - 1));
   };
 
   const nextSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === monument.component.images.length - 1 ? 0 : prevIndex + 1));
+    setCurrentIndex((prevIndex) => (prevIndex === monument.images.length - 1 ? 0 : prevIndex + 1));
   };
   console.log('MonumentId :' ,{monumentId});
 
@@ -94,13 +94,13 @@ function MonumentDetails() {
         <div>
           <p className='mat-name'>{monument.component.designation}</p>
 
-          {monument.component.images && monument.component.images.length > 1? (
+          {monument.images && monument.images.length > 1? (
             <div className="slider-container">
               <div
                 className="slider-images"
                 style={{ transform: `translateX(-${currentIndex * 100}%)` }}
               >
-                {monument.component.images.map((image, index) => (
+                {monument.images.map((image, index) => (
                   <div className="slider-image" key={image.id}>
                     <img
                       className="mat-img"
@@ -117,7 +117,7 @@ function MonumentDetails() {
             
             <img
             className="monument-img"
-            src={`data:image/jpg;base64, ${monument.component.images}`}
+            src={`data:image/jpg;base64, ${monument.images}`}
           />
           )}
 
@@ -133,8 +133,33 @@ function MonumentDetails() {
       {monument && monument.component ? (
 
         <ul>
-            <li><span className='champ'> Typologie Architecturale : </span>  {monument.component.typologie_architecturale}</li>
+            {monument.component.typologie_architecturale && (
+            <li ><span className='champ'> Typologie Architecturale : </span>  {monument.component.typologie_architecturale}</li>
+            )}
+            {monument.component.Historique && (
+            <li><span className='champ'> Historique : </span>  {monument.component.Historique}</li>
+            )}
+             {monument.component.is_historique_monument && (
             <li><span className='champ'> Est un Historique Monument ? : </span>  {monument.component.is_historique_monument}</li>
+             )}
+              {monument.component.localisation && (
+            <li><span className='champ'> Lieu : </span>  {monument.component.localisation}</li>
+              )}
+               {monument.component.address && (
+            <li><span className='champ'> Adresse : </span>  {monument.component.address}</li>
+               )}
+                {monument.component.latitude && (
+            <li><span className='champ'> Latitude : </span>  {monument.component.latitude}</li>
+                )}
+                 {monument.component.altitude && (
+            <li><span className='champ'> Altitude : </span>  {monument.component.altitude}</li>
+                 )}
+                  {monument.component.longitude && (
+            <li><span className='champ'> Longitude : </span>  {monument.component.longitude}</li>
+                  )}
+                   {monument.component.longitude && (
+            <li><span className='champ'> Longitude : </span>  {monument.component.longitude}</li>
+                  )}
       </ul>
           ):(
             <p>Aucun matériau trouvé</p>
@@ -142,34 +167,47 @@ function MonumentDetails() {
 }
       </div>
       <div className="Vertical">
-      <div className="Source">
-      <h3 >Source</h3>
-      {monument && monument.component ? (
-         <p>{monument.component.source}</p>
-         ):(
-          <p>Aucun matériau trouvé</p>
-        )
-}
-      </div>
-      <div className="Composition">
-  <h3>Informations Relatives</h3>
-  {infos && infos.infos ? (
-    // Utilisation de reduce pour regrouper les éléments par type de relation
-    Object.entries(infos.infos.reduce((acc, item) => {
-      const relationType = item.relation.toUpperCase(); // Convertit en majuscules pour uniformiser
-      if (!acc[relationType]) {
-        acc[relationType] = [];
-      }
-      acc[relationType].push(item.Cible);
-      return acc;
-    }, {})).map(([relationType, items], index) => (
-      <p key={index}>{items.length > 0 ? `${relationType} : [${items.join(", ")}]` : ''}</p>
-    ))
-  ) : (
-    <p>Aucune information trouvée</p>
-  )}
-</div>
-      </div>
+ 
+ {/* Affiche les éléments avec une autre relation dans un autre div */}
+ {infos && infos.infos && infos.infos.some(item => item.relation === "REFERENCER_PAR") && (
+  <div className='Source'>
+    <h3>Source</h3>
+    {infos.infos
+      .filter(item => item.relation === "REFERENCER_PAR")
+      .map((item, index) => {
+        const { year, title, author, page } = item.Cible.properties;
+        const yearDisplay = typeof year === 'object' ? `${year.low} - ${year.high}` : year;
+        return (
+          <p key={index}>{title}, {author}, {yearDisplay}, {page}</p>
+        );
+      })}
+  </div>
+)}
+
+ 
+ 
+ {infos && infos.infos  && infos.infos.some(item => !['ILLUSTRER_PAR', 'REFERENCER_PAR'].includes(item.relation.toUpperCase())) && (
+   <div className="Composition">
+     <h3>Informations Relatives</h3>
+     {Object.entries(
+       infos.infos
+         .filter(item => !['ILLUSTRER_PAR', 'REFERENCER_PAR'].includes(item.relation.toUpperCase())) // Filtre les relations à exclure
+         .reduce((acc, item) => {
+           const relationType = item.relation.toUpperCase(); // Convertit en majuscules pour uniformiser
+           if (!acc[relationType]) {
+             acc[relationType] = [];
+           }
+           acc[relationType].push(item.Cible.properties.designation);
+           return acc;
+         }, {})
+     ).map(([relationType, items], index) => (
+       <p key={index}>{items.length > 0 ? `${relationType} : [${items.join(", ")}]` : ''}</p>
+     ))}
+   </div>
+ )}
+ 
+ 
+       </div>
       {/* Afficher le menu latéral s'il est ouvert */}
       {isMenuOpen && (
         

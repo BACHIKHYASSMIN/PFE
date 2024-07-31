@@ -298,19 +298,33 @@ app.get('/api/all', async (req, res) => {
 });
 
 app.get('/api/componentsId/:id', async (req, res) => {
-const session = driver.session(); // Assigner la session ici
+  const session = driver.session(); // Assigner la session ici
   const componentId = parseInt(req.params.id, 10);
+
   try {
-    const componentsresult = await session.run('MATCH (p) WHERE ID(p)=$componentId RETURN p',{componentId});
-    const componentsArr = componentsresult.records[0].get('p').properties;
-    res.json({component:componentsArr});
+    const result = await session.run(
+      'MATCH (p) where id(p)=$componentId OPTIONAL MATCH (p)-[r]->(s:Illustration) RETURN p, COLLECT(s.image) AS images',
+      { componentId }
+    );
+
+    // Assurez-vous que vous avez des résultats
+    if (result.records.length > 0) {
+      const record = result.records[0];
+      const component = record.get('p').properties;
+      const images = record.get('images');
+      
+      res.json({ component, images });
+    } else {
+      res.status(404).json({ message: 'Component not found' });
+    }
   } catch (error) {
-    console.error('Error fetching components details',error);
+    console.error('Error fetching component details', error);
     res.status(500).send('Internal Server Error');
   } finally {
     await session.close();
   }
 });
+
 
 /*
 app.get('/api/nodes', async (req, res) => {
@@ -632,22 +646,7 @@ try {
 
 */
 
-// Connexion à la base de données MySQL
-const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'materiautheque'
-});
 
-// Connexion à MySQL
-connection.connect((err) => {
-  if (err) {
-    console.error('Erreur de connexion à la base de données :', err);
-    return;
-  }
-  console.log('Connexion à la base de données MySQL réussie');
-});
 
 // Middleware pour traiter les requêtes JSON
 app.use(express.json());
@@ -758,27 +757,6 @@ app.post('/api/messages', (req, res) => {
   });
 });
 
-// Fonction pour imbriquer les messages
-const nestMessages = (messages) => {
-  const map = {};
-  const nested = [];
-
-  // Mapper les messages par leur ID
-  messages.forEach(msg => {
-    map[msg.id] = { ...msg, replies: [] };
-  });
-
-  // Construire la structure hiérarchique des messages basée sur parentId
-  messages.forEach(msg => {
-    if (msg.parentId !== null && map[msg.parentId]) {
-      map[msg.parentId].replies.push(map[msg.id]);
-    } else {
-      nested.push(map[msg.id]);
-    }
-  });
-
-  return nested;
-};
 
 
  

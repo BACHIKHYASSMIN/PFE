@@ -6,6 +6,7 @@ import homeIcon from "../Assets/Vector.png"
 import agrImg from  "../Assets/agr.png"
 import pierImg from  "../Assets/pier.png"
 import deconIcon from "../Assets/decon.png"
+import NoImage from "../Assets/block.png"
 import whitemenuIcon from "../Assets/wmenu.png"
 import closeIcon from "../Assets/close.png"
 import { Link } from 'react-router-dom';
@@ -13,6 +14,7 @@ import categorie from '../MatérialsCatégories/Categorie1';
 import Details from '../MaterialDetails';
 import Graph from '../Graph';
 import FilterIcon from "../Assets/filter.png"
+import noResults from "../Assets/no-results.png"
 import closeBIcon from "../Assets/closeb.png"
 import ArrowIcon from "../Assets/arrow.png"
 import { useNavigate } from 'react-router-dom';
@@ -23,10 +25,12 @@ import Footer from '../Elements/Footer';
 import ChatBox from '../Elements/ChatBox';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
+
 const Ouvrage = ({buildings,products,monuments,usage}) => {
  
 
   const [isMenuOpen, setMenuOpen] = useState(false);
+  const [isCheckedMateriaux, setCheckedMateriaux] = useState({});
   const [isFilterMenuOpen, setFilterMenuOpen] = useState(false);
   const [isChecked1, setChecked1] = useState(false);
   const [isChecked2, setChecked2] = useState(false);
@@ -34,7 +38,12 @@ const Ouvrage = ({buildings,products,monuments,usage}) => {
   const [isCheckedUsage1, setCheckedUsage1] = useState(false);
   const [isCheckedUsage2, setCheckedUsage2] = useState(false);
   const [isCheckedProduit, setCheckedProduit] = useState({});
+  const [filteredBuildings, setFilteredBuildings] = useState(buildings);
   const [isCheckedMonument, setCheckedMonument] = useState({});
+  const [filterMenuOpen, setFiltMenuOpen] = useState(null); 
+  const [selectedProductId, setSelectedProductId] = useState();
+  const [selectedProduct, setSelectedProduct] = useState();
+  const [materialsClass, setMaterialsClass] = useState([]);
   const [data, setData] = useState([]);
   const { t,i18n } = useTranslation();
   const [searchTerm, setSearchTerm] = useState("");
@@ -42,7 +51,8 @@ const Ouvrage = ({buildings,products,monuments,usage}) => {
   const buildingsPerPage = 10;
   const indexOfLastBuilding = currentPage * buildingsPerPage;
   const indexOfFirstBuilding = indexOfLastBuilding - buildingsPerPage;
-  const currentBuildings = buildings.slice(indexOfFirstBuilding, indexOfLastBuilding);
+  const currentBuildings = filteredBuildings.slice(indexOfFirstBuilding, indexOfLastBuilding);
+ 
     
   const handleNextPage = () => {
     if (currentPage < Math.ceil(buildings.length / buildingsPerPage)) {
@@ -56,14 +66,122 @@ const Ouvrage = ({buildings,products,monuments,usage}) => {
     }
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+     // Remplacez par l'ID du nœud souhaité
+     const nodelabel= 'Ouvrage'; // Remplacez par la famille de nœud souhaitée
+      
+      try {
+        const response = await axios.post('http://localhost:1000/api/RelationProductData', {
+          nodeId: selectedProductId,
+          nodeLabel: nodelabel ,
+        });
+        console.log('Données reçues:', response.data.data);
+        const data = response.data.data;
+        setData(data)
+        
+        // Traitez les données reçues ici
+      } catch (error) {
+        console.error('Erreur lors de la requête API:', error.message);
+      }
+    };
+    
+    if (selectedProductId !== null) {
+      fetchData();
+    }
+  }, [selectedProductId]);
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+     // Remplacez par l'ID du nœud souhaité
+     const nodelabel= 'Ouvrage'; // Remplacez par la famille de nœud souhaitée
+      
+      try {
+        const response = await axios.post('http://localhost:1000/api/RelationProductFamilyData', {
+          nodesFamille: selectedProductId,
+          nodeLabel: nodelabel ,
+        });
+        console.log('Données reçues:', response.data.data);
+        const data = response.data.data;
+        setData(data)
+        
+        // Traitez les données reçues ici
+      } catch (error) {
+        console.error('Erreur lors de la requête API:', error.message);
+      }
+    };
+    
+    if (selectedProductId !== null) {
+      fetchData();
+    }
+  }, [selectedProductId]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response =await axios.get('http://localhost:1000/api/MaterialsClass');
+        const data=response.data.classes
+        setMaterialsClass(data)
+        
+        // Traitez les données reçues ici
+      } catch (error) {
+        console.error('Erreur lors de la requête API:', error.message);
+      }
+    };
+    fetchData()
+  }, []);
   const handleSearch = () => {
-    const filteredOuvrages = data.filter((ouvrage) =>
-      ouvrage.title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setData({ ...data,  filteredOuvrages });
+    if (searchTerm === "") {
+      setFilteredBuildings(buildings);
+    } else {
+      const filteredOuvrages = buildings.filter((ouvrage) =>
+        ouvrage.title.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredBuildings(filteredOuvrages);
+    }
+    setCurrentPage(1); // Réinitialiser à la première page après la recherche
   };
+  
 
+  useEffect(() => {
+    if (searchTerm === "") {
+      setFilteredBuildings(buildings);
+    }
+  }, [searchTerm, buildings]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+     // Remplacez par l'ID du nœud souhaité
+     const nodelabel= 'Ouvrage'; // Remplacez par la famille de nœud souhaitée
+      
+      try {
+        const response = await axios.post('http://localhost:1000/api/RelationProductData', {
+          nodeId: selectedProduct,
+          nodeLabel: nodelabel ,
+        });
+        console.log('Données reçues:', response.data.data);
+        const data = response.data.data;
+        setData(data)
+        
+        // Traitez les données reçues ici
+      } catch (error) {
+        console.error('Erreur lors de la requête API:', error.message);
+      }
+    };
+    
+    if (selectedProduct !== null) {
+      fetchData();
+    }
+  }, [selectedProduct]);
+
+  const handleFiltMenuToggle = (menuType) => {
+    if (filterMenuOpen === menuType) {
+      setFiltMenuOpen(null); // Fermer le menu si déjà ouvert
+    } else {
+      setFiltMenuOpen(menuType); // Ouvrir le menu correspondant
+    }
+  };
 
   const navigate = useNavigate();
   const handleImageClick = (ouvrageId) => {
@@ -139,8 +257,6 @@ const Ouvrage = ({buildings,products,monuments,usage}) => {
     <na className="material">
       <Navbar  /> 
       <div className="material-head">
-          <img className="menu" src={menuIcon} alt="Menu Icon"
-          onClick={handleMenuToggle}  />
           <Typography.Title level={1} style={{ fontWeight: 'bold', marginBottom: '10px',textAlign: 'center', marginLeft:'30%' }}>
           {t("Header.Ouv")}
       </Typography.Title>
@@ -179,9 +295,41 @@ const Ouvrage = ({buildings,products,monuments,usage}) => {
         </Col>
       </Row>
           <div className='catElements'>
-          {currentBuildings ? (
-  currentBuildings.map(ouvrage => (
-    <div className='catItem'>
+                    {/* Affichage des données récupérées si disponibles */}
+  {data && data.length > 0 ? (
+    data.map((item) => (
+      <div className='catItem' key={item.id}>
+        <p>{item.title}</p>
+        {/* Affichage de l'image si disponible */}
+        {item.image && item.image.length > 0 ? (
+          <img
+            className="mat-img"
+            src={`data:image/jpg;base64, ${item.image[0]}`}
+            onClick={() => handleImageClick(item.id)}
+            alt="Material"
+          />
+        ) : (
+          <img src={NoImage}  onClick={() => handleImageClick(item.id)}/>
+        )}
+      </div>
+    ))
+  ) : selectedProductId ? (
+    <li>{t("Messages.ProdErr")}</li>
+  ):  currentBuildings && currentBuildings.length > 0 ? (
+    // Trier currentMaterials en mettant d'abord les éléments avec images
+    currentBuildings.sort((a, b) => {
+    // Mettre en premier les éléments avec des images
+    if (a.image && a.image.length > 0 && (!b.image || b.image.length === 0)) {
+      return -1;
+    }
+    // Mettre en dernier les éléments sans images
+    if ((!a.image || a.image.length === 0) && b.image && b.image.length > 0) {
+      return 1;
+    }
+    // Sinon, conserver l'ordre actuel
+    return 0;
+  }).map(ouvrage => (
+    <div className='catItem' key={ouvrage.id}>
       <p>{ouvrage.title}</p>
       {ouvrage.image && ouvrage.image.length > 0 ? (
                 <img 
@@ -191,20 +339,30 @@ const Ouvrage = ({buildings,products,monuments,usage}) => {
                   alt="Material"
                 />
               ) : (
-                <img src={`data:image/jpg;base64, ${ouvrage.image}`}  onClick={() => handleImageClick(ouvrage.id)}/>
+                <img style={{width:"128px",height:"128px",marginLeft:"5%"}} src={NoImage} onClick={() => handleImageClick(ouvrage.id)} />
               )}
+
     </div>
   ))
 ) : (
-  <li>{t("Messages.OuvErr")}</li>
-)}
+  <div>
+    <img src={noResults} />
+    <p>{t("Messages.OuvErr")}</p>
+  </div>
+  )
+}
+
+        
               
               </div>
               <div className='Links'>
-              <Link onClick={handlePreviousPage}>Précedente</Link>
-              <div ></div>
-              <Link  onClick={handleNextPage}>Suivante</Link>
-                   </div>
+  {currentPage > 1 && currentBuildings.length > 0 && (
+    <Link onClick={handlePreviousPage}>Précédente</Link>
+  )}
+  {currentBuildings.length === buildingsPerPage && (
+    <Link onClick={handleNextPage}>Suivante</Link>
+  )}
+</div>
 
         {/* Afficher le menu latéral s'il est ouvert */}
       {isFilterMenuOpen && (
@@ -218,54 +376,82 @@ const Ouvrage = ({buildings,products,monuments,usage}) => {
           <div className='lineFBar'></div>
           <div className='FilterCat'>
           <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
-          onClick={handleFilterMenuToggle}  />
+         onClick={() => handleFiltMenuToggle(t("Header.Mat"))}  />
           <h3 className='catt'>{t("Header.Mat")}</h3>
           </div>
-          <div className='catboxList'>
-    <div className='catbox'>
-      <input  type="checkbox"  checked={isChecked1}  onChange={handleCheckbox1Change} />
-      <label htmlFor="checkbox">{t("Menu.MAT")}</label>
-    </div>
-    <div className='catbox'>
-      <input  type="checkbox"  checked={isChecked2}  onChange={handleCheckbox2Change} />
-      <label htmlFor="checkbox">{t("Menu.MER")}</label>
-    </div>
-    <div className='catbox'>
-      <input  type="checkbox"  checked={isChecked3}  onChange={handleCheckbox3Change} />
-      <label htmlFor="checkbox">{t("Menu.Bois")}</label>
-    </div>   
-    </div> 
-    <div className='FilterCat'>
-    <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
-          onClick={handleFilterMenuToggle}  />
-          <h3 className='filter-name' >{t("Header.Prod")}</h3>
-          </div>
+          {filterMenuOpen === t("Header.Mat") && (
           <div className='catboxList'>
           <ul>
-          { products.map(produit => (
-        <div key={produit.id}>
+          { materialsClass.map((materiau,index) => (
+        <div key={index}>
           <input
             type="checkbox"
-            checked={isCheckedProduit[produit.id] || false}
+            checked={isCheckedMateriaux[index] || false}
             onChange={e => {
               const isChecked = e.target.checked;
-              setCheckedProduit(prevState => ({
+              setCheckedMateriaux(prevState => ({
                 ...prevState,
-                [produit.id]: isChecked
+                [index]: isChecked
               }));
+              if (isChecked) {
+                setSelectedProductId(index);
+              } else {
+                setSelectedProductId(null); // Désélectionner le produit
+                setData()
+              }
             }}
           />
-          <label htmlFor={`checkbox-${produit.id}`}>{produit.title}</label>
+          <label htmlFor={`checkbox-${index}`}>{materiau.title}</label>
         </div>
       ))}
       </ul>
     </div> 
-    
+     )}
     <div className='FilterCat'>
     <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
-          onClick={handleFilterMenuToggle}  />
+           onClick={() => handleFiltMenuToggle(t("Header.Prod"))}  />
+          <h3 className='filter-name' >{t("Header.Prod")}</h3>
+          </div>
+          {filterMenuOpen === t("Header.Prod") && (
+  <div className='catboxList'>
+    <ul>
+      {Array.from(
+        new Set(
+          products
+            .map(produit => produit.famille)
+            .filter(famille => famille !== "" )
+        )
+      ).map((famille, index) => (
+        <div key={index}>
+          <input
+            type="checkbox"
+            checked={isCheckedProduit[famille] || false}
+            onChange={e => {
+              const isChecked = e.target.checked;
+              setCheckedProduit(prevState => ({
+                ...prevState,
+                [famille]: isChecked
+              }));
+              if (isChecked) {
+                setSelectedProductId(famille);
+              } else {
+                setSelectedProductId(null); // Désélectionner le produit
+                setData();
+              }
+            }}
+          />
+          <label htmlFor={`checkbox-${famille}`}>{famille}</label>
+        </div>
+      ))}
+    </ul>
+  </div>
+)}
+    <div className='FilterCat'>
+    <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
+           onClick={() => handleFiltMenuToggle(t("Header.Monu"))}  />
           <h3 className='filter-name' >{t("Header.Monu")}</h3>
           </div>
+          {filterMenuOpen === t("Header.Monu") && (
           <div className='catboxList'>
           <ul>
           {monuments.map(monument => (
@@ -279,6 +465,12 @@ const Ouvrage = ({buildings,products,monuments,usage}) => {
                 ...prevState,
                 [monument.id]: isChecked
               }));
+              if (isChecked) {
+                setSelectedProduct(monument.id);
+              } else {
+                setSelectedProduct(null); // Désélectionner le produit
+                setData()
+              }
             }}
           />
           <label htmlFor={`checkbox-${monument.id}`}>{monument.title}</label>
@@ -286,12 +478,13 @@ const Ouvrage = ({buildings,products,monuments,usage}) => {
       ))}
       </ul>
     </div> 
-    
+     )}
     <div className='FilterCat'>
     <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
-          onClick={handleFilterMenuToggle}  />
-          <h3 className='filter-name' >Usages</h3>
+          onClick={() => handleFiltMenuToggle(t("Header.Usages"))}  />
+          <h3 className='filter-name' >{t("Header.Usages")}</h3>
           </div>
+          {filterMenuOpen === t("Header.Usages")&& (
           <div className='catboxList'>
           <ul>
           {usage.map(use => (
@@ -305,6 +498,12 @@ const Ouvrage = ({buildings,products,monuments,usage}) => {
                 ...prevState,
                 [use.id]: isChecked
               }));
+              if (isChecked) {
+                setSelectedProduct(use.id);
+              } else {
+                setSelectedProduct(null); // Désélectionner le produit
+                setData()
+              }
             }}
           />
           <label htmlFor={`checkbox-${use.id}`}>{use.title}</label>
@@ -312,6 +511,7 @@ const Ouvrage = ({buildings,products,monuments,usage}) => {
       ))}
       </ul>
       </div> 
+          )}
           <div className='lineFBar'></div>
           <div className='ValBtn'>
           <button className='annuler' onClick={handleCancel}>{t("Btn.Annuler")}</button>
@@ -322,69 +522,7 @@ const Ouvrage = ({buildings,products,monuments,usage}) => {
 
 
       
-       {/* Afficher le menu latéral s'il est ouvert */}
-       {isMenuOpen && (
-        
-        <div className="side-menu">
-  <div className="popIcons">
-    <img className="popmenu" src={whitemenuIcon} alt="Menu Icon" onClick={handleMenuToggle} />
-    <img className="closemenu" src={closeIcon} alt="Close Icon" onClick={handleMenuToggle} />
-  </div>
-  <div className='lineBar'></div>
-  <h3 className='rub' style={{textAlign: 'center' }}>{t("Menu.Rubrique")}</h3>
-  <ul className='mats' style={{ paddingLeft: '20px' }}>
-    <li className='rubMat-name' ><Link to="/material">{t("Header.Mat")}</Link></li>
-    <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/categorie1" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.MAT")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/categorie2" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.MER")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/categorie3" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Bois")}</Link>
-</li>
-    <li className='rubMat-name'><Link to="/produit">{t("Header.Prod")}</Link></li>
-    <li className='rubMat-name'><Link to="/ouvrage">{t("Header.Ouv")}</Link></li>
-    <li className='rubMat-name'><Link to="/pathologie">{t("Header.Path")}</Link></li>
-    <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/biologique" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Biologique")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/chromatique-dépot" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Chd")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/déformation" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Déformation")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/détachement" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Détachement")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/fissure" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Fissure")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/perte de matière" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.PDM")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/autres" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Autres")}</Link>
-</li>
-    <li className='rubMat-name'><Link to="/monument">{t("Header.Monu")}</Link></li>
-    </ul>
-  <div className='lineBar'></div>
-  <h3 className='rub'  style={{textAlign: 'center' }} >{t("Menu.Pages")}</h3>
-  {/* Ajoutez vos liens du menu ici */}
-  <Link className="pageLink" to="/userHome">{t("navbar.accueil")}</Link>
-  <Link className="pageLink" to="/Graph">{t("navbar.graph")}</Link>
-  <Link className="pageLink" to="/carte-geographique">{t("navbar.carteGeographique")}</Link>
-  <Link className="pageLink" to="/recherche-avancee">{t("navbar.rechercheAvancee")}</Link>
-  <Link className="pageLink" to="/a-propos">{t("navbar.aPropos")}</Link>
-  <div className='lineDecBar'></div>
-  <div className='Decon'>
-    <img className="dec" src={deconIcon} alt="Decon Icon" onClick={handleDeconnect} />
-    <a className='decLink' href="/lien2">{t("Menu.Deconnexion")}</a>
-  </div>
-</div>
-
-      )}
+      
    <ChatBox/>   
 
 <Footer />

@@ -105,11 +105,12 @@
   top:0;
   left:0;
   width:30%;
-  height: 100%;
-  background-color: #2C3E50; 
+  height: 15%;
+  background-color: #5B828E; 
   display: flex;
   flex-direction: column;
   margin-left: '40px';
+  z-index: 100;
 }
 .popmenu{
   width:25px;
@@ -177,7 +178,6 @@ text-decoration: none;
 .lineDecBar{
   width:100%;
   padding-bottom: 1%;
-  margin-top: 30%;
 background-color: white;
 }
 

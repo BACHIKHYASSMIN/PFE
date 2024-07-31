@@ -1,0 +1,13 @@
+# Exclure les répertoires de build pour Node.js
+node_modules
+build
+dist
+
+# Exclure les fichiers temporaires et de configuration
+*.log
+*.tmp
+*.env
+
+# Exclure les répertoires de caches
+.cache
+npm-debug.log

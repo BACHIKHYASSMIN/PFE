@@ -18,6 +18,7 @@
 .form {
   display: flex;
   width: 100%;
+  /*list-style: circle;*/
 }
 
 textarea {

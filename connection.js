@@ -26,29 +26,29 @@ const query = (sql, values) => {
     });
   };
   
-  // Création d'un pool de connexions MySQL
-  const pool = mysql.createPool({
-    connectionLimit: 10,
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'materiautheque'
-  });
+// Création d'un pool de connexions MySQL
+const pool = mysql.createPool({
+  connectionLimit: 10,
+  host: 'localhost', // Utilisez le nom du service Docker ici
+  user: 'root',
+  password: '', // Mettez à jour le mot de passe ici
+  database: 'materiautheque'
+});
   
   app.post('/api/register', async (req, res) => {
     const { nomComplet, email, motDePasse } = req.body;
   
     // Créer une connexion à la base de données MySQL
     const connection = mysql.createConnection({
-      host: 'localhost',
+      host: 'localhost', // Utilisez le nom du service Docker ici
       user: 'root',
-      password: '',
+      password: '', // Mettez à jour le mot de passe ici
       database: 'materiautheque'
     });
   
     try {
       // Insertion des données d'inscription dans la base de données
-      const sql = "INSERT INTO logging (`full name`, `email`, `password`) VALUES (?, ?, ?)";
+      const sql = "INSERT INTO logging (`full_name`, `email`, `password`) VALUES (?, ?, ?)";
       connection.query(sql, [nomComplet, email, motDePasse], (err, result) => {
         if (err) {
           console.error('Erreur lors de l\'inscription :', err);
@@ -65,27 +65,29 @@ const query = (sql, values) => {
     connection.end();
   });
   
-  // Endpoint pour gérer la connexion
-  app.post('/api/login', async (req, res) => {
-    const { email, pass } = req.body;
-    try {
-      // Requête SQL pour chercher l'utilisateur par email et mot de passe
-      const results = await query('SELECT `id` FROM logging WHERE `email` = ? AND `password` = ?', [email, pass]);
-  
-      if (results.length > 0) {
-        // L'utilisateur est trouvé, authentification réussie
-        const userId = results[0].id;
-        res.status(200).json({ message: 'Authentification réussie', userId });
-      } else {
-        // Aucun utilisateur correspondant trouvé
-        res.status(401).json({ message: 'Email ou mot de passe incorrect' });
-      }
-    } catch (error) {
-      // Gestion des erreurs
-      console.error('Erreur lors de la connexion :', error);
-      res.status(500).json({ message: 'Erreur lors de la connexion' });
+// Endpoint pour gérer la connexion
+app.post('/api/login', async (req, res) => {
+  const { email, pass } = req.body;
+  try {
+    // Requête SQL pour chercher l'utilisateur par email, mot de passe et récupérer son rôle
+    const results = await query('SELECT `id`, `role`, `image` FROM logging WHERE `email` = ? AND `password` = ?', [email, pass]);
+
+    if (results.length > 0) {
+      // L'utilisateur est trouvé, authentification réussie
+      const userId = results[0].id;
+      const role = results[0].role;
+      const image=results[0].image;
+      res.status(200).json({ message: 'Authentification réussie', userId, role,image });
+    } else {
+      // Aucun utilisateur correspondant trouvé
+      res.status(401).json({ message: 'Email ou mot de passe incorrect' });
     }
-  });
+  } catch (error) {
+    // Gestion des erreurs
+    console.error('Erreur lors de la connexion :', error);
+    res.status(500).json({ message: 'Erreur lors de la connexion' });
+  }
+});
 
 
   app.post('/update-user', upload.single('profileImage'), (req, res) => {
@@ -93,13 +95,13 @@ const query = (sql, values) => {
     const profileImageBuffer = req.file ? req.file.buffer : null;
     
     const connection = mysql.createConnection({
-      host: 'localhost',
+      host: 'mysql', // Utilisez le nom du service Docker ici
       user: 'root',
-      password: '',
+      password: 'rootpassword', // Mettez à jour le mot de passe ici
       database: 'materiautheque'
     });
   
-    const query = 'UPDATE logging SET  `Username` = ?, `full name` = ?, `email`= ?,`password` = ? , `image` = ? WHERE `id` = ?';
+    const query = 'UPDATE logging SET  `Username` = ?, `full_name` = ?, `email`= ?,`password` = ? , `image` = ? WHERE `id` = ?';
     const params = [editedName, editedFullName, editedEmail, editedPassword, profileImageBuffer, userId];
    console.log(query)
     connection.query(query, params, (error, results) => {
@@ -118,9 +120,9 @@ const query = (sql, values) => {
     const userid=parseInt(req.params.id, 10);
     console.log(req.params.id)
     const connection = mysql.createConnection({
-      host: 'localhost',
+      host: 'mysql', // Utilisez le nom du service Docker ici
       user: 'root',
-      password: '',
+      password: 'rootpassword', // Mettez à jour le mot de passe ici
       database: 'materiautheque'
     });
     
@@ -152,7 +154,23 @@ const query = (sql, values) => {
   });
   
   
-  
+  app.get('/api/utilisateurs', (req, res) => {
+    const connection = mysql.createConnection({
+      host: 'mysql', // Utilisez le nom du service Docker ici
+      user: 'root',
+      password: 'rootpassword', // Mettez à jour le mot de passe ici
+      database: 'materiautheque'
+    });
+    const sql = 'SELECT * FROM logging';
+    connection.query(sql, (err, results) => {
+      if (err) {
+        console.error('Erreur lors de la récupération des utilisateurs :', err);
+        res.status(500).json({ message: 'Erreur lors de la récupération des utilisateurs' });
+      } else {
+        res.status(200).json(results);
+      }
+    });
+  });
 
   app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);

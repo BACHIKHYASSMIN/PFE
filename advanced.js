@@ -54,13 +54,13 @@ app.get('/api/MaterialData', async (req, res) => {
   try {
     // Connexion au driver Neo4j
       // Récupération des materiaux
-      const materiauxResult = await session.run('MATCH (n:Materiau) RETURN n');
+      const materiauxResult = await session.run('MATCH (m:Materiau) OPTIONAL MATCH (m)-[r:ILLUSTRER_PAR]->(s:Illustration) WITH m, COLLECT(s.image) AS images RETURN m, CASE WHEN SIZE(images) > 0 THEN images ELSE NULL END AS images ');
       const materiauxArr = materiauxResult.records.map(record => ({
-          id: record._fields[0].identity.low,
-          title: record._fields[0].properties.designation,
-          category:'Matériaux',
-          image:record.get('n').properties.images,
-          famille:record._fields[0].properties.famille
+          id: record.get('m').identity.low,
+          title: record.get('m').properties.designation,
+          category: 'Matériaux',
+          image: record.get('images'),
+          famille: record.get('m').properties.famille
       }));
 
       if (!materiauxResult || materiauxResult.records.length === 0) {
@@ -85,12 +85,13 @@ app.get('/api/MaterialData', async (req, res) => {
       try {
   
           // Récupération des produits depuis Neo4j
-          const produitsResult = await session.run('MATCH (n:Produit) RETURN n ');
+          const produitsResult = await session.run('MATCH (m:Produit) OPTIONAL MATCH (m)-[r:ILLUSTRER_PAR]->(s:Illustration) WITH m, COLLECT(s.image) AS images RETURN m, CASE WHEN SIZE(images) > 0 THEN images ELSE NULL END AS images ');
           const produitsArr = produitsResult.records.map(record => ({
-              id: record._fields[0].identity.low,
-              title: record._fields[0].properties.designation,
+              id: record.get('m').identity.low,
+              title: record.get('m').properties.designation,
               category: 'Produits',
-              image: record._fields[0].properties.images
+              famille:record.get('m').properties.famille,
+              image: record.get('images'),
           }));
   
           if (!produitsResult || produitsResult.records.length === 0) {
@@ -113,12 +114,13 @@ app.get('/api/MaterialData', async (req, res) => {
     try {
 
     // Récupération des ouvrages
-    const ouvragesResult = await session.run('MATCH (n:Ouvrage) RETURN n');
+    const ouvragesResult = await session.run('MATCH (m:Ouvrage) OPTIONAL MATCH (m)-[r:ILLUSTRER_PAR]->(s:Illustration) WITH m, COLLECT(s.image) AS images RETURN m, CASE WHEN SIZE(images) > 0 THEN images ELSE NULL END AS images ');
     const ouvragesArr = ouvragesResult.records.map(record => ({
-        id: record._fields[0].identity.low,
-        title: record._fields[0].properties.designation,
+        id: record.get('m').identity.low,
+        title: record.get('m').properties.designation,
         category:'Ouvrages',
-        image:record._fields[0].properties.images
+        famille:record.get('m').properties.famille,
+        image: record.get('images'),
     }));
 
     if (!ouvragesResult || ouvragesResult.records.length === 0) {
@@ -137,18 +139,44 @@ app.get('/api/MaterialData', async (req, res) => {
      }
    });
 
+   app.get('/api/MaterialsClass', async (req, res) => {
+    const session = driver.session();
+    try {
+
+    // Récupération des ouvrages
+    const ouvragesResult = await session.run('MATCH (n:Materiau) OPTIONAL MATCH (n)-[:HERITER]->(k) RETURN  distinct CASE  WHEN k IS NOT NULL THEN k.designation ELSE n.designation END AS InheritanceStatus');
+    const ouvragesArr = ouvragesResult.records.map(record => ({
+        title: record.get('InheritanceStatus'),
+    }));
+
+    if (!ouvragesResult || ouvragesResult.records.length === 0) {
+        // Aucune donnée de ouvrages trouvée, renvoyer une réponse d'erreur
+        return res.status(404).json({ message: "Aucun ouvrage trouvé" });
+      }
+
+      res.json({classes: ouvragesArr});
+
+    } catch (err) {
+       console.error(`Error executing query: ${err.message}`);
+       res.status(500).send('Error executing query');
+   } 
+     finally {
+       await session.close();
+     }
+   });
+
    app.get('/api/MonumentData', async (req, res) => {
     const session = driver.session();
     try {
 
     // Récupération des Monuments
-    const monumentsResult = await session.run('MATCH (n:Monument) RETURN n');
+    const monumentsResult = await session.run('MATCH (m:Monument) OPTIONAL MATCH (m)-[r:ILLUSTRER_PAR]->(s:Illustration) WITH m, COLLECT(s.image) AS images RETURN m, CASE WHEN SIZE(images) > 0 THEN images ELSE NULL END AS images ');
     const monumentArr = monumentsResult.records.map(record => ({
-        id: record._fields[0].identity.low,
-        title: record._fields[0].properties.designation,
-        attitude: record._fields[0].properties.latitude,
-        longitude: record._fields[0].properties.longitude,
-        image:record._fields[0].properties.images,
+        id: record.get('m').identity.low,
+        title: record.get('m').properties.designation,
+        attitude: record.get('m').properties.latitude,
+        longitude: record.get('m').properties.longitude,
+        image: record.get('images'),
         category:'Monuments',
         //image:record._fields[0].properties.images
     }));
@@ -174,9 +202,10 @@ app.get('/api/MaterialData', async (req, res) => {
     // Récupération des Monuments
     const pathologieResult = await session.run('MATCH (n:Pathologie) RETURN n');
     const pathologieArr = pathologieResult.records.map(record => ({
-        id: record._fields[0].identity.low,
-        title: record._fields[0].properties.designation,
-        category:record._fields[0].properties.categorie,
+        id: record.get('n').identity.low,
+        title: record.get('n').properties.designation,
+        category:record.get('n').properties.categorie,
+        //image: record.get('images'),
         //image:record._fields[0].properties.images
     }));
 
@@ -305,6 +334,38 @@ app.post('/api/RelationData', async (req, res) => {
   }
 });
 
+app.post('/api/RelationFamilleData', async (req, res) => {
+  const session = driver.session();
+  const { nodesFamille, nodeFamily } = req.body; // Récupération des paramètres de requête
+  console.log(req.body)
+
+  try {
+    const relationsResult = await session.run(
+      'MATCH (n)-[r]-(connectedNode) WHERE n.famille= $nodesFamille AND connectedNode.famille = $nodeFamily RETURN distinct connectedNode',
+      { nodesFamille, nodeFamily }
+    );
+
+    const relationsArr = relationsResult.records.map(record => ({
+      id: record.get('connectedNode').identity.low,
+      title: record.get('connectedNode').properties.designation,
+      image:record.get('connectedNode').properties.images,
+    }));
+
+    if (!relationsResult || relationsResult.records.length === 0) {
+      // Aucune donnée trouvée, renvoyer une réponse d'erreur
+      return res.status(404).json({ message: "Aucun Usage trouvé" });
+    }
+
+    // Envoi de la réponse avec les données trouvées
+    res.json({ data: relationsArr  });
+  } catch (err) {
+    console.error(`Error executing query: ${err.message}`);
+    res.status(500).send('Error executing query');
+  } finally {
+    await session.close();
+  }
+});
+
 app.post('/api/RelationColorData', async (req, res) => {
   const session = driver.session();
   const { nodeColor, nodeFamily } = req.body; // Récupération des paramètres de requête
@@ -392,6 +453,42 @@ app.post('/api/RelationProductData', async (req, res) => {
     await session.close();
   }
 });
+
+
+
+app.post('/api/RelationProductFamilyData', async (req, res) => {
+  const session = driver.session();
+  const { nodesFamille, nodeLabel } = req.body; // Récupération des paramètres de requête
+  console.log(req.body)
+
+  try {
+    const relationsResult = await session.run(
+      'MATCH (connectedNode)-[r]-(n) WHERE n.famille = $nodesFamille AND labels(connectedNode) = [$nodeLabel] RETURN distinct connectedNode',
+      { nodesFamille, nodeLabel }
+    );
+
+    const relationsArr = relationsResult.records.map(record => ({
+      id: record.get('connectedNode').identity.low,
+      title: record.get('connectedNode').properties.designation,
+      image:record.get('connectedNode').properties.images,
+    }));
+
+    if (!relationsResult || relationsResult.records.length === 0) {
+      // Aucune donnée trouvée, renvoyer une réponse d'erreur
+      return res.status(404).json({ message: "Aucun Usage trouvé" });
+    }
+
+    // Envoi de la réponse avec les données trouvées
+    res.json({ data: relationsArr  });
+  } catch (err) {
+    console.error(`Error executing query: ${err.message}`);
+    res.status(500).send('Error executing query');
+  } finally {
+    await session.close();
+  }
+});
+
+
 app.get('/api/nodes/advancedSearch/:searchTerm', async (req, res) => {
     const session = driver.session();
     const Term = req.params.searchTerm;
@@ -422,10 +519,13 @@ app.get('/api/nodes/advancedSearch/:searchTerm', async (req, res) => {
     try {
       // Récupération des nœuds connectés avec leurs relations
       const query = `
-        MATCH (n)-[r]->(m)
-        RETURN DISTINCT id(n) AS id, n.designation AS designation, labels(n) AS labels,
-                        id(r) AS relationId, type(r) AS relationType,
-                        id(m) AS targetId, m.designation AS targetDesignation, labels(m) AS targetLabels
+       MATCH (n)
+        WHERE labels(n) IN [['Materiau'], ['Produit'], ['Monument'], ['Ouvrage'], ['Place'], ['Periode']]
+         MATCH (n)-[r]->(m)
+               RETURN DISTINCT id(n) AS id, n.designation AS designation, labels(n) AS labels,
+                id(r) AS relationId, type(r) AS relationType,
+                id(m) AS targetId, m.designation AS targetDesignation, labels(m) AS targetLabels
+
       `;
   
       const result = await session.run(query);
@@ -574,7 +674,7 @@ app.get('/api/nodes/advancedSearch/:searchTerm', async (req, res) => {
       try {
   
           // Récupération des produits depuis Neo4j
-          const Result = await session.run('MATCH (n)-[r]-(s) WHERE id(n) = $componentId RETURN type(r) AS type,     CASE   WHEN startNode(r) = n THEN endNode(r).designation ELSE startNode(r).designation  END AS cible',{componentId});
+          const Result = await session.run('MATCH (n)-[r]->(s) WHERE id(n) = $componentId RETURN type(r) AS type, endNode(r) AS cible',{componentId});
           const Arr = Result.records.map(record => ({
               relation: record.get('type'),
               Cible: record.get('cible')

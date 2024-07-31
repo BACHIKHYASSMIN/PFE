@@ -1,35 +1,57 @@
+*{
+  font-family: 'Montserrat';
+}
 .navbarHome {
-  
-  padding: 0px;
- 
-  background: url('Assets/background.PNG') center/cover; /* PremiÃ¨re image de fond */
+width: 100%;
+height: max-content;
+background-color:white;
+top:0%;
+z-index: 100;
 
 }
-
-
-.navbarHome-items {
+.navbarHome-elements{
+  background-color: white;
+  width: 100%;
+  margin-top: 2%;
+  margin-bottom: 2%;
+  border-top: 1px solid black;   /* Bordure supérieure noire de 2 pixels */
+  border-bottom: 1px solid black;
   display: flex; /* Utilisation de flexbox pour aligner les Ã©lÃ©ments sur la mÃªme ligne */
-  justify-content: space-between; /* Espace Ã©gal entre les Ã©lÃ©ments */
-  align-items: center; /* Alignement vertical au centre */
-  font-weight: 500;
+  justify-content: flex-end;
+  align-items: stretch;
+  /* Alignement vertical au centre */
+    font-weight: 500;
+
 }
 
-.navbarHome h1 {
-  color: black; /* Couleur du texte pour "NumeriqueMaterials" */
-}
-
-.navbarHome ul {
-  list-style: none;
-  color: black; /* Supprimez les puces de la liste */
-  margin: 0; /* Supprimez la marge par dÃ©faut de la liste */
-  padding: 0; /* Supprimez le rembourrage par dÃ©faut de la liste */
-}
-
-.navbarHome li {
+.navbarItemHome{
+  margin-top: 10px;
   color: black;
   display: inline-block; /* Affichez les Ã©lÃ©ments de liste en ligne */
   margin-right: 40px; /* Espacement entre les Ã©lÃ©ments de liste */
 }
+
+.navbarHome-items {
+  display: flex; /* Utilisation de flexbox pour aligner les Ã©lÃ©ments sur la mÃªme ligne */
+  justify-content: space-between; /* Espace Ã©gal entre les Ã©lÃ©ments */
+/* Alignement vertical au centre */
+  font-weight: 500;
+}
+.navbar-logo {
+  margin-top: 2px;
+  margin-left: 2%;
+}
+.navbar-logo li{
+ text-decoration: none;
+ list-style: none;
+
+}
+
+.navbarHome h1 {
+  color:black ; /* Couleur du texte pour "NumeriqueMaterials" */
+}
+
+
 
 .navbarHome a {
   text-decoration: none; /* Supprimez la dÃ©coration du lien (soulignement par dÃ©faut) */
@@ -37,7 +59,7 @@
 }
 
 .connect-button {
-  background-color: #27AE60; /* Couleur de fond du bouton */
+  background-color: #5B828E; /* Couleur de fond du bouton */
   color: whitesmoke; /* Couleur du texte du bouton */
   padding: 8px 16px; 
   border: none; /* Supprimez la bordure par dÃ©faut du bouton */
@@ -47,15 +69,9 @@
   font-size: medium;
 }
 
-.navbarHome-items ul {
-  list-style:  none;
-  padding: 0;
-  margin: 0;
-}
+
 
 .navbar-btn {
-  margin-left: 1%;
-  margin-bottom: 2%;
     color: #2C3E50; /* Couleur du texte en blanc */
     border: none; /* Supprimer la bordure */
     border-radius: 5px; /* Ajouter un rayon aux coins */
@@ -69,7 +85,9 @@
     background-color: #2C3E50; /* Au survol, changer la couleur de fond en blanc */
     color: #FFFFFF; /* Au survol, changer la couleur du texte en bleu foncé */
   }
+
   .navbar-button{
-    position: absolute;
-    right:-1.5%;
+    display: flex;
+    flex-direction: column;
+    margin-right: 1%;
   }

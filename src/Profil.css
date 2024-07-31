@@ -7,7 +7,11 @@
 .Profilhead {
   width: 100%;
   height: 150px;
-  background-color: #2C3E50;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+justify-content: space-around;
+  background-color: #a48c75;
 }
 
 .ProfilCard {
@@ -32,14 +36,16 @@
   transform: translateX(-96%); /* Déplacer la carte vers la gauche de 50% de sa largeur */
 }
 
-
+.menuImg{
+  margin-top: -7%;
+}
 
 .ProfilImage {
   text-align: center;
 }
 
 .ProfilImage img {
-  margin-top: 5%;
+  margin-top: 0%;
   width: 126px;
 }
 
@@ -72,6 +78,26 @@
   font-weight: bold;
 }
 
+.sideProfil-menu{
+  overflow-y: auto;
+  position: absolute;
+  top:0;
+  left:0;
+  width:30%;
+  height: 100%;
+  background-color: #5B828E; 
+  display: flex;
+  flex-direction: column;
+  margin-left: '40px';
+  z-index: 100;
+}
+.MenuCat{
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  align-items: flex-start;
+  gap:10px;
+}
 .EditForm {
   background-color: #ECF0F1;
   display: flex;
@@ -103,11 +129,78 @@ margin-left: -60%;
   font-weight: bold;
 }
 
-.Profilhead img{
+
+.popIcons{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.closemenu{
+  width:40px;
+  height:40px;
   margin-top: 5%;
-margin-left: -90%;
 }
 
+.rub{
+  color: white;
+}
+.catgs{
+  list-style: none;
+  color: white;
+  margin-bottom: 5px;
+}
+.rubMat-name  {
+  list-style: none;
+  color: white;
+  font-weight: bold;
+  margin-bottom: 5%;
+  text-align: left;
+}
+
+.rubMat-name a {
+text-decoration: none;
+}
+
+.rubMat-name :last-child {
+  list-style: none;
+  color: white;
+  font-weight: bold;
+  margin-bottom: 2%;
+}
+.pageLink {
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+  margin-left: 15%;
+  margin-bottom: 5%;
+  text-align: left
+}
+
+.Decon{
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  padding-bottom: 5%;
+
+}
+.lineDecBar{
+  width:100%;
+  padding-bottom: 1%;
+background-color: white;
+}
+
+.dec{
+margin-left: 25%;
+  margin-top: 5%;
+  width:25px;
+  margin-right: 4%;
+
+}
+.decLink{
+  text-decoration: none;
+  font-weight: bold;
+  color: white;
+}
 .EditIcon img{
   position: absolute;
   top:20%;
@@ -150,6 +243,18 @@ top:18%;
   left: 40%;
 }
 
+.Header {
+  position: relative;
+  background-image: url('./Assets/Materiautheq.png');
+  background-size: cover;
+  width: 100%;
+  height: 500px;
+  color: black;
+  display: flex;
+  align-items: center;
+ 
+  font-weight: 500;
+}
 
 
 .SendMessage form {

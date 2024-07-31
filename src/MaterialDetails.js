@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './MaterialDetails.css';  
 import  matImg from "./Assets/bois.png"
+import imageNotFound from "./Assets/block.png"
 import dwn from "./Assets/download.png"
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
@@ -18,9 +19,9 @@ function MaterialDetails() {
   const [currentIndex, setCurrentIndex] = useState(0);
  const [infos,setInfos]=useState();
   const prevSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === 0 ? material.component.images.length - 1 : prevIndex - 1));
+    setCurrentIndex((prevIndex) => (prevIndex === 0 ? material.images.length - 1 : prevIndex - 1));
   };
-
+console.log('infos',infos)
   useEffect(() => {
     // Convertissez productId en entier en utilisant parseInt()
     fetch(`http://localhost:1000/api/RealtionsData/${materialId}`)
@@ -29,7 +30,7 @@ function MaterialDetails() {
       .catch(error => console.error('Error fetching product details:', error));
   }, [materialId]);
   const nextSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === material.component.images.length - 1 ? 0 : prevIndex + 1));
+    setCurrentIndex((prevIndex) => (prevIndex === material.images.length - 1 ? 0 : prevIndex + 1));
   };
   console.log('materialId :' ,{materialId});
   useEffect(() => {
@@ -91,13 +92,13 @@ function MaterialDetails() {
         <div>
           <p className='mat-name'>{material.component.designation}</p>
 
-          {material.component.images && material.component.images.length > 0 ? (
+          {material.images && material.images.length > 0 ? (
             <div className="slider-container">
               <div
                 className="slider-images"
                 style={{ transform: `translateX(-${currentIndex * 100}%)` }}
               >
-                {material.component.images.map((image, index) => (
+                {material.images.map((image, index) => (
                   <div className="slider-image" key={image.id}>
                     <img
                       className="mat-img"
@@ -111,155 +112,207 @@ function MaterialDetails() {
               <a className="next" onClick={nextSlide}>&#10095;</a>
             </div>
           ) : (
-            <p>Aucune image trouvée pour ce matériau</p>
+            <img style={{width:"100%", marginLeft:"20%"}}
+            alt='Image Introuvable'
+                      src={imageNotFound}
+                    />
           )}
 
         </div>
       ) : (
+      
         <p>Aucun matériau trouvé</p>
       )}
     </div>
 
 
-      <div className="Description">
-      <h3 >Description</h3>
-      
-      {material && material.component ? (
-
-        <ul>
-            <li><span className='champ'> Type de Famille : </span>  {material.component.famille}</li>
-            <li><span className='champ'> Forme:</span>   {material.component.forme.map((forme,index)=> (
-         <span key={index}>
-         {forme}{index !== material.component.forme.length - 1 && ', '}
-       </span>
-      ))}</li>
-      <li>
-      <span className='champ'> Nature: </span> {material.component.nature.map((inertie, index) => (
-    <span key={index}>
-      {inertie}{index !== material.component.nature.length - 1 && ', '}
-    </span>
-  ))}
-</li>
-      <li>
-      <span className='champ'>  Couleur: </span> {material.component.couleur.map((color, index) => (
-    <span key={index}>
-      {color}{index !== material.component.couleur.length - 1 && ', '}
-    </span>
-  ))}
-</li>
-<li>
-      <span className='champ'>  Inertie Thermique: </span> {material.component.inertie_thermique.map((inertie, index) => (
-    <span key={index}>
-      {inertie}{index !== material.component.inertie_thermique.length - 1 && ', '}
-    </span>
-  ))}
-</li>
-<li>
-      <span className='champ'> Isolation thermique: </span> {material.component.isolation_thermique.map((inertie, index) => (
-    <span key={index}>
-      {inertie}{index !== material.component.isolation_thermique.length - 1 && ', '}
-    </span>
-  ))}
-</li>
-<li>
-      <span className='champ'>  Longeur: </span> {material.component.longueur.map((inertie, index) => (
-    <span key={index}>
-      {inertie}{index !== material.component.longueur.length - 1 && ', '}
-    </span>
-  ))}
-</li>
-<li>
-      <span className='champ'>  Dosage: </span> {material.component.dosage.map((inertie, index) => (
-    <span key={index}>
-      {inertie}{index !== material.component.dosage.length - 1 && ', '}
-    </span>
-  ))}
-</li>
-<li>
-      <span className='champ'>  Surface: </span> {material.component.surface.map((inertie, index) => (
-    <span key={index}>
-      {inertie}{index !== material.component.surface.length - 1 && ', '}
-    </span>
-  ))}
-</li>
-<li>
-
-      <span className='champ'> Epaisseur: </span> {material.component.epaisseur.map((inertie, index) => (
-    <span key={index}>
-      {inertie}{index !== material.component.epaisseur.length - 1 && ', '}
-    </span>
-  ))}
-</li>
-<li>
-      <span className='champ'>  Largeur: </span> {material.component.largeur.map((inertie, index) => (
-    <span key={index}>
-      {inertie}{index !== material.component.largeur.length - 1 && ', '}
-    </span>
-  ))}
-</li>
-<li>
-
-      <span className='champ'> Hauteur: </span> {material.component.hauteur.map((inertie, index) => (
-    <span key={index}>
-      {inertie}{index !== material.component.hauteur.length - 1 && ', '}
-    </span>
-  ))}
-</li>
-<li>
-
-      <span className='champ'> Profondeur: </span> {material.component.profondeur.map((inertie, index) => (
-    <span key={index}>
-      {inertie}{index !== material.component.profondeur.length - 1 && ', '}
-    </span>
-  ))}
-</li>
-<li>
-
-      <span className='champ'> Plasticite: </span> {material.component.plasticite.map((inertie, index) => (
-    <span key={index}>
-      {inertie}{index !== material.component.plasticite.length - 1 && ', '}
-    </span>
-  ))}
-</li>
-
-
-
-
-
-      </ul>
-          ):(
-            <p>Aucun matériau trouvé</p>
-          )
-}
-      </div>
-      <div className="Vertical">
-      <div className="Source">
-      <h3 >Source</h3>
-      {material && material.component ? (
-         <p>{material.component.source}</p>
-         ):(
-          <p>Aucun matériau trouvé</p>
-        )
-}
-      </div>
-      <div className="Composition">
-  <h3>Informations Relatives</h3>
-  {infos && infos.infos ? (
-    // Utilisation de reduce pour regrouper les éléments par type de relation
-    Object.entries(infos.infos.reduce((acc, item) => {
-      const relationType = item.relation.toUpperCase(); // Convertit en majuscules pour uniformiser
-      if (!acc[relationType]) {
-        acc[relationType] = [];
-      }
-      acc[relationType].push(item.Cible);
-      return acc;
-    }, {})).map(([relationType, items], index) => (
-      <p key={index}>{items.length > 0 ? `${relationType} : [${items.join(", ")}]` : ''}</p>
-    ))
+    <div className="Description">
+  <h3>Description</h3>
+  
+  {material && material.component ? (
+    <ul>
+      {material.component.famille && (
+        <li><span className='champ'>Type de Famille :</span> {material.component.famille}</li>
+      )}
+      {material.component.forme && material.component.forme.length > 0 && (
+        <li>
+          <span className='champ'>Forme :</span>
+          {material.component.forme.map((forme, index) => (
+            <span key={index}>
+              {forme}{index !== material.component.forme.length - 1 && ', '}
+            </span>
+          ))}
+        </li>
+      )}
+      {material.component.nature && material.component.nature.length > 0 && (
+        <li>
+          <span className='champ'>Nature :</span>
+          {material.component.nature.map((inertie, index) => (
+            <span key={index}>
+              {inertie}{index !== material.component.nature.length - 1 && ', '}
+            </span>
+          ))}
+        </li>
+      )}
+      {material.component.couleur && material.component.couleur.length > 0 && (
+        <li>
+          <span className='champ'>Couleur :</span>
+          {material.component.couleur.map((color, index) => (
+            <span key={index}>
+              {color}{index !== material.component.couleur.length - 1 && ', '}
+            </span>
+          ))}
+        </li>
+      )}
+      {material.component.inertie_thermique && material.component.inertie_thermique.length > 0 && (
+        <li>
+          <span className='champ'>Inertie Thermique :</span>
+          {material.component.inertie_thermique.map((inertie, index) => (
+            <span key={index}>
+              {inertie}{index !== material.component.inertie_thermique.length - 1 && ', '}
+            </span>
+          ))}
+        </li>
+      )}
+      {material.component.isolation_thermique && material.component.isolation_thermique.length > 0 && (
+        <li>
+          <span className='champ'>Isolation Thermique :</span>
+          {material.component.isolation_thermique.map((inertie, index) => (
+            <span key={index}>
+              {inertie}{index !== material.component.isolation_thermique.length - 1 && ', '}
+            </span>
+          ))}
+        </li>
+      )}
+      {material.component.longueur && material.component.longueur.length > 0 && (
+        <li>
+          <span className='champ'>Longueur :</span>
+          {material.component.longueur.map((inertie, index) => (
+            <span key={index}>
+              {inertie}{index !== material.component.longueur.length - 1 && ', '}
+            </span>
+          ))}
+        </li>
+      )}
+      {material.component.dosage && material.component.dosage.length > 0 && (
+        <li>
+          <span className='champ'>Dosage :</span>
+          {material.component.dosage.map((inertie, index) => (
+            <span key={index}>
+              {inertie}{index !== material.component.dosage.length - 1 && ', '}
+            </span>
+          ))}
+        </li>
+      )}
+      {material.component.surface && material.component.surface.length > 0 && (
+        <li>
+          <span className='champ'>Surface :</span>
+          {material.component.surface.map((inertie, index) => (
+            <span key={index}>
+              {inertie}{index !== material.component.surface.length - 1 && ', '}
+            </span>
+          ))}
+        </li>
+      )}
+      {material.component.epaisseur && material.component.epaisseur.length > 0 && (
+        <li>
+          <span className='champ'>Épaisseur :</span>
+          {material.component.epaisseur.map((inertie, index) => (
+            <span key={index}>
+              {inertie}{index !== material.component.epaisseur.length - 1 && ', '}
+            </span>
+          ))}
+        </li>
+      )}
+      {material.component.largeur && material.component.largeur.length > 0 && (
+        <li>
+          <span className='champ'>Largeur :</span>
+          {material.component.largeur.map((inertie, index) => (
+            <span key={index}>
+              {inertie}{index !== material.component.largeur.length - 1 && ', '}
+            </span>
+          ))}
+        </li>
+      )}
+      {material.component.hauteur && material.component.hauteur.length > 0 && (
+        <li>
+          <span className='champ'>Hauteur :</span>
+          {material.component.hauteur.map((inertie, index) => (
+            <span key={index}>
+              {inertie}{index !== material.component.hauteur.length - 1 && ', '}
+            </span>
+          ))}
+        </li>
+      )}
+      {material.component.profondeur && material.component.profondeur.length > 0 && (
+        <li>
+          <span className='champ'>Profondeur :</span>
+          {material.component.profondeur.map((inertie, index) => (
+            <span key={index}>
+              {inertie}{index !== material.component.profondeur.length - 1 && ', '}
+            </span>
+          ))}
+        </li>
+      )}
+      {material.component.plasticite && material.component.plasticite.length > 0 && (
+        <li>
+          <span className='champ'>Plasticité :</span>
+          {material.component.plasticite.map((inertie, index) => (
+            <span key={index}>
+              {inertie}{index !== material.component.plasticite.length - 1 && ', '}
+            </span>
+          ))}
+        </li>
+      )}
+    </ul>
   ) : (
-    <p>Aucune information trouvée</p>
+    <p>Aucun matériau trouvé</p>
   )}
 </div>
+
+      <div className="Vertical">
+ 
+{/* Affiche les éléments avec une autre relation dans un autre div */}
+{infos && infos.infos  && infos.infos.length > 0 &&(
+  
+<div className='Source'>
+  <h3>Source</h3>
+     {infos.infos
+     
+    .filter(item => item.relation == "REFERENCER_PAR")
+    .map((item, index) => {
+      const { year, title, author, page } = item.Cible.properties;
+      const yearDisplay = typeof year === 'object' ? `${year.low} - ${year.high}` : year;
+      return (
+    
+      
+      <p key={index}>{title},{author},{yearDisplay},{page}</p>
+    )
+  })
+}
+    </div>
+  )}
+
+
+{infos && infos.infos && infos.infos.length > 0 && (
+  <div className="Composition">
+    <h3>Informations Relatives</h3>
+    {Object.entries(
+      infos.infos
+        .filter(item => !['ILLUSTRER_PAR', 'REFERENCER_PAR'].includes(item.relation.toUpperCase())) // Filtre les relations à exclure
+        .reduce((acc, item) => {
+          const relationType = item.relation.toUpperCase(); // Convertit en majuscules pour uniformiser
+          if (!acc[relationType]) {
+            acc[relationType] = [];
+          }
+          acc[relationType].push(item.Cible.properties.designation);
+          return acc;
+        }, {})
+    ).map(([relationType, items], index) => (
+      <p key={index}>{items.length > 0 ? `${relationType} : [${items.join(", ")}]` : ''}</p>
+    ))}
+  </div>
+)}
 
 
       </div>

@@ -3,9 +3,11 @@ import '../Categorie.css';
 import React, { useState, useEffect }  from 'react';
 import  menuIcon from "../Assets/icon.png"
 import homeIcon from "../Assets/Vector.png"
+import NoImage from "../Assets/block.png"
 import FilterIcon from "../Assets/filter.png"
 import agrImg from  "../Assets/agr.png"
 import pierImg from  "../Assets/pier.png"
+import noResults from "../Assets/no-results.png"
 import ArrowIcon from "../Assets/arrow.png"
 import deconIcon from "../Assets/decon.png"
 import whitemenuIcon from "../Assets/wmenu.png"
@@ -35,13 +37,15 @@ function Categorie1({products,materials,buildings,monuments,places,colors}) {
   const [data, setData] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [materialsClass, setMaterialsClass] = useState([]);
   const [filteredMaterials, setFilteredMaterials] = useState(materials);
   const [selectedProductId, setSelectedProductId] = useState(); 
   const [selectedColor, setSelectedColor] = useState(); 
-
+  const [filterMenuOpen, setFiltMenuOpen] = useState(null); 
   const materialsPerPage = 10;
   const indexOfLastMaterial = currentPage * materialsPerPage;
   const indexOfFirstMaterial = indexOfLastMaterial - materialsPerPage;
+
   const currentMaterials = filteredMaterials.filter(materiau => materiau.famille === "Base terre").slice(indexOfFirstMaterial, indexOfLastMaterial);
   
   const handleNextPage = () => {
@@ -49,7 +53,7 @@ function Categorie1({products,materials,buildings,monuments,places,colors}) {
       setCurrentPage(currentPage + 1);
     }
   };
-  
+  console.log('current',materials)
   useEffect(() => {
     const fetchData = async () => {
      // Remplacez par l'ID du nœud souhaité
@@ -81,6 +85,42 @@ function Categorie1({products,materials,buildings,monuments,places,colors}) {
      const nodeFamily = 'Base terre'; // Remplacez par la famille de nœud souhaitée
       
       try {
+        const response = await axios.post('http://localhost:1000/api/RelationFamilleData', {
+          nodesFamille: selectedProductId,
+          nodeFamily: nodeFamily ,
+        });
+        console.log('Données reçues:', response.data.data);
+        const data = response.data.data;
+        setData(data)
+        
+        // Traitez les données reçues ici
+      } catch (error) {
+        console.error('Erreur lors de la requête API:', error.message);
+      }
+    };
+    
+    if (selectedProductId !== null) {
+      fetchData();
+    }
+  }, [selectedProductId]);
+
+
+  const handleFiltMenuToggle = (menuType) => {
+    if (filterMenuOpen === menuType) {
+      setFiltMenuOpen(null); // Fermer le menu si déjà ouvert
+    } else {
+      setFiltMenuOpen(menuType); // Ouvrir le menu correspondant
+    }
+  };
+
+  
+
+  useEffect(() => {
+    const fetchData = async () => {
+       // Remplacez par l'ID du nœud souhaité
+       const nodeFamily = 'Base terre'; // Remplacez par la famille de nœud souhaitée
+      
+      try {
         const response = await axios.post('http://localhost:1000/api/RelationColorData', {
           nodeColor: selectedColor,
           nodeFamily: nodeFamily ,
@@ -108,13 +148,25 @@ function Categorie1({products,materials,buildings,monuments,places,colors}) {
       setCurrentPage(currentPage - 1);
     }
   };
+
   const handleSearch = () => {
-    const filteredMateriaux = filteredMaterials.filter((materiau) =>
-      materiau.title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-    setFilteredMaterials(filteredMateriaux);
+    if (searchTerm === "") {
+      setFilteredMaterials(materials);
+    } else {
+      const filteredMateriaux = materials.filter((materiau) =>
+        materiau.title.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setFilteredMaterials(filteredMateriaux);
+    }
     setCurrentPage(1); // Réinitialiser à la première page après la recherche
   };
+  
+
+  useEffect(() => {
+    if (searchTerm === "") {
+      setFilteredMaterials(materials);
+    }
+  }, [searchTerm, materials]);
   
 
   const navigate = useNavigate();
@@ -193,7 +245,7 @@ function Categorie1({products,materials,buildings,monuments,places,colors}) {
       <div className='cat'>
          <Navbar/>
          <div className="categorie-head">
-  <img className="menu" src={menuIcon} onClick={handleMenuToggle} />
+  
   <Typography.Title level={1} style={{ fontWeight: 'bold', marginBottom: '10px', textAlign: 'center', marginLeft: '5%', display: 'inline' }}>
   {t("Menu.MAT")}
   </Typography.Title>
@@ -251,9 +303,10 @@ function Categorie1({products,materials,buildings,monuments,places,colors}) {
             onClick={() => handleImageClick(item.id)}
             alt="Material"
           />
-        ) : (
-          <img src={`data:image/jpg;base64, ${item.image}`}  onClick={() => handleImageClick(item.id)}/>
-        )}
+        ) : 
+          (
+            <img style={{width:"128px",height:"128px",marginLeft:"5%"}} src={NoImage} onClick={() => handleImageClick(item.id)} alt="Material"/>
+          )}
       </div>
     ))
   ) : selectedProductId ? (
@@ -261,27 +314,42 @@ function Categorie1({products,materials,buildings,monuments,places,colors}) {
   ) : selectedColor ? (
     <li>{t("Messages.MatErr")}</li>
   ) :(
-    // Si aucune donnée n'est disponible dans data, afficher les currentMaterials
-    currentMaterials && currentMaterials.length > 0 ? (
-      currentMaterials.map(materiau => (
-        <div className='catItem' key={materiau.id}>
-          <p>{materiau.title}</p>
-          {materiau.image && materiau.image.length > 0 ? (
-            <img 
-              className="mat-img" 
-              src={`data:image/jpg;base64, ${materiau.image[0]}`}
-              onClick={() => handleImageClick(materiau.id)} 
-              alt="Material"
-            />
-          ) : (
-            <img src={`data:image/jpg;base64, ${materiau.image}`}  onClick={() => handleImageClick(materiau.id)}/>
-          )}
-        </div>
-      ))
-    ) : (
-      <li>{t("Messages.MatErr")}</li>
-    )
-  )}
+   // Si aucune donnée n'est disponible dans data, afficher les currentMaterials
+currentMaterials && currentMaterials.length > 0 ? (
+  // Trier currentMaterials en mettant d'abord les éléments avec images
+  currentMaterials.sort((a, b) => {
+    // Mettre en premier les éléments avec des images
+    if (a.image && a.image.length > 0 && (!b.image || b.image.length === 0)) {
+      return -1;
+    }
+    // Mettre en dernier les éléments sans images
+    if ((!a.image || a.image.length === 0) && b.image && b.image.length > 0) {
+      return 1;
+    }
+    // Sinon, conserver l'ordre actuel
+    return 0;
+  }).map(materiau => (
+    <div className='catItem' key={materiau.id}>
+      <p>{materiau.title}</p>
+      {materiau.image && materiau.image.length > 0 ? (
+        <img 
+          className="mat-img" 
+          src={`data:image/jpg;base64, ${materiau.image[0]}`}
+          onClick={() => handleImageClick(materiau.id)} 
+          alt="Material"
+        />
+      ) : (
+        <img style={{width:"128px",height:"128px",marginLeft:"5%"}} src={NoImage} onClick={() => handleImageClick(materiau.id)} alt="Material"/>
+      )}
+    </div>
+  ))
+) : (
+  <div>
+    <img src={noResults} />
+    <p>{t("Messages.MatErr")}</p>
+  </div>
+)
+)}
 </div>
 
 
@@ -306,74 +374,90 @@ function Categorie1({products,materials,buildings,monuments,places,colors}) {
           <div className='lineFBar'></div>
     <div className='FilterCat'>
     <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
-          onClick={handleFilterMenuToggle}  />
+          onClick={() => handleFiltMenuToggle(t("Header.Prod"))}  />
           <h3 className='filter-name' >{t("Header.Prod")}</h3>
           </div>
-          <div className='catboxList'>
-          <ul>
-          { products.map(produit => (
-        <div key={produit.id}>
+          {filterMenuOpen === t("Header.Prod") && (
+  <div className='catboxList'>
+    <ul>
+      {Array.from(
+        new Set(
+          products
+            .map(produit => produit.famille)
+            .filter(famille => famille !== "")
+        )
+      ).map((famille, index) => (
+        <div key={index}>
           <input
             type="checkbox"
-            checked={isCheckedProduit[produit.id] || false}
+            checked={isCheckedProduit[famille] || false}
             onChange={e => {
               const isChecked = e.target.checked;
               setCheckedProduit(prevState => ({
                 ...prevState,
-                [produit.id]: isChecked
+                [famille]: isChecked
               }));
               if (isChecked) {
-                setSelectedProductId(produit.id);
+                setSelectedProductId(famille);
               } else {
                 setSelectedProductId(null); // Désélectionner le produit
-                setData()
-              }
-             
-            }}
-          />
-          <label htmlFor={`checkbox-${produit.id}`}>{produit.title}</label>
-        </div>
-      ))}
-      </ul>
-    </div> 
-    <div className='FilterCat'>
-    <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
-          onClick={handleFilterMenuToggle}  />
-          <h3 className='filter-name' >{t("Header.Ouv")}</h3>
-          </div>
-          <div className='catboxList'>
-          <ul>
-          { buildings.map(ouvrage => (
-        <div key={ouvrage.id}>
-          <input
-            type="checkbox"
-            checked={isCheckedOuvrage[ouvrage.id] || false}
-            onChange={e => {
-              const isChecked = e.target.checked;
-              setCheckedOuvrage(prevState => ({
-                ...prevState,
-                [ouvrage.id]: isChecked
-              }));
-              if (isChecked) {
-                setSelectedProductId(ouvrage.id);
-              } else {
-                setSelectedProductId(null); // Désélectionner le produit
-                setData()
+                setData();
               }
             }}
           />
-          <label htmlFor={`checkbox-${ouvrage.id}`}>{ouvrage.title}</label>
+          <label htmlFor={`checkbox-${famille}`}>{famille}</label>
         </div>
       ))}
-      </ul>
-    </div> 
-    
+    </ul>
+  </div>
+)}
 
     <div className='FilterCat'>
     <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
-          onClick={handleFilterMenuToggle}  />
+          onClick={() => handleFiltMenuToggle(t("Header.Ouv"))} />
+          <h3 className='filter-name' >{t("Header.Ouv")}</h3>
+          </div>
+          {filterMenuOpen === t("Header.Ouv") && (
+  <div className='catboxList'>
+    <ul>
+      {Array.from(
+        new Set(
+          buildings
+            .map(ouvrage => ouvrage.famille)
+            .filter(famille => famille !== ""  )
+        )
+      ).map((famille, index) => (
+        <div key={index}>
+          <input
+            type="checkbox"
+            checked={isCheckedProduit[famille] || false}
+            onChange={e => {
+              const isChecked = e.target.checked;
+              setCheckedProduit(prevState => ({
+                ...prevState,
+                [famille]: isChecked
+              }));
+              if (isChecked) {
+                setSelectedProductId(famille);
+              } else {
+                setSelectedProductId(null); // Désélectionner le produit
+                setData();
+              }
+            }}
+          />
+          <label htmlFor={`checkbox-${famille}`}>{famille}</label>
+        </div>
+      ))}
+    </ul>
+  </div>
+)}
+
+    <div className='FilterCat'>
+    <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"
+         onClick={() => handleFiltMenuToggle(t("Header.Monu"))}  />
           <h3 className='filter-name' >{t("Header.Monu")}</h3>
           </div>
+          {filterMenuOpen === t("Header.Monu") && (
           <div className='catboxList'>
           <ul>
           { monuments.map(monument => (
@@ -400,12 +484,14 @@ function Categorie1({products,materials,buildings,monuments,places,colors}) {
       ))}
       </ul>
     </div> 
-    
+
+          )}
 
     <div className='FilterCat'>
-        <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown" onClick={handleFilterMenuToggle} />
+        <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown"  onClick={() => handleFiltMenuToggle(t("Header.Place"))} />
         <h3 className='filter-name'>{t("Header.Place")}</h3>
       </div>
+      {filterMenuOpen === t("Header.Place") && (
       <div className='catboxList'>
         <ul>
           {places.map(place => (
@@ -432,10 +518,13 @@ function Categorie1({products,materials,buildings,monuments,places,colors}) {
           ))}
         </ul>
       </div>
+      )}
+
       <div className='FilterCat'>
-        <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown" onClick={handleFilterMenuToggle} />
+        <img className="arrowdwn" src={ArrowIcon} alt="ArrowDown" onClick={() => handleFiltMenuToggle( t("Header.Color"))} />
         <h3 className='filter-name'>{t("Header.Color")}</h3>
       </div>
+      {filterMenuOpen === t("Header.Color") && (
       <div className='catboxList'>
   <ul>
     {colors.map((couleur, index) => ( // Utilisation de l'index comme identifiant
@@ -463,7 +552,7 @@ function Categorie1({products,materials,buildings,monuments,places,colors}) {
   </ul>
 </div>
 
-    
+      )}
           <div className='lineFBar'></div>
           <div className='ValBtn'>
           <button className='annuler' onClick={handleCancel}>{t("Btn.Annuler")}</button>
@@ -473,69 +562,7 @@ function Categorie1({products,materials,buildings,monuments,places,colors}) {
       )}
 
 
-         {/* Afficher le menu latéral s'il est ouvert */}
-         {isMenuOpen && (
         
-        <div className="side-menu">
-  <div className="popIcons">
-    <img className="popmenu" src={whitemenuIcon} alt="Menu Icon" onClick={handleMenuToggle} />
-    <img className="closemenu" src={closeIcon} alt="Close Icon" onClick={handleMenuToggle} />
-  </div>
-  <div className='lineBar'></div>
-  <h3 className='rub' style={{textAlign: 'center' }}>{t("Menu.Rubrique")}</h3>
-  <ul className='mats' style={{ paddingLeft: '20px' }}>
-    <li className='rubMat-name' ><Link to="/material">{t("Header.Mat")}</Link></li>
-    <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/categorie1" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.MAT")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/categorie2" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.MER")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/categorie3" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Bois")}</Link>
-</li>
-    <li className='rubMat-name'><Link to="/produit">{t("Header.Prod")}</Link></li>
-    <li className='rubMat-name'><Link to="/ouvrage">{t("Header.Ouv")}</Link></li>
-    <li className='rubMat-name'><Link to="/pathologie">{t("Header.Path")}</Link></li>
-    <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/biologique" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Biologique")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/chromatique-dépot" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Chd")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/déformation" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Déformation")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/détachement" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Détachement")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/fissure" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Fissure")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/perte de matière" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.PDM")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/autres" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Autres")}</Link>
-</li>
-    <li className='rubMat-name'><Link to="/monument">{t("Header.Monu")}</Link></li>
-    </ul>
-  <div className='lineBar'></div>
-  <h3 className='rub'  style={{textAlign: 'center' }} >{t("Menu.Pages")}</h3>
-  {/* Ajoutez vos liens du menu ici */}
-  <Link className="pageLink" to="/userHome">{t("navbar.accueil")}</Link>
-  <Link className="pageLink" to="/Graph">{t("navbar.graph")}</Link>
-  <Link className="pageLink" to="/carte-geographique">{t("navbar.carteGeographique")}</Link>
-  <Link className="pageLink" to="/recherche-avancee">{t("navbar.rechercheAvancee")}</Link>
-  <Link className="pageLink" to="/a-propos">{t("navbar.aPropos")}</Link>
-  <div className='lineDecBar'></div>
-  <div className='Decon'>
-    <img className="dec" src={deconIcon} alt="Decon Icon" onClick={handleDeconnect} />
-    <a className='decLink' onClick={handleDeconnect} >{t("Menu.Deconnexion")}</a>
-  </div>
-</div>
-
-      )}
       <Footer />
       </div>
       

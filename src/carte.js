@@ -19,6 +19,7 @@ import Monument from './Classes/Monument';
 import NavbarHome from './NavbarHome';
 import { getMonuments } from './apiServices';
 
+
 import { useAuth } from './AuthContext';
 const { Option } = Select;
 
@@ -31,7 +32,8 @@ function Carte({ monuments }) {
   const { t,i18n } = useTranslation();
   const navigate = useNavigate();
   const { isConnected } = useAuth();
-
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchInput, setSearchInput] = useState("");
   const handleDeselectMonument = (monumentId) => {
     setSelectedMonuments(prevState => ({
       ...prevState,
@@ -39,7 +41,7 @@ function Carte({ monuments }) {
     }));
   };
   
-
+ 
   const toggleLang = (lang) => {
     i18n.changeLanguage(lang);
   }
@@ -82,12 +84,26 @@ function Carte({ monuments }) {
   const [form] = Form.useForm();
  
   const onFinish = (values) => {
-    console.log('Received values of form: ');
+    console.log('Received values of form: ', values);
+    
   };
   
-  const handleSelection = () => {
+  const handleSearch = () => {
+    const results = monuments.filter(monument => 
+      monument.title.toLowerCase().includes(searchInput.toLowerCase()) && 
+      monument.attitude.low !== 0
+    );
+    setSearchResults(results);
+  };
   
-  }
+  const handleSearchResultClick = (monument) => {
+    setSearchResults([]);
+    setSelectedMonuments(prevState => ({
+      ...prevState,
+      [monument.id]: true
+    }));
+    <ZoomToMonument key={monument.id} monument={monument} deselectMonument={handleDeselectMonument} />
+  };
 
   const handleCancel = () => {
     const updatedSelectedMonuments = {};
@@ -98,17 +114,8 @@ function Carte({ monuments }) {
     
   };
 
-  const handleSearchSubmit = () => {
-    // Mettez à jour la liste des monuments en fonction du titre saisi
-    const filteredMonuments = monuments.filter(monument => {
-      return monument.title.toLowerCase().includes(searchData.title.toLowerCase());
-    });
-    // Mettez à jour les données affichées sur la carte
-    setData({
-      ...data,
-      monuments: filteredMonuments
-    });
-  };
+
+ 
   return (
     
     <div className='graph'>
@@ -123,8 +130,6 @@ function Carte({ monuments }) {
   <Navbar /> 
       
       <div className="material-head">
-      <img className="menu" src={menuIcon} alt="Menu Icon"
-          onClick={handleMenuToggle}  />
       <Typography.Title level={1} style={{ fontWeight: 'bold', marginBottom: '40px',textAlign: 'center' }}>
       {t("navbar.carteGeographique")}
       </Typography.Title>
@@ -132,7 +137,7 @@ function Carte({ monuments }) {
       <Row justify="space-between" align="middle" style={{ marginBottom: '20px', paddingLeft: '10px', paddingRight: '10px' }}>
         <Col>
           <div style={{ display: 'flex', alignItems: 'center' }}>
-            <div style={{ width: '400px', height: '60px', background: '#2C3E50', marginRight: '20px' }}>
+            <div style={{ width: '400px', height: '60px', background: '#5B828E', marginRight: '20px' }}>
               <Link onClick={handleFilterToggle}><h2 style={{ textAlign: 'center', color: 'white', textDecoration:'none'}}> {t("Tokens.Filter")}</h2></Link>
             </div>
           </div>
@@ -143,17 +148,32 @@ function Carte({ monuments }) {
               <Input
                 placeholder= {t("Tokens.rechReq")}
                 style={{ flex:1, marginRight: '10px', background: '#ECF0F1' }}
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
               />
             </Col>
             <Col>
-              <Button type="primary" htmlType="submit"  style={{backgroundColor :'#2C3E50'}}>
+              <Button type="primary" htmlType="submit"  style={{backgroundColor :'#5B828E'}}onClick={() =>handleSearch()}>
               {t("Tokens.Recherche")}
               </Button>
             </Col>
           </Row>
         </Col>
       </Row>
-      
+      {searchResults.length > 0 && (
+  <div className="search-results-container">
+    <Card>
+      <ul className="search-results-list">
+        {searchResults.map((result) => (
+          <li key={result.id} className="search-result-item" onClick={() => handleSearchResultClick(result)}>
+            {result.title}
+          </li>
+        ))}
+      </ul>
+    </Card>
+  </div>
+)}
+
       <div style={{ display: 'flex' }}>
       <div style={{ width: '400px', paddingLeft: '10px', paddingRight: '10px' }}>
           {/* Carte avec formulaire de recherche avancée */}
@@ -168,31 +188,35 @@ function Carte({ monuments }) {
 <div style={{ marginBottom: '10px' }}>
 <Form.Item name="Matériaux" label="Monuments">
 <div style={{ display: 'flex', flexDirection: 'column' }}>
-          {data ? (
-            data.map(monument => (
-           <Checkbox checked={selectedMonuments[monument.id]}
-           onChange={e => {
-             setSelectedMonuments(prevState => ({
-               ...prevState,
-               [monument.id]: e.target.checked
-             }));
-           }} key={monument.id}  value="">{monument.title}</Checkbox>
-          ))
-          ):(
-            <li> {t("Messages.MonuErr")}</li>
-          )
-        }  
-    
- 
-
- </div>
+  {data ? (
+    data
+      .filter(monument => monument.attitude  !== 0 && monument.longitude !== 0)
+      .map(monument => (
+        <Checkbox
+          checked={selectedMonuments[monument.id]}
+          onChange={e => {
+            setSelectedMonuments(prevState => ({
+              ...prevState,
+              [monument.id]: e.target.checked,
+            }));
+          }}
+          key={monument.id}
+          value=""
+        >
+          {monument.title}
+        </Checkbox>
+      ))
+  ) : (
+    <li>{t("Messages.MonuErr")}</li>
+  )}
+</div>
 </Form.Item>
 </div>
 
 {/* Répétez ce schéma pour les autres Form.Item */}
 
 <Form.Item>
- <Button type="default" style={{ backgroundColor: '#27AE60', border: 'none',color:'#d9d9d9'}} onClick={handleCancel}>
+ <Button type="default" style={{ backgroundColor: '#27AE60', border: 'none',color:'white'}} onClick={handleCancel}>
  {t("Btn.Effacer")}
  </Button>
 </Form.Item>
@@ -208,6 +232,7 @@ function Carte({ monuments }) {
     <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
     {data ? (
       data.map(monument => (
+       
         monument.attitude !== null && monument.longitude !== null && selectedMonuments[monument.id] ? (
           <ZoomToMonument key={monument.id} monument={monument} deselectMonument={handleDeselectMonument} />
         ) : null
@@ -215,6 +240,7 @@ function Carte({ monuments }) {
     ) : (
       <li>{t("Messages.MonuErr")}</li>
     )}
+     
   </MapContainer>
 </div>
 
@@ -223,68 +249,6 @@ function Carte({ monuments }) {
    
 
 
-      {isMenuOpen && (
-        
-        <div className="side-menu">
-  <div className="popIcons">
-    <img className="popmenu" src={whitemenuIcon} alt="Menu Icon" onClick={handleMenuToggle} />
-    <img className="closemenu" src={closeIcon} alt="Close Icon" onClick={handleMenuToggle} />
-  </div>
-  <div className='lineBar'></div>
-  <h3 className='rub' style={{textAlign: 'center' }}>{t("Menu.Rubrique")}</h3>
-  <ul className='mats' style={{ paddingLeft: '20px' }}>
-    <li className='rubMat-name' ><Link to="/material">{t("Header.Mat")}</Link></li>
-    <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/categorie1" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.MAT")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/categorie2" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.MER")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/categorie3" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Bois")}</Link>
-</li>
-    <li className='rubMat-name'><Link to="/produit">{t("Header.Prod")}</Link></li>
-    <li className='rubMat-name'><Link to="/ouvrage">{t("Header.Ouv")}</Link></li>
-    <li className='rubMat-name'><Link to="/pathologie">{t("Header.Path")}</Link></li>
-    <li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/biologique" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Biologique")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/chromatique-dépot" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Chd")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/déformation" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Deformation")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/détachement" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Detachment")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/fissure" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Fissure")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/perte de matière" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.PDM")}</Link>
-</li>
-<li className='catgs' style={{ textDecoration: 'none', color: '#FFFFFF' }}>
-  <Link to="/autres" style={{ textDecoration: 'none', color: '#FFFFFF' }}>{t("Menu.Autres")}</Link>
-</li>
-    <li className='rubMat-name'><Link to="/monument">{t("Header.Monu")}</Link></li>
-    </ul>
-  <div className='lineBar'></div>
-  <h3 className='rub'  style={{textAlign: 'center' }} >{t("Menu.Pages")}</h3>
-  {/* Ajoutez vos liens du menu ici */}
-  <Link className="pageLink" to="/userHome">{t("navbar.accueil")}</Link>
-  <Link className="pageLink" to="/Graph">{t("navbar.graph")}</Link>
-  <Link className="pageLink" to="/carte-geographique">{t("navbar.carteGeographique")}</Link>
-  <Link className="pageLink" to="/recherche-avancee">{t("navbar.rechercheAvancee")}</Link>
-  <Link className="pageLink" to="/a-propos">{t("navbar.aPropos")}</Link>
-  <div className='lineDecBar'></div>
-  <div className='Decon'>
-    <img className="dec" src={deconIcon} alt="Decon Icon" onClick={handleDeconnect} />
-    <a className='decLink' href="/lien2">{t("Menu.Deconnexion")}</a>
-  </div>
-</div>
-
-      )}
 
       
 <ChatBox/>   
@@ -298,6 +262,11 @@ function Carte({ monuments }) {
 // Composant ZoomToMonument pour zoomer automatiquement sur un monument sélectionné
 function ZoomToMonument({ monument , deselectMonument }) {
   const map = useMap();
+  const navigate = useNavigate();
+  const handleImageClick = (monumentId) => {
+    const integerId = parseInt(monumentId, 10);
+    navigate(`/monumentDetails/${integerId}`);
+  };
 
   useEffect(() => {
     console.log("attitude",monument.attitude);
@@ -309,13 +278,15 @@ function ZoomToMonument({ monument , deselectMonument }) {
     }
   }, [map, monument,, deselectMonument]);
 
-  if (!monument || monument.attitude === 36.7372 || monument.longitude ===  3.0822) {
-    alert("Les coordonnées du monument ne sont pas définies correctement :", monument);
-    deselectMonument(monument.id); // Désélectionne le monument
-}
+ 
   return (
     <Marker position={[monument.attitude, monument.longitude]}>
-      <Popup>{monument.title}</Popup>
+      <Popup>
+      
+       <img  style={{width:'120px'}} src={`data:image/jpg;base64, ${monument.image}`}  onClick={() => handleImageClick(monument.id)}/>
+       <div></div>
+      <a style={{textDecoration:'none' }}>{monument.title}</a>
+        </Popup>
     </Marker>
   );
 
