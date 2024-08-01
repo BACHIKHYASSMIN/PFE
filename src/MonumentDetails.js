@@ -87,8 +87,7 @@ function MonumentDetails() {
     <nav className="details">
        <Navbar/>
        <img className="dwnload" src={ dwn} alt="Download" onClick={handleDownloadPdf} />
-       <img className="menuList" src={menuIcon} alt="Menu Icon"  onClick={handleMenuToggle}  />
-       
+    
       <div className="materials">
       {monument && monument.component ? (
         <div>
@@ -136,9 +135,6 @@ function MonumentDetails() {
             {monument.component.typologie_architecturale && (
             <li ><span className='champ'> Typologie Architecturale : </span>  {monument.component.typologie_architecturale}</li>
             )}
-            {monument.component.Historique && (
-            <li><span className='champ'> Historique : </span>  {monument.component.Historique}</li>
-            )}
              {monument.component.is_historique_monument && (
             <li><span className='champ'> Est un Historique Monument ? : </span>  {monument.component.is_historique_monument}</li>
              )}
@@ -167,6 +163,10 @@ function MonumentDetails() {
 }
       </div>
       <div className="Vertical">
+
+
+
+
  
  {/* Affiche les éléments avec une autre relation dans un autre div */}
  {infos && infos.infos && infos.infos.some(item => item.relation === "REFERENCER_PAR") && (
@@ -184,7 +184,16 @@ function MonumentDetails() {
   </div>
 )}
 
- 
+ {/* Affiche les éléments avec une autre relation dans un autre div */}
+ {monument && monument.component &&(
+  <div className='Source'>
+    <h3>Historique</h3>
+    {monument.component.Historique && (
+            <p>  {monument.component.Historique}</p> 
+            )}
+  </div>
+)}
+
  
  {infos && infos.infos  && infos.infos.some(item => !['ILLUSTRER_PAR', 'REFERENCER_PAR'].includes(item.relation.toUpperCase())) && (
    <div className="Composition">

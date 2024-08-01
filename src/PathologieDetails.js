@@ -82,7 +82,7 @@ console.log('pathologoes',material)
     <nav className="details">
        <Navbar/>
        <img className="dwnload" src={ dwn} alt="Download" onClick={handleDownloadPdf} />
-       <img className="menuList" src={menuIcon} alt="Menu Icon"  onClick={handleMenuToggle}  />
+      
        <div id="pdfContent">
        <div className="materials">
       {material && material.component ? (
@@ -109,7 +109,7 @@ console.log('pathologoes',material)
               <a className="next" onClick={nextSlide}>&#10095;</a>
             </div>
           ) : (
-            <img style={{width:"100%", marginLeft:"20%"}}
+            <img style={{width:"100%", marginLeft:"180%"}}
             alt='Image Introuvable'
                       src={imageNotFound}
                     />
@@ -172,12 +172,12 @@ console.log('pathologoes',material)
 </div>
 
       <div className="Vertical">
-      {material.component.description && material.component.description.length > 0 && (
+      {material && material.component && (
   <div className='Source'>
     <h3>Description</h3>
     <ul>
       {material.component.description.map((description, index) => (
-        <li key={index}>
+        <li  style={{textAlign:'justify',marginLeft:'5%',width:'90%'}}key={index}>
           {description}
         </li>
       ))}

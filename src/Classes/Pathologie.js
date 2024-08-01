@@ -29,6 +29,8 @@ const Pathologie = ({pathologies}) => {
   const handleMenuToggle = () => {
     setMenuOpen(!isMenuOpen);
   };
+
+
   
   return (
     <na className="material">
@@ -69,9 +71,9 @@ const Categories = (props) => {
   const { t,i18n } = useTranslation();
   const navigate = useNavigate();
   console.log('pathologies',pathologies)
-  const handleImageClick = () => {
-    // Naviguer vers la page "Details" lors du clic sur l'image
-    navigate('/details');
+  const handleImageClick = (materialId) => {
+    const integerMaterialId = parseInt(materialId, 10);
+    navigate(`/details/${integerMaterialId}`);
   };
 
   let categoryContent;

@@ -21,7 +21,7 @@ const Apropos = () => {
         <Navbar/>
         <div className='Container'>
         <div className='Header'>
-        <p className="AboutDescription"><span style={{fontWeight:'bold',color:'white'}}>{t("Title.Name")} </span>{t("Paragraph.decouvert")}</p>
+        <p className="AboutDescription"><span style={{fontWeight:'bold',color:'white'}}>{t("Title.Name")} </span>{t("Footer.descriptions")}</p>
           </div>
           <div className="section-container">
          

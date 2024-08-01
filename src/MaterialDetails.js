@@ -85,7 +85,7 @@ console.log('infos',infos)
     <nav className="details">
        <Navbar/>
        <img className="dwnload" src={ dwn} alt="Download" onClick={handleDownloadPdf} />
-       <img className="menuList" src={menuIcon} alt="Menu Icon"  onClick={handleMenuToggle}  />
+      
        <div id="pdfContent">
        <div className="materials">
       {material && material.component ? (
@@ -93,30 +93,36 @@ console.log('infos',infos)
           <p className='mat-name'>{material.component.designation}</p>
 
           {material.images && material.images.length > 0 ? (
-            <div className="slider-container">
-              <div
-                className="slider-images"
-                style={{ transform: `translateX(-${currentIndex * 100}%)` }}
-              >
-                {material.images.map((image, index) => (
-                  <div className="slider-image" key={image.id}>
-                    <img
-                      className="mat-img"
-                      src={`data:image/jpg;base64, ${image}`}
-                      alt={`Image ${index}`}
-                    />
-                  </div>
-                ))}
-              </div>
-              <a className="prev" onClick={prevSlide}>&#10094;</a>
-              <a className="next" onClick={nextSlide}>&#10095;</a>
-            </div>
-          ) : (
-            <img style={{width:"100%", marginLeft:"20%"}}
-            alt='Image Introuvable'
-                      src={imageNotFound}
-                    />
-          )}
+  <div className="slider-container">
+    <div
+      className="slider-images"
+      style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+    >
+      {material.images.map((image, index) => (
+        <div className="slider-image" key={image.id}>
+          <img
+            className="mat-img"
+            src={`data:image/jpg;base64, ${image}`}
+            alt={`Image ${index}`}
+          />
+        </div>
+      ))}
+    </div>
+   {material.images.length > 1 ? (
+      <>
+        <a className="prev" onClick={prevSlide}>&#10094;</a>
+        <a className="next" onClick={nextSlide}>&#10095;</a>
+      </>
+    ) : null}
+  </div>
+) : (
+  <img
+    style={{ width: "100%", marginLeft: "20%" }}
+    alt="Image Introuvable"
+    src={imageNotFound}
+  />
+)}
+
 
         </div>
       ) : (
@@ -273,7 +279,7 @@ console.log('infos',infos)
       <div className="Vertical">
  
 {/* Affiche les éléments avec une autre relation dans un autre div */}
-{infos && infos.infos  && infos.infos.length > 0 &&(
+{infos && infos.infos  && infos.infos.some(item => item.relation == "REFERENCER_PAR") && (
   
 <div className='Source'>
   <h3>Source</h3>
@@ -294,7 +300,7 @@ console.log('infos',infos)
   )}
 
 
-{infos && infos.infos && infos.infos.length > 0 && (
+{infos && infos.infos && infos.infos.some(item => !['ILLUSTRER_PAR', 'REFERENCER_PAR'].includes(item.relation.toUpperCase())) && (
   <div className="Composition">
     <h3>Informations Relatives</h3>
     {Object.entries(

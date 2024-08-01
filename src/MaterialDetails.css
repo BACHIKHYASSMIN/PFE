@@ -3,14 +3,11 @@
     display: flex;
     align-items: center;
 }
-.mat-img{
-    width: 30%;
-    margin-right: 10%;
-    height: 30%;
-}
+
 .mat-name{
     font-weight: bold;
     font-size: xx-large;
+    margin-left: 10%;
 }
 
 .Description{
@@ -54,7 +51,7 @@ margin-bottom: 3%;
 .Source{
     overflow-y: scroll;
     text-align: center;
-     width: 130%;
+     width: 120%;
      height: 300px;
     background-color:#ECF0F1;
     margin-left: 20%;
@@ -66,16 +63,17 @@ margin-bottom: 3%;
 .Source p{
     text-align: left;
     margin-left: 3%;
+    width: 90%;
 
 }
 .Composition {
   margin-top: 17%;
   text-align: center;
-  width: 130%;
+  width: 120%;
   background-color: #ECF0F1;
   overflow-y: scroll;   /* Activer le scrolling vertical si le contenu dépasse la hauteur spécifiée */
   overflow-x: auto;     /* Activer le scrolling horizontal si le contenu dépasse la largeur spécifiée */
-  height: 250px;        /* Hauteur fixe de la zone de scroll */
+  height: max-content;        /* Hauteur fixe de la zone de scroll */
   margin-left: 20%;
   border-radius: 2%;
   margin-bottom: 5%;
@@ -85,6 +83,7 @@ margin-bottom: 3%;
 
 .Composition p{
   margin-left: 3%;
+  width: 100%;
 }
 .dwnload{
     width: 45px;
@@ -108,27 +107,27 @@ margin-bottom: 3%;
     position: relative;
     width: 50%;
     overflow: hidden;
-    margin-left: -1%;
     margin-top:2%;
-    margin-bottom: -47%;
+   
   }
   
   .slider-images {
     display: flex;
-    width: 120%;
     
     transition: transform 0.5s ease-in-out;
   }
   
   .slider-image {
-    min-width: 92%;
+    min-width: 100%;
     box-sizing: border-box;
-    margin-right: 5%;
-    margin-left: 3%;
-
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
   }
   .mat-img {
-    width: 100%;
+    width: 50%;
+   
   }
   
   .prev, .next {
@@ -136,7 +135,6 @@ margin-bottom: 3%;
     position: absolute;
     top: 34%;
     width: auto;
-    margin-top: -22px;
     color: black;
     font-weight: bold;
     font-size: 18px;
@@ -147,17 +145,18 @@ margin-bottom: 3%;
   }
   
   .next {
-    right: 0;
+    right: 4%;
     border-radius: 3px 0 0 3px;
   }
-  
+
+
   .prev:hover, .next:hover {
     background-color: rgba(0, 0, 0, 0.8);
   }
   
   .monument-img{
-    width: 30%;
-    height: 10%;
+    width: 20%;
+   margin-left: 12%;
   }
 
 

@@ -4,7 +4,7 @@ import  matImg from "./Assets/bois.png"
 import dwn from "./Assets/download.png"
 import { jsPDF } from 'jspdf';
 import html2canvas from 'html2canvas';
-import imageNotFound from "./Assets/NotImage.png"
+import imageNotFound from "./Assets/block.png"
 import Footer from './Elements/Footer';
 import Navbar from './Elements/Navbar';
 import { Link, useParams } from 'react-router-dom';
@@ -96,7 +96,7 @@ const handleDownloadPdf = async () => {
     <nav className="details">
        <Navbar/>
        <img className="dwnload" src={dwn} alt="Download" onClick={handleDownloadPdf} />
-       <img className="menuList" src={menuIcon} alt="Menu Icon"  onClick={handleMenuToggle}  />
+    
        <div id="pdfContent">
       <div className="products">
       {product && product.component ? (
@@ -282,7 +282,7 @@ const handleDownloadPdf = async () => {
 <div className="Vertical">
  
  {/* Affiche les éléments avec une autre relation dans un autre div */}
- {infos && infos.infos  && infos.infos.length > 0 &&(
+ {infos && infos.infos  && infos.infos.some(item => item.relation == "REFERENCER_PAR") && (
    
  <div className='Source'>
    <h3>Source</h3>
@@ -302,7 +302,7 @@ const handleDownloadPdf = async () => {
    )}
  
  
- {infos && infos.infos && infos.infos.length > 0 && (
+ {infos && infos.infos &&  infos.infos.some(item => !['ILLUSTRER_PAR', 'REFERENCER_PAR'].includes(item.relation.toUpperCase())) && (
    <div className="Composition">
      <h3>Informations Relatives</h3>
      {Object.entries(

@@ -203,7 +203,7 @@ const Ouvrage = ({buildings,products,monuments,usage}) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        setData(buildings);
+        setFilteredBuildings(buildings);
       } catch (error) {
         console.error('Error fetching data:', error);
       }
